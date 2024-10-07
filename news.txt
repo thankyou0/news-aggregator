@@ -1,0 +1,2 @@
+when using hook --> useContext always use with a capital letter.
+  <AlertState> {/* Use with a capital letter in the App.jsx and in context/alert.js */}  
