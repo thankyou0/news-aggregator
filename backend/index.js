@@ -8,7 +8,6 @@ const cors = require("cors");
 const userroute = require("./routes/ruser");
 const algorithmsroute = require("./routes/ralgorithms");
 
-
 const port = process.env.PORT || 9000;
 
 mongoose.connect(process.env.MONGO_URL).then(() => {

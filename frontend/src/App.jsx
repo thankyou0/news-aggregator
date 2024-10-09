@@ -10,36 +10,36 @@ import AlertDisplay from './components/AlertDisplay'; // Adjust the import path 
 import { useNavigate } from 'react-router-dom';
 import LoggedHome from './pages/LoggedHome';
 
+
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const validRoutes = ['/', '/login', '/signup'];
   const hideNavbarRoutes = ['/login', '/signup'];
 
   const isValidRoute = validRoutes.includes(location.pathname);
   const shouldShowNavbar = isValidRoute && !hideNavbarRoutes.includes(location.pathname);
 
-  const navigate = useNavigate();
   useEffect(() => {
-    if (window.localStorage.getItem('token') === null) {
+    const token = window.localStorage.getItem('token');
+    if (!token && location.pathname === '/loggedhome') {
       navigate('/login');
     }
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   return (
-    <AlertState> {/* Use with a capital letter */}
+    <AlertState>
       {shouldShowNavbar && <Navbar />}
       <AlertDisplay />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={window.localStorage.getItem('token') ? <LoggedHome /> : <Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/loggedhome" element={<LoggedHome />} />
-        
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </AlertState>
   );
 }
-
 
 export default App;

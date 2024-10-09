@@ -31,7 +31,6 @@ const LoggedHome = () => {
           title={article.title}
           link={article.link}
           time={article.time}
-          imageURL={article.imageURL}
           providerImg={article.providerImg}
         />
       )) : <>

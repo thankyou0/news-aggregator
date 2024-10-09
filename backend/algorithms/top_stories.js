@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const randomUseragent = require("random-useragent"); // Added random-useragent
-// // const fs = require("fs");
+const top_stories_model = require("../models/mtopStories");
 
 const scanForLinks = async (page) => {
 
@@ -23,7 +23,7 @@ const scanForLinks = async (page) => {
 
 			// Only return the article if none of the fields are null
 			return (articleData.title && articleData.link && articleData.time && articleData.providerImg) ? articleData : null;
-			
+
 		});
 	});
 
@@ -70,11 +70,63 @@ const Scrap = async (searchby) => {
 
 const ScrapTop_stories = async (req, res) => {
 
-	const articles = await Scrap({
-		country: "IN",
-	});
+	const FETCH_INTERVAL = 1000 * 600;  // 600 seconds
 
-	res.status(200).json({ success: true, articles: articles });
+	let lastFetchTime = null;
+	lastFetchTime = await top_stories_model.findOne({}, { createdAt: 1 });
+	if (!lastFetchTime)
+		lastFetchTime = 0;
+	else
+		lastFetchTime = lastFetchTime.createdAt.getTime();
+
+	const currentTime = new Date().getTime();
+
+
+	if (currentTime - lastFetchTime > FETCH_INTERVAL) {
+
+
+		const articles = await Scrap({
+			country: "IN",
+		});
+
+		try {
+			await top_stories_model.deleteMany({});
+		} catch (err) {
+			res.status(210).json({ success: false, articles: "An error occurred while deleting the data from the database " });
+		}
+
+		try {
+			articles.forEach(async (article) => {
+
+				if (article) {
+					const newArticle = new top_stories_model({
+						title: article.title,
+						link: article.link,
+						time: article.time,
+						providerImg: article.providerImg,
+					});
+					await newArticle.save();
+				}
+			});
+			res.status(202).json({ success: true, articles: articles });
+		}
+		catch (err) {
+			res.status(210).json({ success: false, articles: "An error occurred while saving the data to the database " });
+
+		}
+
+	}
+	else {
+		try {
+			const top_stories = await top_stories_model.find();
+			res.status(202).json({ success: true, articles: top_stories });
+		} catch (error) {
+			res.status(210).json({ success: false, message: error });
+		}
+	}
+
+
+
 };
 
 

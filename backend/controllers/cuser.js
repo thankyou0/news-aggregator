@@ -37,7 +37,7 @@ const logInPost = async (req, res) => {
 
   const token = jsonwebtoken.sign({ id: userExist._id }, process.env.JWT_SECRET);
 
-  return res.status(200).json({ success: true, message: "User signed in successfully", token: token });
+  return res.status(202).json({ success: true, message: "User signed in successfully", token: token });
 
 };
 
