@@ -6,6 +6,7 @@ dotenv.config();
 // const cookieparser = require("cookie-parser");
 const cors = require("cors");
 const userroute = require("./routes/ruser");
+const algorithmsroute = require("./routes/ralgorithms");
 
 
 const port = process.env.PORT || 9000;
@@ -23,8 +24,8 @@ app.use(express.urlencoded({ extended: false }))
 
 
 app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "PATCH","DELETE"],
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "authorization"],
   credentials: true,
 }));
@@ -33,7 +34,7 @@ app.use(cors({
 
 app.use("/api/user", userroute);
 
-
+app.use("/api/algorithms", algorithmsroute);
 
 
 
