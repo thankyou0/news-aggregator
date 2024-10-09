@@ -20,12 +20,12 @@ function App() {
   const isValidRoute = validRoutes.includes(location.pathname);
   const shouldShowNavbar = isValidRoute && !hideNavbarRoutes.includes(location.pathname);
 
-  useEffect(() => {
-    const token = window.localStorage.getItem('token');
-    if (!token && location.pathname === '/loggedhome') {
-      navigate('/login');
-    }
-  }, [navigate, location.pathname]);
+  // useEffect(() => {
+  //   const token = window.localStorage.getItem('token');
+  //   if (!token && location.pathname === '/loggedhome') {
+  //     navigate('/login');
+  //   }
+  // }, [navigate, location.pathname]);
 
   return (
     <AlertState>

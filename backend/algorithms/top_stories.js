@@ -70,6 +70,7 @@ const Scrap = async (searchby) => {
 
 const ScrapTop_stories = async (req, res) => {
 
+
 	const FETCH_INTERVAL = 1000 * 600;  // 600 seconds
 
 	let lastFetchTime = null;
@@ -79,10 +80,14 @@ const ScrapTop_stories = async (req, res) => {
 	else
 		lastFetchTime = lastFetchTime.createdAt.getTime();
 
+
 	const currentTime = new Date().getTime();
 
 
-	if (currentTime - lastFetchTime > FETCH_INTERVAL) {
+	const Documentcount = await top_stories_model.find({}).countDocuments();  // this is because if user close the browser at the time of web scraping then we have to fetch the data again
+
+
+	if (currentTime - lastFetchTime > FETCH_INTERVAL || Documentcount < 100) {
 
 
 		const articles = await Scrap({
