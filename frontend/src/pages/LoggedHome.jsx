@@ -5,8 +5,10 @@ import { GET } from '../api.js';
 
 
 const LoggedHome = () => {
-  
+
   const [articles, setArticles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredArticles, setFilteredArticles] = useState([]);
 
   useEffect(() => {
 
@@ -21,11 +23,25 @@ const LoggedHome = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    setFilteredArticles(
+      articles.filter(article =>
+        article.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, articles]);
 
   return (
     <>
-      {articles.length > 0 ? articles?.map((article, index) => (
-        article && 
+      <input
+        type="text"
+        placeholder="Search from given articles..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{ width: "200px" }}
+      />
+      {filteredArticles.length > 0 ? filteredArticles.map((article, index) => (
+        article &&
         <NewsCard
           key={index}
           title={article.title}
@@ -33,9 +49,7 @@ const LoggedHome = () => {
           time={article.time}
           providerImg={article.providerImg}
         />
-      )) : <>
-          <div>NO NEWS</div>
-      </>}
+      )) : <div>NO NEWS</div>}
     </>
   );
 

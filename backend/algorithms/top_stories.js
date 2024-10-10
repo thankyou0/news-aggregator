@@ -27,7 +27,8 @@ const scanForLinks = async (page) => {
 		});
 	});
 
-	return articles;
+	return articles.filter(article => article !== null);
+
 };
 
 const Scrap = async (searchby) => {
@@ -60,7 +61,7 @@ const Scrap = async (searchby) => {
 		return articles;
 	}
 	catch (err) {
-		return "An error occurred while fetching data.";
+		return "An error occurred while Scraping top stories data.";
 	}
 };
 
@@ -71,7 +72,7 @@ const Scrap = async (searchby) => {
 const ScrapTop_stories = async (req, res) => {
 
 
-	const FETCH_INTERVAL = 1000 * 600;  // 600 seconds
+	const FETCH_INTERVAL = 1000 * 60000;  // 60000 seconds
 
 	let lastFetchTime = null;
 	lastFetchTime = await top_stories_model.findOne({}, { createdAt: 1 });

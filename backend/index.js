@@ -7,6 +7,7 @@ dotenv.config();
 const cors = require("cors");
 const userroute = require("./routes/ruser");
 const algorithmsroute = require("./routes/ralgorithms");
+const searchroute = require("./routes/rsearch.js");
 
 const port = process.env.PORT || 9000;
 
@@ -35,6 +36,7 @@ app.use("/api/user", userroute);
 
 app.use("/api/algorithms", algorithmsroute);
 
+app.use("/api/search", searchroute);
 
 
 
