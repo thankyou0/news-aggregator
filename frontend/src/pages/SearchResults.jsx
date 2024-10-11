@@ -2,6 +2,8 @@ import React, { useEffect, useCallback, useState } from 'react';
 import config from '../config';
 import axios from 'axios';
 import NewsCard from '../components/NewsCard';
+import Skelaton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 const SearchResults = (props) => {
 
@@ -76,10 +78,19 @@ const SearchResults = (props) => {
             providerImg={article.providerImg}
             providerName={article.providerName}
           />
-        )) : <div>Loading...</div>
+        )) : <div>Loading...
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+                  {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+                    <Skelaton animation="wave" key={index} variant="rounded" width={800} height={160} />
+                  ))}
+                </Stack>
+              </div>
+        </div>
       )}
     </>
   );
 };
 
 export default SearchResults;
+

@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Container, Typography, Button, Grid, Paper } from '@mui/material';
-
+import { ThemeContext } from '../context/ThemeContext';
 
 const Home = () => {
-
-
+  const { toggleTheme } = useContext(ThemeContext);
 
   return (
     <Container>

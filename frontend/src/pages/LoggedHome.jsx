@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import NewsCard from '../components/NewsCard';
 import { GET } from '../api.js';
-
+import { ThemeContext } from '../context/ThemeContext';
+import { Button } from '@mui/material';
+import Skelaton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 
 const LoggedHome = () => {
-
+  const { toggleTheme } = useContext(ThemeContext);
   const [articles, setArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredArticles, setFilteredArticles] = useState([]);
 
   useEffect(() => {
-
     (async () => {
       const resultFromBackend = await GET('/api/algorithms/top_stories');
 
@@ -49,10 +51,17 @@ const LoggedHome = () => {
           time={article.time}
           providerImg={article.providerImg}
         />
-      )) : <div>NO NEWS</div>}
+      )) :
+        <div style={{ display: "flex", justifyContent: "center"}}>
+          <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+            {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+              <Skelaton animation="wave" key={index} variant="rounded" width={800} height={140} />
+            ))}
+          </Stack>
+        </div>
+      } 
     </>
   );
-
 };
 
 export default LoggedHome;

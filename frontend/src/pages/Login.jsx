@@ -3,8 +3,9 @@ import { alertContext } from '../context/alert/alert'; // Adjust the import path
 import CryptoJS from 'crypto-js';
 import config from '../config'; // Adjust the import path as needed
 import { POST } from '../api'; // Adjust the import path as needed
-import { Container, Box, TextField, Button, Typography, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, MenuItem, Select, InputLabel, FormControl, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Login = () => {
 
@@ -44,6 +45,8 @@ const Login = () => {
   };
 
   return (
+    <>
+      
     <Container maxWidth="sm">
       <Box
         sx={{
@@ -106,7 +109,9 @@ const Login = () => {
           </Button>
         </Box>
       </Box>
-    </Container>
+      </Container>
+    </>
+
   );
 };
 
