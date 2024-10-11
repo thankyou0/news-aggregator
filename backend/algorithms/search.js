@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer");
+const { Cluster } = require("puppeteer-cluster");
 
 
 const scanForLinks = async (page) => {
@@ -40,53 +40,114 @@ const scanForLinks = async (page) => {
   return articles.filter(article => article !== null);
 };
 
-const Scrap = async ({ searchText }) => {
+const Scrap = async ({ searchText, site, tbs }) => {
 
   try {
     const puppeteerOptions = {
-      headless: false, // Set headless to false to see the browser
+      headless: false,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      defaultViewport: false,
     };
+    const cluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_PAGE,
+      maxConcurrency: 3,
+      puppeteerOptions: puppeteerOptions,
+    });
 
-    const browser = await puppeteer.launch(puppeteerOptions);
+    cluster.on("taskerror", (err, data) => {
+      console.log(`Error crawling ${data}: ${err.message}`);
+    });
 
-    const page = await browser.newPage();
+    let allArticles = [];  // Array to hold all articles
 
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"
-    );
 
-    console.log(`starting search for ${searchText}`);
 
-    const searchURL = `https://www.google.com/search?q=${searchText}&tbm=nws`;
-    console.log(searchURL);
+    await cluster.task(async ({ page, data: url }) => {
 
-    await page.goto(searchURL, { waitUntil: "networkidle2" });
+      console.log(url);
 
-    const articles = await scanForLinks(page);
+      await page.setUserAgent(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"
+      );
+      await page.goto(url, { waitUntil: "networkidle2" });
+      const articles = await scanForLinks(page);
+      allArticles = [...allArticles, ...articles];  // Collect articles from each page
+    });
 
-    console.log(articles);
 
-    await browser.close();
-    setTimeout(() => {
-    }, 0);
-    console.log(articles);
-    return articles;
-  }
-  catch (error) {
-    return "An error occurred while Scraping search data.";
+
+    console.log(`Starting search for ${searchText}`);
+    const searchURL = `https://www.google.com/search?q=${searchText}+site%3A${site}&tbm=nws&${tbs}&start=`;
+
+
+
+    for (let i = 0; i < 3; i++) {
+      await cluster.queue(`${searchURL}${i * 10}`);
+    }
+
+    await cluster.idle();
+    await cluster.close();
+
+    return allArticles;  // Return the collected articles
+  } catch (error) {
+    console.error("An error occurred while Scraping search data:", error);
+    return [];
   }
 };
-
 
 
 const scrapSearch = async (req, res) => {
 
   const searchText = req.query.q;
-  const articles = await Scrap({ searchText: searchText });
+  const site = req.query.site || "";
+  const last_update = req.query.last_update;
+
+  let tbs = "";
+
+  if (last_update && last_update !== "Anytime") {
+
+    let max_year = new Date().getFullYear();
+    let max_month = new Date().getMonth() + 1;
+    let max_date = new Date().getDate();
+
+    let min_year = new Date().getFullYear();
+    let min_month = new Date().getMonth() + 1;
+    let min_date = new Date().getDate();
+
+
+    console.log(min_date, min_month, min_year, max_date, max_month, max_year);
+
+    switch (last_update) {
+      case "24 hours":
+        console.log('afd');
+        min_date = min_date - 1;
+        break;
+      case "Upto a Week ago":
+        min_date = min_date - 7;
+        break;
+      case "Upto a Month ago":
+        min_month = min_month - 1;
+        break;
+      case "Upto a Year ago":
+        min_year = min_year - 1;
+        break;
+      default:
+        break;
+    }
+    console.log(min_date, min_month, min_year, max_date, max_month, max_year);
+
+    tbs = `tbs=cdr%3A1%2Ccd_min%3A${min_month}%2F${min_date}%2F${min_year}%2Ccd_max%3A${max_month}%2F${max_date}%2F${max_year}`;// for latest news, startdate = enddate
+
+    // https://www.google.com/search?q=cricket+site%3Andtv.com&_min%3A10%2F10%2F2024%2Ccd_max%3A11%2F11%2F2024&tbm=nws
+  }
+  const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs });
+
+  console.log(articles.length);
 
   res.status(202).json({ success: true, articles: articles });
 
 };
 
+
 module.exports = { scrapSearch };
+

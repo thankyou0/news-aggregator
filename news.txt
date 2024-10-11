@@ -2,4 +2,5 @@ when using hook --> useContext always use with a capital letter.
   <AlertState> {/* Use with a capital letter in the App.jsx and in context/alert.js */}  
 
 
-skelaton
+
+to prevent useEffect running twice even after using [] as a argument, remove  <React.StrictMode> from index.js or App.js.

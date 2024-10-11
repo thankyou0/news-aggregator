@@ -17,16 +17,6 @@ const NewsCard = (props) => {
   const location = useLocation();
   const isSearchPage = location.pathname === '/search';
 
-  // <Card sx={{ display: 'flex', flexDirection: 'column', maxWidth: 800, margin: '20px auto', border: '1px solid #e0e0e0' }}>
-  //   <Box sx={{ display: 'flex', flexDirection: 'row', flex: '1' }}>
-  //     <CardContent sx={{ flex: '1' }}>
-  //       <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%", height: "40px", overflow: "hidden" }}>
-  //         <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-  //           {props.providerImg && (
-  //             <img src={props.providerImg} alt="Provider Logo" style={{ maxWidth: "100%", maxHeight: "80%", width: "auto", height: "auto", objectFit: "contain" }} />
-  //           )}
-  //         </div>
-  //       </div>
   return (
     <Card
       sx={{

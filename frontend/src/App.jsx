@@ -2,7 +2,7 @@ import AlertDisplay from './components/AlertDisplay';
 import LoggedHome from './pages/LoggedHome';
 import SearchResults from './pages/SearchResults';
 import { ThemeContextProvider, ThemeContext } from './context/ThemeContext';
-import { Button, IconButton } from '@mui/material';
+import {  IconButton } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useLocation, useSearchParams, Routes, Route } from 'react-router-dom';
@@ -12,7 +12,6 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import PageNotFound from './pages/PageNotFound';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
 function App() {
 
@@ -30,7 +29,11 @@ function App() {
   const shouldShowNavbar = isValidRoute && !hideNavbarRoutes.includes(location.pathname.split('?')[0]);
 
   const [searchParams] = useSearchParams();
-  const query = searchParams.get('q');
+  const queries = {
+    "q" :searchParams.get('q'),
+    "site": searchParams.get('site'),
+    "last_update": searchParams.get('last_update')
+  };
 
   return (
     // <ThemeProvider theme={theme}>
@@ -67,7 +70,7 @@ function App() {
             <Route path="/" element={window.localStorage.getItem('token') ? <LoggedHome /> : <Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/search" element={<SearchResults query={query} />} />
+            <Route path="/search" element={<SearchResults queries={queries} />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </AlertState>

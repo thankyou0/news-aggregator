@@ -22,7 +22,9 @@ const SearchResults = (props) => {
           'authorization': "Bearer " + localStorage.getItem("token")
         },
         params: {
-          q: props.query
+          q: props.queries.q,
+          site: props.queries.site,
+          last_update: props.queries.last_update
         }
       });
 
@@ -36,7 +38,7 @@ const SearchResults = (props) => {
       console.error("GET request error:", error);
       return { success: false, message: "An error occurred while fetching data." };
     }
-  }, [props.query]);
+  }, [props.queries.q, props.queries.site, props.queries.last_update]);
 
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const SearchResults = (props) => {
 
   return (
     <>
-      <h1>Search Results for "{props.query}"</h1>
+      <h1>Search Results for "{props.queries.q}"</h1>
       <input
         type="text"
         placeholder="Search from given articles..."
@@ -63,7 +65,7 @@ const SearchResults = (props) => {
       />
       {isEmpty ? (
         <div className="alert alert-warning" role="alert">
-          No results found for "{props.query}"
+          No results found for "{props.queries.q}"
         </div>
       ) : (
         filteredArticles.length > 0 ? filteredArticles.map((article, index) => (
