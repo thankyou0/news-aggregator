@@ -12,7 +12,7 @@ const SearchResults = (props) => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
 
-  
+
   const fetchSearchResults = useCallback(async () => {
     try {
 
@@ -24,7 +24,7 @@ const SearchResults = (props) => {
         params: {
           q: props.queries.q,
           site: props.queries.site,
-          last_update: props.queries.last_update
+          tbs: props.queries.tbs
         }
       });
 
@@ -38,7 +38,7 @@ const SearchResults = (props) => {
       console.error("GET request error:", error);
       return { success: false, message: "An error occurred while fetching data." };
     }
-  }, [props.queries.q, props.queries.site, props.queries.last_update]);
+  }, [props.queries.q, props.queries.site, props.queries.tbs]);
 
 
   useEffect(() => {
@@ -64,7 +64,11 @@ const SearchResults = (props) => {
         style={{ width: "200px" }}
       />
       {isEmpty ? (
-        <div className="alert alert-warning" role="alert">
+        <div
+          className="alert alert-warning"
+          role="alert"
+          style={{ width: "50%", margin: "0 auto", zIndex: -1 }} // Centers the alert
+        >
           No results found for "{props.queries.q}"
         </div>
       ) : (
@@ -81,13 +85,13 @@ const SearchResults = (props) => {
             providerName={article.providerName}
           />
         )) : <div>Loading...
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
-                  {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-                    <Skelaton animation="wave" key={index} variant="rounded" width={800} height={160} />
-                  ))}
-                </Stack>
-              </div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+              {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+                <Skelaton animation="wave" key={index} variant="rounded" width={800} height={160} />
+              ))}
+            </Stack>
+          </div>
         </div>
       )}
     </>

@@ -4,8 +4,94 @@ import { ThemeContext } from '../context/ThemeContext';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
 import { Tooltip, Zoom } from '@mui/material';
+import DateRangeComp from './DateRangeComp';
+import { useEffect } from 'react';
+import { Grid, Typography } from '@mui/material';
+import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
+
+
 
 const Navbar = () => {
+
+
+  const [location, setLocation] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+
+
+
+  useEffect(() => {
+
+    const initializeTomTomSearchBox = (apiKey) => {
+      var options = {
+        searchOptions: {
+          key: apiKey,
+          language: "en-GB",
+          limit: 5,
+          placeholder: "Search for Nearby Location",
+        },
+        autocompleteOptions: {
+          key: apiKey,
+          language: "en-GB",
+        },
+      };
+
+      options.container = "#searchBoxContainer";
+
+      var ttSearchBox = new window.tt.plugins.SearchBox(
+        window.tt.services,
+        options
+      );
+
+      ttSearchBox.on("tomtom.searchbox.resultselected", function (data) {
+        console.log("Selected data:", data.data.result.address.freeformAddress);
+        if (data.data?.text !== undefined) {
+          // console.log(data.data.text);
+          setLocation(data.data.text);
+        }
+        if (data.data.result.address?.country !== undefined) {
+          // console.log(data.data.result.address.country);
+          setCountry(data.data.result.address.country);
+        }
+        if (data.data.result.address?.countrySubdivision !== undefined) {
+          // console.log(data.data.result.address.countrySubdivision);
+          setState(data.data.result.address.countrySubdivision);
+        }
+        if (data.data.result.address?.countrySecondarySubdivision !== undefined) {
+          // console.log(data.data.result.address.countrySecondarySubdivision);
+          setCity(data.data.result.address.countrySecondarySubdivision);
+        }
+        if (data.data.result.address?.postalCode !== undefined) {
+          // console.log(data.data.result.address.postalCode);
+          setPincode(data.data.result.address.postalCode);
+        } else {
+          setPincode("");
+        }
+        if (
+          data.data.result.position?.lat !== undefined &&
+          data.data.result.position?.lng !== undefined
+        ) {
+          setLatitude(data.data.result.position.lat);
+          setLongitude(data.data.result.position.lng);
+        } else {
+          console.log("Position data is not available:", data);
+        }
+      });
+
+      var searchBoxHTML = ttSearchBox.getSearchBoxHTML();
+      document.getElementById("searchBoxContainer").appendChild(searchBoxHTML);
+    };
+
+    const apiKey = "nlryjAxSOJVRc5v9A2JAnvB0TYF1ScOf";
+    initializeTomTomSearchBox(apiKey);
+  }, []);
+
+
+
   const token = window.localStorage.getItem('token');
   const { mode } = useContext(ThemeContext);
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,8 +99,14 @@ const Navbar = () => {
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
   const [advancedParams, setAdvancedParams] = useState({
     site: '',
-    last_update: '',
+    tbs: '',
   });
+
+
+  const [startDate, setStartDate] = useState({});
+  const [endDate, setEndDate] = useState({});
+
+  // console.log(startDate, endDate);
 
   // Reference for the advanced search button
   const advancedSearchButtonRef = useRef(null);
@@ -35,7 +127,7 @@ const Navbar = () => {
     e.preventDefault();
     console.log('Advanced Search:', searchQuery, advancedParams);
     setAdvancedSearchOpen(false);
-    navigate(`/search?q=${encodeURIComponent(searchQuery)}&site=${encodeURIComponent(advancedParams.site)}&last_update=${encodeURIComponent(advancedParams.last_update)}`);
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}&site=${encodeURIComponent(advancedParams.site)}&tbs=cdr%3A1%2Ccd_min%3A${startDate.month}%2F${startDate.day}%2F${startDate.year}%2Ccd_max%3A${endDate.month}%2F${endDate.day}%2F${endDate.year}`);
   };
 
   // Get the position of the advanced search button
@@ -49,7 +141,7 @@ const Navbar = () => {
         backgroundColor: mode === 'light' ? '#ddd5d5' : '#595353',
         padding: '20px',
         boxShadow: '0px 4px 8px rgba(0,0,0,0.1)',
-        zIndex: 1000,
+        zIndex: 2000,
         width: '300px',  // You can adjust the width of the box here
       };
     }
@@ -87,7 +179,21 @@ const Navbar = () => {
                 <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="#">Link</Link>
               </li>
             </ul>
-            {token && (
+            <div style={{ width: "600px" }}>
+              <Grid xs={12} item margin={0} padding={0} sx={{ mx: 3 }}>
+                <Grid sx={{ display: "flex", alignItems: "center" }}>
+                  <LocationOnRoundedIcon
+                    fontSize="large"
+                    sx={{ color: "#0077b6" }}
+                  />
+                  <Typography variant="h6" sx={{ color: mode === "light" ? "white" : "black" }}>
+                    {location === "" ? "N/A" : location} + {city} + {state}
+                  </Typography>
+                </Grid>
+                <Grid id="searchBoxContainer" sx={{ zIndex: 9999 }}></Grid>
+              </Grid>
+            </div>
+            {token && (<>
               <div>
                 <form className="d-flex mx-auto" onSubmit={handleSearch} style={{ flexGrow: 1, justifyContent: 'center' }}>
                   <input
@@ -146,31 +252,15 @@ const Navbar = () => {
                           placeholder="Enter site"
                         />
                       </div>
-                      <div className="mb-3">
-                        <label htmlFor="last_update" className="form-label" style={{ color: mode === 'light' ? 'black' : 'white' }}>
-                          Last Update
-                        </label>
-                        <select
-                          className="form-control"
-                          id="last_update"
-                          value={advancedParams.last_update}
-                          onChange={(e) => setAdvancedParams({ ...advancedParams, last_update: e.target.value })}
-                          style={{ cursor: 'pointer', padding: '10px', backgroundImage: 'url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4KICA8cGF0aCBmaWxsPSIjN0U3RTdFIiBkPSJNMTIgMTYuN2wtNi01LjVMMTIgNS45bDYgNS41eiIvPgo8L3N2Zz4=)', backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '12px' }}
-                        >
-                          <option value="Anytime" selected>Anytime</option>
-                          <option value="24 hours">24 hours</option>
-                          <option value="Upto a Week ago">Upto a Week ago</option>
-                          <option value="Upto a Month ago">Upto a Month ago</option>
-                          <option value="Upto a Year ago">Upto a Year ago</option>
-                        </select>
-                      </div>
+
+                      <DateRangeComp setEndDate={setEndDate} setStartDate={setStartDate} />
 
                       <button type="submit" className="btn btn-primary">Advanced Search</button>
                     </form>
                   </div>
                 )}
               </div>
-            )}
+            </>)}
             <form className="d-flex mx-5">
               {token ? (
                 <button className="btn btn-danger mx-1" onClick={handleLogout}>Logout</button>
@@ -190,3 +280,10 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
+
+
+// https://www.bing.com/search?pglt=2083&q=afghanistan+news&cvid=54f3237ac34d4bab8d7d5ee36d1640c1&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQLhhAMgYIAhAAGEAyBggDEC4YQDIGCAQQLhhAMgYIBRAuGEAyBggGEAAYQDIGCAcQABhAMgYICBAAGEDSAQgyMjE4ajBqMagCALACAA&FORM=ANNTA1&PC=HCTS
+// https://www.google.com/search?as_q=cricket&as_epq=&as_oq=&as_eq=&as_nlo=&as_nhi=&lr=&cr=countryDZ&as_qdr=all&as_sitesearch=&as_occt=any&as_filetype=&tbs=
