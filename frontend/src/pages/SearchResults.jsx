@@ -1,50 +1,54 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useContext } from 'react';
 import config from '../config';
 import axios from 'axios';
 import NewsCard from '../components/NewsCard';
-import Skelaton from '@mui/material/Skeleton';
+import Skeleton from '@mui/material/Skeleton';  // Fixed typo
 import Stack from '@mui/material/Stack';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import { ThemeContext } from '../context/ThemeContext';
 
 const SearchResults = (props) => {
-
+  const { mode } = useContext(ThemeContext);
   const [articles, setArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
 
+  // Destructuring props.queries to avoid dependency issues.
+  const { q, site, tbs, gl, location } = props.queries;
 
   const fetchSearchResults = useCallback(async () => {
     try {
-
-      const response = await axios.get(config.BACKEND_API + "/api/search", {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${config.BACKEND_API}/api/search`, {
         headers: {
           'Content-Type': 'application/json',
-          'authorization': "Bearer " + localStorage.getItem("token")
+          authorization: token ? `Bearer ${token}` : '',
         },
-        params: {
-          q: props.queries.q,
-          site: props.queries.site,
-          tbs: props.queries.tbs
-        }
+        params: { q, site, tbs, gl, location },
       });
 
-      if (response.data.articles.length === 0) {
+      const articlesData = response.data?.articles || [];
+      if (articlesData.length === 0) {
         setIsEmpty(true);
       } else {
-        setArticles(response.data.articles);
+        setArticles(articlesData);
         setIsEmpty(false);
       }
     } catch (error) {
       console.error("GET request error:", error);
-      return { success: false, message: "An error occurred while fetching data." };
     }
-  }, [props.queries.q, props.queries.site, props.queries.tbs]);
+  }, [q, site, tbs, gl, location]);
 
-
+  // Fetching search results on component mount.
   useEffect(() => {
     fetchSearchResults();
   }, [fetchSearchResults]);
 
+  // Filtering articles based on search query.
   useEffect(() => {
     setFilteredArticles(
       articles.filter(article =>
@@ -55,25 +59,75 @@ const SearchResults = (props) => {
 
   return (
     <>
-      <h1>Search Results for "{props.queries.q}"</h1>
-      <input
-        type="text"
-        placeholder="Search from given articles..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        style={{ width: "200px" }}
-      />
+      <h1>Search Results for "{q}"</h1>
       {isEmpty ? (
         <div
           className="alert alert-warning"
           role="alert"
-          style={{ width: "50%", margin: "0 auto", zIndex: -1 }} // Centers the alert
+          style={{ width: "50%", margin: "0 auto", zIndex: -1 }}
         >
-          No results found for "{props.queries.q}"
+          No results found for "{q}"
         </div>
       ) : (
-        filteredArticles.length > 0 ? filteredArticles.map((article, index) => (
-          article &&
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: '10px',
+            borderRadius: '25px',
+            transition: 'width 0.25s ease-in-out',
+          }}
+        >
+          <TextField
+            hiddenLabel
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search from given articles..."
+            sx={{
+              m: 1,
+              width: "300px",
+              borderRadius: '25px',
+              bgcolor: mode === 'dark' ? '#444' : 'rgb(250, 250, 250)',
+              transition: 'width 0.25s ease-in-out',
+              "& .MuiOutlinedInput-root": {
+                borderRadius: '25px',
+                "& fieldset": { borderColor: "transparent" },
+                "&:hover fieldset": { borderColor: "transparent" },
+                "&.Mui-focused fieldset": { borderColor: "transparent" },
+              },
+              "&:hover": {
+                bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
+              },
+              '&:focus-within': {
+                width: '500px',
+                bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
+                '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                  color: 'blue',
+                  transform: 'scale(1.3)',
+                  transition: 'transform 0.3s ease-in-out, color 0.3s ease-in-out',
+                },
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRoundedIcon />
+                </InputAdornment>
+              ),
+              sx: {
+                "&::placeholder": {
+                  color: mode === 'dark' ? '#bbb' : '#888',
+                },
+              },
+            }}
+          />
+        </Box>
+      )}
+
+      {filteredArticles.length > 0 ? (
+        filteredArticles.map((article, index) => (
           <NewsCard
             key={index}
             title={article.title}
@@ -84,14 +138,20 @@ const SearchResults = (props) => {
             providerImg={article.providerImg}
             providerName={article.providerName}
           />
-        )) : <div>Loading...
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
-              {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-                <Skelaton animation="wave" key={index} variant="rounded" width={800} height={160} />
-              ))}
-            </Stack>
-          </div>
+        ))
+      ) : (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+            {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+              <Skeleton
+                animation="wave"
+                key={index}
+                variant="rounded"
+                width={800}
+                height={160}
+              />
+            ))}
+          </Stack>
         </div>
       )}
     </>
@@ -99,4 +159,3 @@ const SearchResults = (props) => {
 };
 
 export default SearchResults;
-

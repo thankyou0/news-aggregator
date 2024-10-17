@@ -32,7 +32,9 @@ function App() {
   const queries = {
     "q": searchParams.get('q'),
     "site": searchParams.get('site'),
-    "tbs": searchParams.get('tbs')
+    "tbs": searchParams.get('tbs'),
+    "gl": searchParams.get('gl'),
+    "location": searchParams.get('location'),
   };
 
   return (

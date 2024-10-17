@@ -5,13 +5,49 @@ import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
 import { Tooltip, Zoom } from '@mui/material';
 import { useEffect } from 'react';
-import { Grid, Typography } from '@mui/material';
-import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
+import { City, Country, State } from "country-state-city";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { Box, Button, Menu } from '@mui/material';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+
 
 
 
 const Navbar = () => {
 
+  const handleCountryChange = (event) => {
+    const selectedCountry = event.target.value;
+    setCountry(selectedCountry);  // Store selected country object
+    setCountryCode(selectedCountry.isoCode);  // Extract and store ISO code
+  };
+
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setCountry("");
+    setState("");
+    setCity("");  
+  }
+
+
+  let countryData = Country.getAllCountries();
+  // console.log(countryData);
+
+  const [stateData, setStateData] = useState("");
+  const [cityData, setCityData] = useState("");
+
+  const [country, setCountry] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
 
   const token = window.localStorage.getItem('token');
@@ -24,14 +60,34 @@ const Navbar = () => {
     tbs: '',
   });
 
-
+  //eslint-disable-next-line
   const [startDate, setStartDate] = useState({});
+  //eslint-disable-next-line
   const [endDate, setEndDate] = useState({});
 
   // console.log(startDate, endDate);
 
-  // Reference for the advanced search button
   const advancedSearchButtonRef = useRef(null);
+
+
+  useEffect(() => {
+    setStateData(State.getStatesOfCountry(country?.isoCode));
+    setCityData("");
+  }, [country]);
+
+  useEffect(() => {
+    setCityData(City.getCitiesOfState(country?.isoCode, state?.isoCode));
+  }, [state, country]);
+
+  useEffect(() => {
+    stateData && setState("");
+  }, [stateData]);
+
+  useEffect(() => {
+    cityData && setCity("");
+  }, [cityData]);
+
+
 
   const handleLogout = () => {
     window.localStorage.removeItem('token');
@@ -101,7 +157,7 @@ const Navbar = () => {
                 <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="#">Link</Link>
               </li>
             </ul>
-            
+
             {token && (<>
               <div>
                 <form className="d-flex mx-auto" onSubmit={handleSearch} style={{ flexGrow: 1, justifyContent: 'center' }}>
@@ -183,15 +239,272 @@ const Navbar = () => {
         </div>
         <div style={afterStyle}></div>
       </nav>
+
+      
+
+      <Box
+        sx={{
+          fontFamily: "Quicksand",
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          padding: '10px 0',
+          overflowX: 'auto', // Handles overflow on small screens
+          backgroundColor: mode === 'dark' ? '#333' : 'rgb(230, 230, 230)', // Background color for both modes
+          color: mode === 'dark' ? '#fff' : '#000', // Text color for both modes
+        }}
+      >
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+            endIcon={<KeyboardArrowDownRoundedIcon />}
+            color='error'
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? 'rgb(255, 255, 255)' : '#000', // Button text color for both modes
+            }}
+          >
+            Global
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            sx={{ p: 0 }}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label">Country</InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                value={country}
+                onChange={handleCountryChange}
+              >
+                {countryData && countryData.map((country, index) => (
+                  <MenuItem key={index} value={country}>{country.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label">State</InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                value={state}
+                onChange={(e) => { setState(e.target.value) }}
+              >
+                {stateData && stateData.map((state, index) => (
+                  <MenuItem key={index} value={state}>{state.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label">City</InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                value={city}
+                onChange={(e) => { setCity(e.target.value) }}
+              >
+                {cityData && cityData.map((city, index) => (
+                  <MenuItem key={index} value={city}>{city.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // Add your search logic here
+                  console.log('Search button clicked');
+                  navigate(`/search?gl=${countryCode}&location=${city.name ? city.name : state.name ? state.name : null}`);
+                }}
+                sx={{ fontWeight: "bold", fontSize: "large", borderRadius: 2, m: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '80%' }}
+              >
+                Localized News
+              </Button>
+            </div>
+          </Menu>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => { 
+              navigate(`/search?q=${encodeURIComponent('AI')}`);
+            }
+            }
+          >
+            AI
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Finance')}`);
+            }}
+          >
+            Finance
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Tech')}`);
+            }}
+          >
+            Tech
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Education')}`);
+            }}
+          >
+            Education
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Entertainment')}`);
+            }}
+          >
+            Entertainment
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Climate Change')}`);
+            }}
+          >
+            Climate Change
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Society')}`);
+            }}
+          >
+            Society
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Cultural')}`);
+            }}
+          >
+            Cultural
+          </Button>
+        </div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/search?q=${encodeURIComponent('Sports')}`);
+            }}
+          >
+            Sports
+          </Button>
+        </div>
+      </Box>
+
+
     </>
   );
 };
 
 export default Navbar;
-
-
-
-
-
-// https://www.bing.com/search?pglt=2083&q=afghanistan+news&cvid=54f3237ac34d4bab8d7d5ee36d1640c1&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQLhhAMgYIAhAAGEAyBggDEC4YQDIGCAQQLhhAMgYIBRAuGEAyBggGEAAYQDIGCAcQABhAMgYICBAAGEDSAQgyMjE4ajBqMagCALACAA&FORM=ANNTA1&PC=HCTS
-// https://www.google.com/search?as_q=cricket&as_epq=&as_oq=&as_eq=&as_nlo=&as_nhi=&lr=&cr=countryDZ&as_qdr=all&as_sitesearch=&as_occt=any&as_filetype=&tbs=

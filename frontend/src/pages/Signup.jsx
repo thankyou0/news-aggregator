@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, MenuItem, Select, InputLabel, FormControl, CircularProgress } from '@mui/material';
 // import { POST } from '../api'; // Adjust the import path as needed
 import CryptoJS from 'crypto-js';
@@ -6,10 +6,8 @@ import config from '../config'; // Adjust the import path as needed
 import { alertContext } from '../context/alert/alert';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ThemeContext } from '../context/ThemeContext';
 
 const Signup = () => {
-  const { toggleTheme } = useContext(ThemeContext);
   const [role, setRole] = useState('READER');
   const [loading, setLoading] = useState(false);
 

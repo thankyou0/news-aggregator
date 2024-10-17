@@ -41,7 +41,21 @@ const scanForLinks = async (page) => {
   return articles.filter(article => article !== null);
 };
 
-const Scrap = async ({ searchText, site, tbs }) => {
+const Scrap = async ({ searchText, site, tbs, gl, location }) => {
+
+  if (site) {
+    site = `+site:${site}`;
+  }
+  if (tbs) {
+    tbs = `tbs=${tbs}&`;
+  }
+  if (gl) {
+    gl = `gl=${gl}&`;
+  }
+  if (location) {
+    location = `location:${location}`;
+  }
+
 
   try {
     const puppeteerOptions = {
@@ -81,7 +95,7 @@ const Scrap = async ({ searchText, site, tbs }) => {
 
     console.log(`Starting search for ${searchText}`);
     // const searchURL = `https://www.google.com/search?q=${searchText}+site%3A${site}&tbm=nws&tbs=${tbs}&start=`;
-    const searchURL = `https://www.google.com/search?q=${searchText}+site%3A${site}&tbm=nws&tbs=${tbs}&start=`;
+    const searchURL = `https://www.google.com/search?q=${searchText}${site}${location}&tbm=nws&${gl}${tbs}start=`;
 
 
 
@@ -102,13 +116,13 @@ const Scrap = async ({ searchText, site, tbs }) => {
 
 const scrapSearch = async (req, res) => {
 
-  const searchText = req?.query.q;
+  const searchText = req?.query.q || "news";
   const site = req.query?.site || "";
   const tbs = req.query?.tbs || "";
-  // console.log(req.query);
+  const gl = req.query?.gl || "";
+  const location = req.query?.location || "";
 
-
-  const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs });
+  const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs, gl: gl, location: location });
 
   console.log(articles.length);
 
