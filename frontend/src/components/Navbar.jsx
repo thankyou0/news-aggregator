@@ -4,7 +4,6 @@ import { ThemeContext } from '../context/ThemeContext';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
 import { Tooltip, Zoom } from '@mui/material';
-import DateRangeComp from './DateRangeComp';
 import { useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
@@ -12,83 +11,6 @@ import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 
 
 const Navbar = () => {
-
-
-  const [location, setLocation] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-  const [pincode, setPincode] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-
-
-
-  useEffect(() => {
-
-    const initializeTomTomSearchBox = (apiKey) => {
-      var options = {
-        searchOptions: {
-          key: apiKey,
-          language: "en-GB",
-          limit: 5,
-          placeholder: "Search for Nearby Location",
-        },
-        autocompleteOptions: {
-          key: apiKey,
-          language: "en-GB",
-        },
-      };
-
-      options.container = "#searchBoxContainer";
-
-      var ttSearchBox = new window.tt.plugins.SearchBox(
-        window.tt.services,
-        options
-      );
-
-      ttSearchBox.on("tomtom.searchbox.resultselected", function (data) {
-        console.log("Selected data:", data.data.result.address.freeformAddress);
-        if (data.data?.text !== undefined) {
-          // console.log(data.data.text);
-          setLocation(data.data.text);
-        }
-        if (data.data.result.address?.country !== undefined) {
-          // console.log(data.data.result.address.country);
-          setCountry(data.data.result.address.country);
-        }
-        if (data.data.result.address?.countrySubdivision !== undefined) {
-          // console.log(data.data.result.address.countrySubdivision);
-          setState(data.data.result.address.countrySubdivision);
-        }
-        if (data.data.result.address?.countrySecondarySubdivision !== undefined) {
-          // console.log(data.data.result.address.countrySecondarySubdivision);
-          setCity(data.data.result.address.countrySecondarySubdivision);
-        }
-        if (data.data.result.address?.postalCode !== undefined) {
-          // console.log(data.data.result.address.postalCode);
-          setPincode(data.data.result.address.postalCode);
-        } else {
-          setPincode("");
-        }
-        if (
-          data.data.result.position?.lat !== undefined &&
-          data.data.result.position?.lng !== undefined
-        ) {
-          setLatitude(data.data.result.position.lat);
-          setLongitude(data.data.result.position.lng);
-        } else {
-          console.log("Position data is not available:", data);
-        }
-      });
-
-      var searchBoxHTML = ttSearchBox.getSearchBoxHTML();
-      document.getElementById("searchBoxContainer").appendChild(searchBoxHTML);
-    };
-
-    const apiKey = "nlryjAxSOJVRc5v9A2JAnvB0TYF1ScOf";
-    initializeTomTomSearchBox(apiKey);
-  }, []);
 
 
 
@@ -179,20 +101,7 @@ const Navbar = () => {
                 <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="#">Link</Link>
               </li>
             </ul>
-            <div style={{ width: "600px" }}>
-              <Grid xs={12} item margin={0} padding={0} sx={{ mx: 3 }}>
-                <Grid sx={{ display: "flex", alignItems: "center" }}>
-                  <LocationOnRoundedIcon
-                    fontSize="large"
-                    sx={{ color: "#0077b6" }}
-                  />
-                  <Typography variant="h6" sx={{ color: mode === "light" ? "white" : "black" }}>
-                    {location === "" ? "N/A" : location} + {city} + {state}
-                  </Typography>
-                </Grid>
-                <Grid id="searchBoxContainer" sx={{ zIndex: 9999 }}></Grid>
-              </Grid>
-            </div>
+            
             {token && (<>
               <div>
                 <form className="d-flex mx-auto" onSubmit={handleSearch} style={{ flexGrow: 1, justifyContent: 'center' }}>
@@ -253,7 +162,6 @@ const Navbar = () => {
                         />
                       </div>
 
-                      <DateRangeComp setEndDate={setEndDate} setStartDate={setStartDate} />
 
                       <button type="submit" className="btn btn-primary">Advanced Search</button>
                     </form>
