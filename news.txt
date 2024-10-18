@@ -4,3 +4,25 @@ when using hook --> useContext always use with a capital letter.
 
 
 to prevent useEffect running twice even after using [] as a argument, remove  <React.StrictMode> from index.js or App.js.
+
+
+
+useEffect()=> {  // this can lead to infinite loop 
+
+  (async () => {
+    <code>
+  })();
+},[]); 
+
+
+useEffect()=> {  // this is solution to the above problem 
+
+  const handleuseEffect = async () => {
+    <code>
+  }
+
+  handleuseEffect();
+},[]); 
+
+
+
