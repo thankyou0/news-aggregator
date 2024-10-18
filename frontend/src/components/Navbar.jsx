@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
-import { Tooltip, Zoom } from '@mui/material';
+import { TextField, Tooltip, Typography, Zoom } from '@mui/material';
 import { useEffect } from 'react';
 import { City, Country, State } from "country-state-city";
 import InputLabel from '@mui/material/InputLabel';
@@ -13,6 +13,10 @@ import Select from '@mui/material/Select';
 import { Box, Button, Menu } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs';
 
 
 
@@ -34,7 +38,7 @@ const Navbar = () => {
     setAnchorEl(null);
     setCountry("");
     setState("");
-    setCity("");  
+    setCity("");
   }
 
 
@@ -60,14 +64,26 @@ const Navbar = () => {
     tbs: '',
   });
 
-  //eslint-disable-next-line
-  const [startDate, setStartDate] = useState({});
-  //eslint-disable-next-line
-  const [endDate, setEndDate] = useState({});
-
-  // console.log(startDate, endDate);
-
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const safeDayjs = (date) => (date ? dayjs(date) : null)
+  const [isAdvancedSearchDisabled, setIsAdvancedSearchDisabled] = useState(false);
   const advancedSearchButtonRef = useRef(null);
+
+  useEffect(() => {
+
+
+
+    if ((startDate && !endDate) || (!startDate && endDate)) {
+      setIsAdvancedSearchDisabled(true);
+      return;
+    }
+    const isInvalid =
+      (startDate && endDate && dayjs(startDate).isAfter(endDate)) || // Start date > End date
+      (endDate && dayjs(endDate).isAfter(dayjs())); // End date > Current date
+
+    setIsAdvancedSearchDisabled(isInvalid);
+  }, [startDate, endDate]);
 
 
   useEffect(() => {
@@ -104,8 +120,20 @@ const Navbar = () => {
   const handleAdvancedSearch = (e) => {
     e.preventDefault();
     console.log('Advanced Search:', searchQuery, advancedParams);
+    console.log('Start Date:', startDate);
+    let site = "";
+    let tbs = "";
+
+    if (advancedParams.site) {
+      site = `&site=${encodeURIComponent(advancedParams.site)}`;
+    }
+
+    if (startDate && endDate) {
+      tbs = `&tbs=cdr:1,cd_min:${startDate.$M + 1}/${startDate.$D}/${startDate.$y},cd_max:${endDate.$M + 1}/${endDate.$D}/${endDate.$y}`;
+    }
+
     setAdvancedSearchOpen(false);
-    navigate(`/search?q=${encodeURIComponent(searchQuery)}&site=${encodeURIComponent(advancedParams.site)}&tbs=cdr%3A1%2Ccd_min%3A${startDate.month}%2F${startDate.day}%2F${startDate.year}%2Ccd_max%3A${endDate.month}%2F${endDate.day}%2F${endDate.year}`);
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}${site}${tbs}`);
   };
 
   // Get the position of the advanced search button
@@ -141,6 +169,8 @@ const Navbar = () => {
     height: '100%',
     zIndex: -1,
   };
+
+
 
   return (
     <>
@@ -205,26 +235,149 @@ const Navbar = () => {
                     >
                       <ClearIcon onClick={() => setAdvancedSearchOpen(false)} />
                     </IconButton>
-                    <form onSubmit={handleAdvancedSearch}>
-                      <div className="mb-3">
-                        <label htmlFor="site:" className="form-label" style={{ color: mode === 'light' ? 'black' : 'white' }}>Site</label>
+
+
+
+                    <form
+                      onSubmit={handleAdvancedSearch}
+                      style={{
+                        padding: '20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        backgroundColor: mode === 'light' ? '#ffffff' : '#495057',
+                        color: mode === 'light' ? 'black' : 'white',
+                        maxWidth: '800px', // Increase maximum width for the form
+                        margin: '0 auto', // Center the form horizontally
+                      }}
+                    >
+                      {/* Site Input Section */}
+                      <Box
+                        sx={{
+                          marginBottom: '10px',
+                          padding: '12px',
+                          borderRadius: '8px',
+                          backgroundColor: mode === 'light' ? '#f8f9fa' : '#343a40',
+                          border: `1px solid ${mode === 'light' ? '#ced4da' : '#495057'}`,
+                          textAlign: 'center',
+                        }}
+                      >
+                        <label
+                          htmlFor="site"
+                          className="form-label"
+                          style={{ color: mode === 'light' ? 'black' : 'white' }}
+                        >
+                          Site
+                        </label>
                         <input
                           type="text"
-                          className="form-control"
                           id="site"
                           value={advancedParams.site}
                           onChange={(e) => setAdvancedParams({ ...advancedParams, site: e.target.value })}
+                          style={{
+                            border: '1px solid',
+                            borderColor: mode === 'light' ? '#ced4da' : '#495057',
+                            borderRadius: '4px',
+                            padding: '8px',
+                            width: '100%', // Keep input width at 100%
+                            boxSizing: 'border-box',
+                            color: mode === 'light' ? 'black' : 'white', // Input text color
+                            backgroundColor: mode === 'light' ? '#fff' : '#495057', // Input background color
+                          }}
+                          // Placeholder color styling
                           placeholder="Enter site"
+                          className={`placeholder-${mode === 'dark' ? 'dark' : 'light'} form-control`}
                         />
-                      </div>
+                        <style>
+                          {`
+        .placeholder-dark::placeholder {
+          color: #bbb; /* Date range text color in dark mode */
+        }
+        .placeholder-light::placeholder {
+          color: #888; /* Placeholder color in light mode */
+        }
+      `}
+                        </style>
+                      </Box>
 
+                      {/* Date Range Section */}
+                      <Box
+                        sx={{
+                          padding: '12px',
+                          borderRadius: '8px',
+                          backgroundColor: mode === 'light' ? '#f8f9fa' : '#343a40',
+                          border: `1px solid ${mode === 'light' ? '#ced4da' : '#495057'}`,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px',
+                        }}
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{ color: mode === 'light' ? 'black' : 'white', fontSize: '1rem', textAlign: 'center' }}
+                        >
+                          Date Range
+                        </Typography>
 
-                      <button type="submit" className="btn btn-primary">Advanced Search</button>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          {/* Start Date Picker */}
+                          <DatePicker
+                            label="Start Date"
+                            value={startDate}
+                            maxDate={safeDayjs(endDate) || dayjs()}
+                            onChange={(newValue) => setStartDate(newValue)}
+                            renderInput={(params) => <TextField {...params} fullWidth />}
+                          />
+
+                          {/* End Date Picker */}
+                          <DatePicker
+                            label="End Date"
+                            value={endDate}
+                            minDate={safeDayjs(startDate)}
+                            maxDate={dayjs()}
+                            onChange={(newValue) => setEndDate(newValue)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                inputProps={{ ...params.inputProps, readOnly: true }}
+                                fullWidth
+                              />
+                            )}
+                          />
+                        </LocalizationProvider>
+                      </Box>
+
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        disabled={isAdvancedSearchDisabled}
+                        sx={{
+                          padding: '10px 20px',
+                          textAlign: 'center',
+                          justifyContent: 'center',
+                          display: 'flex',
+                          margin: '12px auto 0',
+                          width: '80%', // Width for the button
+                          borderRadius: '4px',
+                          backgroundColor: isAdvancedSearchDisabled ? '#ced4da' : '#007bff',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          marginBottom: '-10px',
+                        }}
+                      >
+                        Advanced Search
+                      </Button>
                     </form>
+
+
+
+
+
                   </div>
                 )}
               </div>
             </>)}
+
             <form className="d-flex mx-5">
               {token ? (
                 <button className="btn btn-danger mx-1" onClick={handleLogout}>Logout</button>
@@ -240,7 +393,7 @@ const Navbar = () => {
         <div style={afterStyle}></div>
       </nav>
 
-      
+
 
       <Box
         sx={{
@@ -328,7 +481,7 @@ const Navbar = () => {
                 onClick={() => {
                   // Add your search logic here
                   console.log('Search button clicked');
-                  navigate(`/search?gl=${countryCode}&location=${city.name ? city.name : state.name ? state.name : null}`);
+                  navigate(`/search?gl=${countryCode}&location=${city.name ? city.name : state.name ? state.name : ""}`);
                 }}
                 sx={{ fontWeight: "bold", fontSize: "large", borderRadius: 2, m: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '80%' }}
               >
@@ -348,7 +501,7 @@ const Navbar = () => {
               fontFamily: "Quicksand",
               color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
             }}
-            onClick={() => { 
+            onClick={() => {
               navigate(`/search?q=${encodeURIComponent('AI')}`);
             }
             }

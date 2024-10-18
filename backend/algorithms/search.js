@@ -53,7 +53,7 @@ const Scrap = async ({ searchText, site, tbs, gl, location }) => {
     gl = `gl=${gl}&`;
   }
   if (location) {
-    location = `location:${location}`;
+    location = `+location:${location}`;
   }
 
 

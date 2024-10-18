@@ -16,11 +16,13 @@ const SearchResults = (props) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // New loading state
 
   // Destructuring props.queries to avoid dependency issues.
   const { q, site, tbs, gl, location } = props.queries;
 
   const fetchSearchResults = useCallback(async () => {
+    setIsLoading(true); // Set loading to true when fetching starts
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(`${config.BACKEND_API}/api/search`, {
@@ -33,6 +35,7 @@ const SearchResults = (props) => {
 
       const articlesData = response.data?.articles || [];
       if (articlesData.length === 0) {
+        setArticles([]); // No articles found
         setIsEmpty(true);
       } else {
         setArticles(articlesData);
@@ -40,6 +43,8 @@ const SearchResults = (props) => {
       }
     } catch (error) {
       console.error("GET request error:", error);
+    } finally {
+      setIsLoading(false); // Set loading to false after fetching is done
     }
   }, [q, site, tbs, gl, location]);
 
@@ -60,7 +65,21 @@ const SearchResults = (props) => {
   return (
     <>
       <h1>Search Results for "{q}"</h1>
-      {isEmpty ? (
+      {isLoading ? ( // Show skeleton while loading
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+            {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+              <Skeleton
+                animation="wave"
+                key={index}
+                variant="rounded"
+                width={800}
+                height={160}
+              />
+            ))}
+          </Stack>
+        </div>
+      ) : isEmpty ? (
         <div
           className="alert alert-warning"
           role="alert"
@@ -126,7 +145,7 @@ const SearchResults = (props) => {
         </Box>
       )}
 
-      {filteredArticles.length > 0 ? (
+      {filteredArticles.length > 0 && !isLoading && (
         filteredArticles.map((article, index) => (
           <NewsCard
             key={index}
@@ -139,20 +158,6 @@ const SearchResults = (props) => {
             providerName={article.providerName}
           />
         ))
-      ) : (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
-            {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-              <Skeleton
-                animation="wave"
-                key={index}
-                variant="rounded"
-                width={800}
-                height={160}
-              />
-            ))}
-          </Stack>
-        </div>
       )}
     </>
   );
