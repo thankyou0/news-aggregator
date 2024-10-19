@@ -30,21 +30,20 @@ app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "authorization"],
-  credentials: true,
+  // credentials: true,
 }));
 
 
-app.use(checkAuth);
 
 app.use("/api/user", userroute);
 
-app.use("/api/algorithms", algorithmsroute);
+app.use("/api/algorithms", checkAuth, algorithmsroute);
 
-app.use("/api/search", searchroute);
+app.use("/api/search", checkAuth, searchroute);
 
-app.use("/api/userdo", userdoroute);
+app.use("/api/userdo", checkAuth, userdoroute);
 
-app.use("/api/myfeed", feedroute);
+app.use("/api/myfeed", checkAuth, feedroute);
 
 
 app.listen(port, () => {

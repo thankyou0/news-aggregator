@@ -11,6 +11,8 @@ const cloudinary_v2 = require('../utils/cloudinary').v2;
 
 const logInPost = async (req, res) => {
 
+  console.log("req.body", req.body);
+
   const { email, password, role } = req.body;
 
 
@@ -18,6 +20,7 @@ const logInPost = async (req, res) => {
     return res.status(210).json({ success: false, message: "All fields required" });
   }
 
+  console.log(req.body.email);
 
   const userExist = await usermodel.findOne({
     email, role
@@ -27,6 +30,7 @@ const logInPost = async (req, res) => {
     return res.status(210).json({ success: false, message: "User not exist" });
   }
 
+  console.log(req.body.email);
   // Decrypt the stored password
   const decryptedPwd = CryptoJS.AES.decrypt(password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
   const decrypteuserExistPwd = CryptoJS.AES.decrypt(userExist.password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
@@ -57,8 +61,7 @@ const signUpPost = async (req, res) => {
     }
 
     let cloudinaryURL = "";
-    if (role === "PROVIDER")
-    {
+    if (role === "PROVIDER") {
       app.use(express.json(
         {
           limit: '50mb',
@@ -70,7 +73,7 @@ const signUpPost = async (req, res) => {
         resource_type: "auto",
       });
       // console.log(cloudinary_res.secure_url);
-      cloudinaryURL = cloudinary_res.secure_url ;
+      cloudinaryURL = cloudinary_res.secure_url;
     }
 
 

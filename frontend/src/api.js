@@ -1,12 +1,14 @@
 import axios from "axios";
 import config from "./config";
 
-const headers = {
-  'Content-Type': 'application/json',
-  "authorization": "Bearer " + localStorage.getItem("token")
-};
+
 
 const GET = async (url) => {
+
+  const headers = {
+    'Content-Type': 'application/json',
+    "authorization": "Bearer " + localStorage.getItem("token")
+  };
   try {
     const response = await axios.get(config.BACKEND_API + url, { headers });
     return response;
@@ -18,6 +20,10 @@ const GET = async (url) => {
 };
 
 const POST = async (url, data) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    "authorization": "Bearer " + localStorage.getItem("token")
+  };
   try {
     const response = await axios.post(config.BACKEND_API + url, data, { headers });
     return response;

@@ -5,15 +5,14 @@ import { ThemeContext } from '../context/ThemeContext';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { POST } from '../api';
-import { alertContext } from '../context/alert/alert';
 import HeartIcon from '@mui/icons-material/Favorite';
 import HeartBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareButton from '@mui/icons-material/Share';
 import ShareDialog from './ShareDialog';
+import { toast } from "react-hot-toast";
 
 const NewsCard = (props) => {
   const { mode } = useContext(ThemeContext);
-  const { showAlert } = useContext(alertContext);
   const location = useLocation();
   const isSearchPage = location.pathname === '/search' || location.pathname === '/myfeed';
 
@@ -51,32 +50,81 @@ const NewsCard = (props) => {
     })();
   }, [props.title]);
 
+  // const handleBookmarkClick = async () => {
+  //   setBookmarked(!bookmarked);
+  //   const ArticleDetails = { title: props.title, link: props.link, imgURL: props.imgURL, providerName: props.providerName, providerImg: props.providerImg, time: props.time, someText: props.someText };
+
+  //   const result = bookmarked
+  //     ? await POST('/api/userdo/deleteBookmark', ArticleDetails)
+  //     : await POST('/api/userdo/addBookmark', ArticleDetails);
+
+  //   if (result.data.success) {
+  //     showAlert(bookmarked ? "Article Unsaved Successfully" : "Article Saved Successfully", "success");
+  //   } else {
+  //     showAlert(result.data.message, "error");
+  //   }
+  // };
   const handleBookmarkClick = async () => {
     setBookmarked(!bookmarked);
-    const ArticleDetails = { title: props.title, link: props.link, imgURL: props.imgURL, providerName: props.providerName, providerImg: props.providerImg, time: props.time, someText: props.someText };
 
-    const result = bookmarked
-      ? await POST('/api/userdo/deleteBookmark', ArticleDetails)
-      : await POST('/api/userdo/addBookmark', ArticleDetails);
+    const ArticleDetails = {
+      title: props.title,
+      link: props.link,
+      imgURL: props.imgURL,
+      providerName: props.providerName,
+      providerImg: props.providerImg,
+      time: props.time,
+      someText: props.someText,
+    };
 
-    if (result.data.success) {
-      showAlert(bookmarked ? "Article Unsaved Successfully" : "Article Saved Successfully", "success");
-    } else {
-      showAlert(result.data.message, "error");
-    }
+    const bookmarkPromise = bookmarked
+      ? POST('/api/userdo/deleteBookmark', ArticleDetails)
+      : POST('/api/userdo/addBookmark', ArticleDetails);
+
+    toast.promise(
+      bookmarkPromise,
+      {
+        loading: bookmarked ? 'Removing bookmark...' : 'Adding bookmark...',
+        success: (result) => {
+          if (result.data.success) {
+            return bookmarked ? 'Bookmark removed successfully!' : 'Bookmark added successfully!';
+          } else {
+            throw new Error(result.data.message);
+          }
+        },
+        error: (err) => `Error: ${err.message}`,
+      }
+    );
+
+    await bookmarkPromise;
   };
 
   const handleLikeClick = async () => {
     setLiked(!liked);
-    const result = liked
-      ? await POST('/api/userdo/deleteLike', { title: props.title })
-      : await POST('/api/userdo/addLike', { title: props.title });
 
-    if (result.data.success) {
-      showAlert(liked ? "Article UnLiked Successfully" : "Article Liked Successfully", "success");
-    } else {
-      showAlert(result.data.message, "error");
-    }
+    const ArticleDetails = {
+      title: props.title,
+    };
+
+    const likePromise = liked
+      ? POST('/api/userdo/deleteLike', ArticleDetails)
+      : POST('/api/userdo/addLike', ArticleDetails);
+
+    toast.promise(
+      likePromise,
+      {
+        loading: liked ? 'Removing like...' : 'Adding like...',
+        success: (result) => {
+          if (result.data.success) {
+            return liked ? 'Like removed successfully!' : 'Like added successfully!';
+          } else {
+            throw new Error(result.data.message);
+          }
+        },
+        error: (err) => `Error: ${err.message}`,
+      }
+    );
+    await likePromise;
   };
 
   const handleClickOutside = (event) => {
@@ -102,8 +150,9 @@ const NewsCard = (props) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        maxWidth: 900,
+        justifyContent: 'center',
+        maxWidth: 800,
+        height: '100%',
         margin: '20px auto',
         position: 'relative',
         '&:hover .action-buttons': {
@@ -117,7 +166,6 @@ const NewsCard = (props) => {
         sx={{
           flex: 1,
           maxWidth: 850,
-          marginRight: 2,
         }}
       >
         <Card
@@ -127,6 +175,7 @@ const NewsCard = (props) => {
             border: 'none',
             boxShadow: 'none',
             width: '100%',
+            height: '100%',
             backgroundColor: mode === 'light' ? 'rgb(246  , 246 , 246  )' : 'rgb(50, 50, 50)',
             '&:hover': {
               backgroundColor: mode === 'light' ? 'rgb(240, 240, 240)' : 'rgb(60, 60, 60)',
@@ -200,7 +249,7 @@ const NewsCard = (props) => {
                   gutterBottom
                   onClick={handleClick}
                   sx={{
-                    cursor: 'pointer',
+                    // cursor: 'pointer',
                     color: 'rgb(30, 144, 255)',
                     '&:hover': { color: mode === 'light' ? 'blue' : 'white' },
                   }}
@@ -230,16 +279,86 @@ const NewsCard = (props) => {
           </Box>
 
           {/* Time Display */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 2, mt: -1 }}>
-            <Typography variant="caption" color="text.secondary">
-              {props.time}
-            </Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 2, mt: -1 }}>
+              <Typography variant="caption" color="text.secondary" fontSize="large">
+                {props.time}
+              </Typography>
+            </Box>
+            <Box
+              className="action-buttons"
+              sx={{
+                // position: 'absolute',
+                // right: 0,
+                // top: '50%',
+                // transform: 'translateY(-50%)',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                // flexDirection: 'column',
+                // opacity: 0,
+                // visibility: 'hidden',
+                // transition: 'opacity 0.2s ease-in-out',
+              }}
+            >
+              <Tooltip title="Save" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: '48px',
+                    width: '48px',
+                    alignSelf: 'center',
+                    marginBottom: '8px',
+                  }}
+                  aria-label="save"
+                  onClick={handleBookmarkClick}
+                >
+                  {bookmarked ? (
+                    <BookmarkIcon sx={{ fontSize: '28px', color: 'primary.main' }} />
+                  ) : (
+                    <BookmarkBorderIcon sx={{ fontSize: '28px' }} />
+                  )}
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Like" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: '48px',
+                    width: '48px',
+                    alignSelf: 'center',
+                    marginBottom: '8px',
+                    }}
+                  aria-label="like"
+                  onClick={handleLikeClick}
+                >
+                  {liked ? (
+                    <HeartIcon sx={{ fontSize: '28px', color: 'red' }} />
+                  ) : (
+                    <HeartBorderIcon sx={{ fontSize: '28px' }} />
+                  )}
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Share" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: '48px',
+                    width: '48px',
+                    alignSelf: 'center',
+                  }}
+                  aria-label="share"
+                  onClick={() => setShowShareDialog(true)}
+                >
+                  <ShareButton sx={{ fontSize: '28px' }} />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
         </Card>
       </Box>
 
       {/* Action Buttons */}
-      <Box
+      {/* <Box
         className="action-buttons"
         sx={{
           position: 'absolute',
@@ -253,7 +372,7 @@ const NewsCard = (props) => {
           transition: 'opacity 0.2s ease-in-out',
         }}
       >
-        <Tooltip title="Save" placement="right">
+        <Tooltip title="Save" placement="right" arrow>
           <IconButton
             sx={{
               height: '48px',
@@ -272,7 +391,7 @@ const NewsCard = (props) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Like" placement="right">
+        <Tooltip title="Like" placement="right" arrow>
           <IconButton
             sx={{
               height: '48px',
@@ -291,7 +410,7 @@ const NewsCard = (props) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Share" placement="right">
+        <Tooltip title="Share" placement="right" arrow>
           <IconButton
             sx={{
               height: '48px',
@@ -304,7 +423,7 @@ const NewsCard = (props) => {
             <ShareButton sx={{ fontSize: '28px' }} />
           </IconButton>
         </Tooltip>
-      </Box>
+      </Box> */}
 
       {/* Share Dialog */}
       {showShareDialog && (

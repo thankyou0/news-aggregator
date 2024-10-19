@@ -5,7 +5,7 @@ dotenv.config();
 
 const checkAuth = (req, res, next) => {
 
-  
+
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
@@ -14,7 +14,7 @@ const checkAuth = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
-  if (!token) {
+  if (token==null) {
     return res.status(210).json({ success: false, message: "Token not found" });
   }
 
