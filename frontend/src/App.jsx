@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import PageNotFound from './pages/PageNotFound';
+import MyFeed from './pages/MyFeed';
 
 function App() {
 
@@ -73,6 +74,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/search" element={<SearchResults queries={queries} />} />
+          <Route path="/myfeed" element={<MyFeed  />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </AlertState>

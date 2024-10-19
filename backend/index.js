@@ -5,11 +5,12 @@ const dotenv = require("dotenv");
 dotenv.config();
 // const cookieparser = require("cookie-parser");
 const cors = require("cors");
+const checkAuth = require("./middleware/checkAuth.js");
 const userroute = require("./routes/ruser");
 const algorithmsroute = require("./routes/ralgorithms");
 const searchroute = require("./routes/rsearch.js");
 const userdoroute = require("./routes/ruserdo.js");
-const checkAuth = require("./middleware/checkAuth.js");
+const feedroute = require("./routes/rfeed.js");
 
 const port = process.env.PORT || 9000;
 
@@ -42,6 +43,8 @@ app.use("/api/algorithms", algorithmsroute);
 app.use("/api/search", searchroute);
 
 app.use("/api/userdo", userdoroute);
+
+app.use("/api/myfeed", feedroute);
 
 
 app.listen(port, () => {

@@ -1,6 +1,6 @@
 const { Cluster } = require("puppeteer-cluster");
 const randomUseragent = require("random-useragent"); // Added random-useragent
-
+const addSearchLocation = require("../controllers/csearchLocation.js");
 
 const scanForLinks = async (page) => {
 
@@ -9,7 +9,7 @@ const scanForLinks = async (page) => {
     return [];
   }
 
-  await page.waitForSelector('div.SoaBEf');
+  await page.waitForSelector('div.SoaBEf div.SoAPf div.MgUUmf.NUnG9d');
 
   const articles = await page.$$eval('div.SoaBEf', articles => {
     return articles.map(article => {
@@ -106,6 +106,8 @@ const Scrap = async ({ searchText, site, tbs, gl, location }) => {
     await cluster.idle();
     await cluster.close();
 
+    console.log(allArticles.length);
+
     return allArticles;  // Return the collected articles
   } catch (error) {
     console.error("An error occurred while Scraping search data:", error);
@@ -116,20 +118,24 @@ const Scrap = async ({ searchText, site, tbs, gl, location }) => {
 
 const scrapSearch = async (req, res) => {
 
-  const searchText = req?.query.q || "news";
-  const site = req.query?.site || "";
-  const tbs = req.query?.tbs || "";
-  const gl = req.query?.gl || "";
-  const location = req.query?.location || "";
+  let searchText = req?.query.q || "news";
+  let site = req.query?.site || "";
+  let tbs = req.query?.tbs || "";
+  let gl = req.query?.gl || "";
+  let location = req.query?.location || "";
 
   const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs, gl: gl, location: location });
 
-  console.log(articles.length);
+  if (articles.length) {
+
+    let Text = location !== "" ? location : searchText;
+    await addSearchLocation(req, res, Text);
+  }
 
   res.status(202).json({ success: true, articles: articles });
 
 };
 
 
-module.exports = { scrapSearch };
+module.exports = { scrapSearch, Scrap };
 

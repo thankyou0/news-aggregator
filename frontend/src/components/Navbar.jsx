@@ -629,10 +629,10 @@ const Navbar = () => {
               color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
             }}
             onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Cultural')}`);
+              navigate(`/search?q=${encodeURIComponent('culture')}`);
             }}
           >
-            Cultural
+            culture
           </Button>
         </div>
         <div>
@@ -651,6 +651,25 @@ const Navbar = () => {
             }}
           >
             Sports
+          </Button>
+        </div>
+
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+              fontSize: 'large',
+              fontFamily: "Quicksand",
+              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+            }}
+            onClick={() => {
+              navigate(`/myfeed`);
+            }}
+          >
+            MyFeed
           </Button>
         </div>
       </Box>

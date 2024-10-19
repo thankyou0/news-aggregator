@@ -71,7 +71,6 @@ const Scrap = async (searchby) => {
 
 const ScrapTop_stories = async (req, res) => {
 
-
 	const FETCH_INTERVAL = 1000 * 60000;  // 60000 seconds
 
 	let lastFetchTime = null;

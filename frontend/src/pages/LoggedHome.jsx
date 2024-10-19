@@ -20,7 +20,9 @@ const LoggedHome = () => {
 
   useEffect(() => {
 
-    (async () => {
+    console.log('Fetching data from backend');
+    const handleReponse = async () => {
+
       const resultFromBackend = await GET('/api/algorithms/top_stories');
 
       if (resultFromBackend.data.success) {
@@ -28,8 +30,8 @@ const LoggedHome = () => {
       } else {
         console.log('Error fetching data from backend');
       }
-    })();
-
+    }
+    handleReponse();
   }, []);
 
 
@@ -112,9 +114,9 @@ const LoggedHome = () => {
           }}
         />
       </Box>
-      
 
-      
+
+
       {filteredArticles.length > 0 ? filteredArticles.map((article, index) => (
         article &&
         <NewsCard

@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Box, Tooltip, Zoom, IconButton } from '@
 import { ThemeContext } from '../context/ThemeContext';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { POST } from '../api'; 
+import { POST } from '../api';
 import { alertContext } from '../context/alert/alert';
 import HeartIcon from '@mui/icons-material/Favorite';
 import HeartBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -15,7 +15,7 @@ const NewsCard = (props) => {
   const { mode } = useContext(ThemeContext);
   const { showAlert } = useContext(alertContext);
   const location = useLocation();
-  const isSearchPage = location.pathname === '/search';
+  const isSearchPage = location.pathname === '/search' || location.pathname === '/myfeed';
 
   const handleClick = () => {
     window.open(props.link, '_blank');
@@ -27,14 +27,17 @@ const NewsCard = (props) => {
   const shareDialogRef = useRef(null);
 
   useEffect(() => {
-    (async () => {
+
+    const handleArticleDetails = async () => {
       const ArticleDetails = { title: props.title, link: props.link };
 
       const result = await POST('/api/userdo/isBookmarked', ArticleDetails);
       if (result.data.success) {
         setBookmarked(result.data.bookmarked);
       }
-    })();
+    }
+
+    handleArticleDetails();
   }, [props.title, props.link]);
 
   useEffect(() => {
@@ -160,7 +163,9 @@ const NewsCard = (props) => {
                       <Typography variant="subtitle2" color="text.secondary" style={{ marginLeft: '10px' }}>
                         {props.providerName}
                       </Typography>
-                    )}
+                    )
+
+                    }
                   </div>
                 ) : (
                   <div
