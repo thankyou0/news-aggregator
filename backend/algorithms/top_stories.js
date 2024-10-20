@@ -58,7 +58,7 @@ const Scrap = async (searchby) => {
 		setTimeout(() => {
 		}, 0);
 
-		return articles;
+		return articles.slice(0, 30);
 	}
 	catch (err) {
 		return "An error occurred while Scraping top stories data.";
@@ -87,7 +87,7 @@ const ScrapTop_stories = async (req, res) => {
 	const Documentcount = await top_stories_model.find({}).countDocuments();  // this is because if user close the browser at the time of web scraping then we have to fetch the data again
 
 
-	if (currentTime - lastFetchTime > FETCH_INTERVAL || Documentcount < 100) {
+	if (currentTime - lastFetchTime > FETCH_INTERVAL || Documentcount < 30) {
 
 
 		const articles = await Scrap({

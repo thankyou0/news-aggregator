@@ -30,6 +30,13 @@ const LoggedHome = () => {
         throw new Error('Error fetching data from backend');
       }
     },
+    onError: (error) => {
+      console.error("GET request error:", error);
+    },
+    staleTime: 6000000, // 100 minutes
+    cacheTime: 6000000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     retry: false, // Disable retries on error if not needed
   });
 

@@ -281,7 +281,7 @@ const NewsCard = (props) => {
           {/* Time Display */}
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 2, mt: -1 }}>
-              <Typography variant="caption" color="text.secondary" fontSize="large">
+              <Typography variant="caption" color="text.secondary" fontSize="medium">
                 {props.time}
               </Typography>
             </Box>
@@ -296,9 +296,9 @@ const NewsCard = (props) => {
                 justifyContent: 'flex-end',
                 alignItems: 'center',
                 // flexDirection: 'column',
-                // opacity: 0,
+                opacity: 0,
                 // visibility: 'hidden',
-                // transition: 'opacity 0.2s ease-in-out',
+                transition: 'opacity 0.2s ease-in-out',
               }}
             >
               <Tooltip title="Save" placement="bottom" arrow>

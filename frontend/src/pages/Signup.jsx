@@ -219,7 +219,7 @@ export default function Register() {
     data.append('password', encryptedPassword);
 
     try {
-      
+
       const result = await axios.post(`${config.BACKEND_API}/api/user/signup`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -472,7 +472,6 @@ export default function Register() {
                   onChange={(e) => { setRole(e.target.value); }}
                   sx={{
                     borderRadius: 25,
-                    backgroundColor: "#ffee99df",
                     fontWeight: "bold",
                     "& .MuiSelect-select": {
                       fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the selected value
@@ -490,12 +489,10 @@ export default function Register() {
 
                   <MenuItem value="READER" sx={{
                     fontFamily: "'Quicksand', 'Arial', sans-serif",
-                    backgroundColor: "#F1ECCD",
 
                   }}>READER</MenuItem>
                   <MenuItem value="PROVIDER" sx={{
                     fontFamily: "'Quicksand', 'Arial', sans-serif",
-                    backgroundColor: "#F1ECCD",
 
                   }}>PROVIDER</MenuItem>
                 </Select>

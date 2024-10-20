@@ -62,7 +62,7 @@ export default function Login() {
     if (
       emailUsername === "" ||
       password === "" ||
-      !validPassword ||
+      // !validPassword ||
       emailUsername.length >= 255 ||
       password.length > 255
     ) {
@@ -259,7 +259,6 @@ export default function Login() {
                   onChange={(e) => { setRole(e.target.value); }}
                   sx={{
                     borderRadius: 25,
-                    backgroundColor: "#ffee99df",
                     fontWeight: "bold",
                     "& .MuiSelect-select": {
                       fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the selected value
@@ -277,12 +276,10 @@ export default function Login() {
 
                   <MenuItem value="READER" sx={{
                     fontFamily: "'Quicksand', 'Arial', sans-serif",
-                    backgroundColor: "#F1ECCD",
 
                   }}>READER</MenuItem>
                   <MenuItem value="PROVIDER" sx={{
                     fontFamily: "'Quicksand', 'Arial', sans-serif",
-                    backgroundColor: "#F1ECCD",
 
                   }}>PROVIDER</MenuItem>
                 </Select>

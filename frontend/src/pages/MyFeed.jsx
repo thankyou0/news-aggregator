@@ -12,6 +12,8 @@ import { useQuery } from '@tanstack/react-query';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const SearchResults = () => {
   const { mode } = useContext(ThemeContext);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,27 +21,25 @@ const SearchResults = () => {
 
   const queryq = "your feed";
 
-  // Fetching data using useQuery
   const { data: articles = [], isLoading, isError } = useQuery({
     queryKey: ['myFeed'],
     queryFn: async () => {
-      const response = await GET("/api/myfeed/getmyfeed");
+      const response = await GET("/api/algorithms/top_stories");
       if (response.data.success === false) {
         throw new Error("No articles found");
       }
-      return response.data?.AllArticles || [];
+      return response.data?.articles || [];
     },
     onError: (error) => {
       console.error("GET request error:", error);
     },
     retry: false,
-    staleTime: 1000000,
-    cacheTime: 3000000,
+    staleTime: 6000000,
+    cacheTime: 6000000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
 
-  // Filtering articles based on search query
   useEffect(() => {
     setFilteredArticles(
       articles.filter(article =>
@@ -48,25 +48,56 @@ const SearchResults = () => {
     );
   }, [searchQuery, articles]);
 
-  // GSAP ScrollTrigger setup
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    const cards = document.querySelectorAll('.card_1');
 
-    const cards = document.querySelectorAll('.card_1'); // Assuming your NewsCard has the class 'card'
+    cards.forEach((card, index) => {
+      gsap.set(card, { y: 50, opacity: 0 });
 
-    const trigger = ScrollTrigger.batch(cards, {
-      onEnter: batch => gsap.to(batch, { autoAlpha: 1, stagger: 0.1, duration: 0.5 }), // Adjust duration here
-      onLeave: batch => gsap.to(batch, { autoAlpha: 0, duration: 0.5 }), // Adjust duration here
-      onEnterBack: batch => gsap.to(batch, { autoAlpha: 1, duration: 0.5 }), // Adjust duration here
-      onLeaveBack: batch => gsap.to(batch, { autoAlpha: 0, duration: 0.5 }), // Adjust duration here
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top bottom-=100",
+        end: "bottom top+=100",
+        onEnter: () => {
+          gsap.to(card, {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out",
+            delay: 0.1
+          });
+        },
+        onLeave: () => {
+          gsap.to(card, {
+            y: -50,
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.in"
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(card, {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out"
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(card, {
+            y: 50,
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.in"
+          });
+        }
+      });
     });
 
-
     return () => {
-      // Kill all ScrollTriggers
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, [filteredArticles]); // Re-run effect if filteredArticles changes
+  }, [filteredArticles]);
 
   return (
     <>
@@ -154,12 +185,11 @@ const SearchResults = () => {
         </div>
       )}
 
-      <Grid margin={0} padding={0} container sx={{ width: "100%", height: "100%" }}>
+      {/* <Grid container sx={{ width: "100%", height: "100%" }}> */}
         {filteredArticles.length > 0 && !isLoading && (
           filteredArticles.map((article, index) => (
-            <Grid item xs={12} sm={12} md={12} lg={12} xl={6} maxHeight={300} maxWidth={300} margin={0} padding={0} className="card_1" sx={{ opacity: 0, width: "100%", height: "100%" }}>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ opacity: 0, width: "100%", height: "100%" }}>
               <NewsCard
-                key={index}
                 title={article.title}
                 someText={article.someText}
                 imgURL={article.imgURL}
@@ -171,7 +201,7 @@ const SearchResults = () => {
             </Grid>
           ))
         )}
-      </Grid>
+      {/* </Grid> */}
     </>
   );
 };

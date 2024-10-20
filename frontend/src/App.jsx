@@ -1,4 +1,3 @@
-import AlertDisplay from './components/AlertDisplay';
 import LoggedHome from './pages/LoggedHome';
 import SearchResults from './pages/SearchResults';
 import { ThemeContextProvider, ThemeContext } from './context/ThemeContext';
@@ -6,7 +5,6 @@ import { IconButton } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useLocation, useSearchParams, Routes, Route } from 'react-router-dom';
-import { AlertState } from './context/alert/alert';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -14,7 +12,7 @@ import Signup from './pages/Signup';
 import PageNotFound from './pages/PageNotFound';
 import MyFeed from './pages/MyFeed';
 // eslint-disable-next-line
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@mui/material/styles';
 // eslint-disable-next-line
@@ -47,12 +45,11 @@ function App() {
       MuiTextField: {
         styleOverrides: {
           root: {
-            fontFamily: 'Quicksand, Arial, sans-serif', // Set the font family for TextField
+            fontFamily: 'Quicksand, Arial, sans-serif',
           },
         },
       },
     },
-    // You can add other customizations here, such as palette, spacing, etc.
   });
 
   // eslint-disable-next-line
@@ -80,7 +77,9 @@ function App() {
     // <div className="App" style={{ position: 'relative', cursor: 'none' }}>
     <ThemeProvider theme={theme}>
       <ThemeContextProvider>
+
         {/* Custom Image Cursor */}
+
         {/* <img
           ref={cursorRef}
           src={cursorImage}
@@ -96,49 +95,47 @@ function App() {
             transform: "rotate(15deg)",
           }}
         /> */}
-        <AlertState>
-          {shouldShowNavbar && <Navbar />}
-          <ThemeContext.Consumer>
-            {({ toggleTheme, mode }) => {
-              const isDarkMode = mode === 'dark';
-              const buttonStyle = {
-                position: 'fixed',
-                top: 10,
-                right: 10,
-                backgroundColor: isDarkMode ? 'white' : 'black',
-                color: isDarkMode ? 'black' : 'white',
-                boxShadow:
-                  'rgba(255, 255, 255, 0.25) 0px 30px 60px -12px inset, rgba(206, 180, 180, 0.3) 0px 18px 36px -18px inset',
-              };
+        {shouldShowNavbar && <Navbar />}
+        {shouldShowNavbar  && < ThemeContext.Consumer >
+          {({ toggleTheme, mode }) => {
+            const isDarkMode = mode === 'dark';
+        const buttonStyle = {
+          position: 'fixed',
+        top: 10,
+        right: 10,
+        backgroundColor: isDarkMode ? 'white' : 'black',
+        color: isDarkMode ? 'black' : 'white',
+        boxShadow:
+        'rgba(255, 255, 255, 0.25) 0px 30px 60px -12px inset, rgba(206, 180, 180, 0.3) 0px 18px 36px -18px inset',
+        zIndex: 999999999,
+            };
 
-              return (
-                <IconButton onClick={toggleTheme} style={buttonStyle}>
-                  {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-                </IconButton>
-              );
-            }}
-          </ThemeContext.Consumer>
-          <AlertDisplay />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                window.localStorage.getItem('token') ? (
-                  <LoggedHome />
-                ) : (
-                  <Home />
-                )
-              }
-            />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/search" element={<SearchResults queries={queries} />} />
-            <Route path="/myfeed" element={<MyFeed />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </AlertState>
-      </ThemeContextProvider>
-    </ThemeProvider>
+        return (
+        <IconButton onClick={toggleTheme} style={buttonStyle}>
+          {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+        </IconButton>
+        );
+          }}
+      </ThemeContext.Consumer>}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            window.localStorage.getItem('token') ? (
+              <LoggedHome />
+            ) : (
+              <Home />
+            )
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/search" element={<SearchResults queries={queries} />} />
+        <Route path="/myfeed" element={<MyFeed />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </ThemeContextProvider>
+    </ThemeProvider >
     // </div>
   );
 }

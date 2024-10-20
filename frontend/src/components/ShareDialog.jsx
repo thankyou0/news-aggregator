@@ -5,11 +5,10 @@ import { ThemeContext } from '../context/ThemeContext';
 import XIcon from '@mui/icons-material/X';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
-import { alertContext } from '../context/alert/alert'; // Import the alert context as needed
+import toast from 'react-hot-toast';
 
 const ShareDialog = ({ link, onClose }) => {
   const { mode } = useContext(ThemeContext);
-  const { showAlert } = useContext(alertContext);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
   const handleShare = (platform) => {
@@ -23,7 +22,8 @@ const ShareDialog = ({ link, onClose }) => {
         break;
       case 'copy':
         navigator.clipboard.writeText(link);
-        showAlert('Link copied to clipboard', 'success');
+
+        toast.success('Link copied to clipboard');
         setOpenSnackbar(true); // Show snackbar when the link is copied
         onClose(); // Close dialog when link is copied
         return;
