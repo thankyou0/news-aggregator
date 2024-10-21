@@ -58,7 +58,8 @@ const Scrap = async (searchby) => {
 		setTimeout(() => {
 		}, 0);
 
-		return articles.slice(0, 30);
+		console.log(articles);
+		return articles;
 	}
 	catch (err) {
 		return "An error occurred while Scraping top stories data.";

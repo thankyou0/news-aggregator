@@ -24,7 +24,7 @@ const SearchResults = () => {
   const { data: articles = [], isLoading, isError } = useQuery({
     queryKey: ['myFeed'],
     queryFn: async () => {
-      const response = await GET("/api/algorithms/top_stories");
+      const response = await GET("/api/myfeed/getmyfeed");
       if (response.data.success === false) {
         throw new Error("No articles found");
       }
@@ -121,14 +121,16 @@ const SearchResults = () => {
           Error fetching articles.
         </div>
       ) : (
-        <Box sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: '10px',
-          borderRadius: '25px',
-          transition: 'width 0.25s ease-in-out',
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '10px',
+            borderRadius: '25px',
+            transition: 'width 0.25s ease-in-out',
+          }}
+        >
           <TextField
             hiddenLabel
             variant="outlined"
@@ -137,26 +139,33 @@ const SearchResults = () => {
             placeholder="Search from given articles..."
             sx={{
               m: 1,
-              width: "300px",
+              width: '400px',
+              height: '100%',
               borderRadius: '25px',
-              bgcolor: mode === 'dark' ? '#444' : 'rgb(250, 250, 250)',
+              bgcolor: mode === 'dark' ? '#444' : 'rgb(251, 248, 248)',
               transition: 'width 0.25s ease-in-out',
               "& .MuiOutlinedInput-root": {
                 borderRadius: '25px',
-                "& fieldset": { borderColor: "transparent" },
-                "&:hover fieldset": { borderColor: "transparent" },
-                "&.Mui-focused fieldset": { borderColor: "transparent" },
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "transparent",
+                },
               },
               "&:hover": {
                 bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
               },
               '&:focus-within': {
-                width: '500px',
+                width: '600px',
                 bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
                 '& .MuiInputAdornment-root .MuiSvgIcon-root': {
                   color: 'blue',
-                  transform: 'scale(1.3)',
-                  transition: 'transform 0.3s ease-in-out, color 0.3s ease-in-out',
+                  transform: 'scale(1.4) rotateY(360deg)',
+                  transition: 'transform 1.1s ease-in-out, color 0.3s ease-in-out',
                 },
               },
             }}
@@ -186,21 +195,21 @@ const SearchResults = () => {
       )}
 
       {/* <Grid container sx={{ width: "100%", height: "100%" }}> */}
-        {filteredArticles.length > 0 && !isLoading && (
-          filteredArticles.map((article, index) => (
-            <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ opacity: 0, width: "100%", height: "100%" }}>
-              <NewsCard
-                title={article.title}
-                someText={article.someText}
-                imgURL={article.imgURL}
-                link={article.link}
-                time={article.time}
-                providerImg={article.providerImg}
-                providerName={article.providerName}
-              />
-            </Grid>
-          ))
-        )}
+      {filteredArticles.length > 0 && !isLoading && (
+        filteredArticles.map((article, index) => (
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ opacity: 0, width: "100%", height: "100%" }}>
+            <NewsCard
+              title={article.title}
+              someText={article.someText}
+              imgURL={article.imgURL}
+              link={article.link}
+              time={article.time}
+              providerImg={article.providerImg}
+              providerName={article.providerName}
+            />
+          </Grid>
+        ))
+      )}
       {/* </Grid> */}
     </>
   );
