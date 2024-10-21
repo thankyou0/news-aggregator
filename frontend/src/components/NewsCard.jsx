@@ -249,7 +249,7 @@ const NewsCard = (props) => {
                   gutterBottom
                   onClick={handleClick}
                   sx={{
-                    // cursor: 'pointer',
+                    cursor: 'pointer',
                     color: 'rgb(30, 144, 255)',
                     '&:hover': { color: mode === 'light' ? 'blue' : 'white' },
                   }}

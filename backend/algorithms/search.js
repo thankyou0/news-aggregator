@@ -270,6 +270,7 @@ const Scrap = async ({ searchText, site, tbs, gl, location, page }) => {
       ],
       ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
       executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+      defaultViewport: false,
     };
 
     const cluster = await Cluster.launch({
@@ -290,14 +291,27 @@ const Scrap = async ({ searchText, site, tbs, gl, location, page }) => {
 
       console.log('url -->  ', url);
 
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"
+      // );
+
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0"
+      // );
+
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+      // );
       await page.setUserAgent(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.864.48 Safari/537.36 Edg/91.0.864.48"
       );
+
+
       // const userAgent = randomUseragent.getRandom(); // Get a random user agent
       // await page.setUserAgent(userAgent); // Set the random user agent
       await page.goto(url, { waitUntil: "networkidle2" });
 
-      await delay(0);
+      // await delay(20000);
 
       const articles = await scanForLinks(page);
       allArticles = [...allArticles, ...articles];  // Collect articles from each page
@@ -336,9 +350,9 @@ const scrapSearch = async (req, res) => {
   let tbs = req.query?.tbs || "";
   let gl = req.query?.gl || "";
   let location = req.query?.location || "";
-  let page = req.params.page;
+  let page = req.params?.page;
   console.log(page);
-  
+
 
   const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs, gl: gl, location: location, page: page });
 
