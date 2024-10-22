@@ -455,7 +455,8 @@ const LoggedHome = () => {
   };
 
   return (
-    <div style={{ overflow: 'visible' }}>  {/* This ensures the content isn't constrained */}
+
+      <div style={{ overflow: 'visible', marginTop: "130px" }}>  {/* This ensures the content isn't constrained */}
       <Box
         sx={{
           display: 'flex',

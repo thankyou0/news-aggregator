@@ -306,6 +306,8 @@ const SearchResults = (props) => {
 
   return (
     <>
+      
+      <div style={{ marginTop: "130px" }}>
       <h1>Search Results for "{q}"</h1>
 
       <Box
@@ -421,6 +423,7 @@ const SearchResults = (props) => {
           )}
         </>
       )}
+      </div>
     </>
   );
 };

@@ -174,8 +174,8 @@ const NewsCard = (props) => {
             flexDirection: 'column',
             border: 'none',
             boxShadow: 'none',
-            width: '100%',
-            height: '100%',
+            width: '900px',
+            height: '200px',
             backgroundColor: mode === 'light' ? 'rgb(246  , 246 , 246  )' : 'rgb(50, 50, 50)',
             '&:hover': {
               backgroundColor: mode === 'light' ? 'rgb(240, 240, 240)' : 'rgb(60, 60, 60)',

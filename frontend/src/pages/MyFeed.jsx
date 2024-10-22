@@ -87,7 +87,7 @@ const MyFeed = () => {
 
   return (
     <>
-      <h1>Search Results for "{searchQuery}"</h1>
+      <div style={{marginTop: "130px"}}>
       <Box
         sx={{
           display: 'flex',
@@ -152,7 +152,7 @@ const MyFeed = () => {
       </Box>
 
       {filteredArticles.map((article, index) => (
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ width: "100%", height: "100%" }}>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ width: "100%", height: "210px" }}>
           <NewsCard
             title={article.title}
             someText={article.someText}
@@ -180,6 +180,7 @@ const MyFeed = () => {
 
       {/* Observer target for infinite scrolling */}
       <div ref={observerRef} style={{ height: '50px', marginTop: '20px' }}></div>
+      </div>
     </>
   );
 };

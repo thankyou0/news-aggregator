@@ -172,7 +172,7 @@ const Navbar = () => {
 
   const navbarStyle = {
     position: 'relative',
-    backgroundColor: mode === 'dark' ? '#f0f0f0' : '#2c2c2c',
+    backgroundColor: mode === 'dark' ? '#f0f0f0' : '#464646',
     backdropFilter: "blur(10px)",
   };
 
