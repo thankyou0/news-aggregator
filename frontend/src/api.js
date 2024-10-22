@@ -34,4 +34,19 @@ const POST = async (url, data) => {
   }
 };
 
-export { GET, POST };
+const DELETE = async (url, data) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    "authorization": "Bearer " + localStorage.getItem("token")
+  };
+  try {
+    const response = await axios.delete(config.BACKEND_API + url, data, { headers });
+    return response;
+  } catch (error) {
+    console.error("POST request error:", error);
+    // Handle the error gracefully
+    return { success: false, message: "An error occurred while sending data." };
+  }
+};
+
+export { GET, POST,DELETE };

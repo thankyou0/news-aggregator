@@ -1,4 +1,5 @@
 const usermodel = require("../models/muser");
+const quickSearch_model = require("../models/mquicksearch");
 const jsonwebtoken = require("jsonwebtoken");
 const CryptoJS = require('crypto-js');
 const dotenv = require('dotenv');
@@ -79,6 +80,14 @@ const signUpPost = async (req, res) => {
 
     const user = new usermodel({ username, email, password, role, certificate: cloudinaryURL });
     await user.save();
+
+
+    if (role === "READER") { 
+      const quickSearch = new quickSearch_model({
+        user_id: user._id, quickSearchText: [ 'AI', 'FINANCE', 'TECH', 'EDUCATION', 'ENTERTAINMENT', 'CLIMATE CHANGE', 'SOCIETY', 'CULTURE', 'SPORTS'
+        ] });
+      await quickSearch.save();
+    }
 
 
     const token = jsonwebtoken.sign({ id: user._id }, process.env.JWT_SECRET);

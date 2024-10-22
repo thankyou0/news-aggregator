@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
-import { TextField, Tooltip, Typography, Zoom } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { City, Country, State } from "country-state-city";
 import InputLabel from '@mui/material/InputLabel';
@@ -17,8 +17,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
-
-
+import { GET, POST, DELETE } from '../api';
+// import AddRoundedIcon from '@mui/icons-material/AddRounded';
+// import zIndex from '@mui/material/styles/zIndex';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded';
 
 const Navbar = () => {
 
@@ -30,6 +33,8 @@ const Navbar = () => {
 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorElAddBox, setAnchorElAddBox] = React.useState(null);
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -69,6 +74,17 @@ const Navbar = () => {
   const safeDayjs = (date) => (date ? dayjs(date) : null)
   const [isAdvancedSearchDisabled, setIsAdvancedSearchDisabled] = useState(false);
   const advancedSearchButtonRef = useRef(null);
+  const addBoxRef = React.useRef(null);
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (addBoxRef.current && !addBoxRef.current.contains(event.target)) {
+        setShowAddBox(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
 
@@ -147,7 +163,7 @@ const Navbar = () => {
         backgroundColor: mode === 'light' ? '#ddd5d5' : '#595353',
         padding: '20px',
         boxShadow: '0px 4px 8px rgba(0,0,0,0.1)',
-        zIndex: 2000,
+        zIndex: 999999999,
         width: '300px',  // You can adjust the width of the box here
       };
     }
@@ -168,6 +184,64 @@ const Navbar = () => {
     width: '20%',
     height: '100%',
     zIndex: -1,
+  };
+
+
+
+  const [quickSearchText, setQuickSearchText] = useState(['']);
+  const [newQuickSearch, setNewQuickSearch] = useState('');
+  const [showAddBox, setShowAddBox] = useState(false);
+
+
+  useEffect(() => {
+
+    console.log('Fetching quick search data...');
+    const respose = GET('/api/quicksearch/get');
+    console.log(respose.data);
+    respose.then((response) => {
+      setQuickSearchText(response.data.quickSearchText);
+    }).catch((error) => {
+      console.error('Error fetching quick search data:', error);
+    });
+  }, []);
+
+
+  const handleAddQuickSearch = () => {
+
+
+    const response = POST('/api/quicksearch/add', { quickSearchTextFromFrontend: newQuickSearch });
+    response.then((response) => {
+      setQuickSearchText([...quickSearchText, newQuickSearch]);
+      setNewQuickSearch('');
+      setShowAddBox(false);
+    }).catch((error) => {
+      console.error('Error adding quick search:', error);
+    });
+  };
+
+
+  const handleRightClick = (e, textToRemove) => {
+    e.preventDefault();
+    const confirmed = window.confirm(`Do you want to remove "${textToRemove}"?`);
+    if (confirmed) {
+
+      const response = DELETE('/api/quicksearch/delete', { quickSearchText: textToRemove });
+      response.then(() => {
+        setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI
+      }).catch((error) => {
+        console.error('Error removing quick search:', error);
+      });
+    }
+  };
+
+
+  const [anchorEl_, setAnchorEl_] = React.useState(null);
+  const open_ = Boolean(anchorEl_);
+  const handleClick_ = (event) => {
+    setAnchorEl_(event.currentTarget);
+  };
+  const handleClose_ = () => {
+    setAnchorEl_(null);
   };
 
 
@@ -200,34 +274,189 @@ const Navbar = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{ maxWidth: '300px' }}
                   />
+
                   <div className="btn-group">
-                    <button className="btn btn-outline-success btn-sm" type="submit" style={{ backgroundColor: "lightgreen" }}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      sx={{
+                        backgroundColor: 'lightgreen',
+                        borderRadius: '8px 0 0 8px',
+                        padding: '8px 16px',
+                        border: '1px solid green',
+                        boxShadow: 'none', // Remove any shadow
+                        '&:hover': {
+                          backgroundColor: 'rgb(116, 200, 116)',
+                          boxShadow: 'none', // Ensure no shadow on hover
+                        },
+                        transition: 'background-color 0.3s ease', // Smooth color transition
+                        color: "black"
+                      }}
+                    >
                       Search
-                    </button>
-                    <Tooltip title="Advanced Search" placement='top' TransitionComponent={Zoom} arrow>
-                      <button
-                        ref={advancedSearchButtonRef} // Reference the advanced search button
-                        type="button"
-                        className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
-                        onClick={() => setAdvancedSearchOpen(!advancedSearchOpen)}
-                        aria-expanded="false"
-                        style={{ backgroundColor: "lightgreen" }}
-                      >
-                        <span className="visually-hidden">Toggle Dropdown</span>
-                      </button>
-                    </Tooltip>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <button className="dropdown-item" onClick={() => setAdvancedSearchOpen(true)}>
-                          Advanced
-                        </button>
-                      </li>
-                    </ul>
+                    </Button>
+
+                  </div>
+                  <div>
+                    <IconButton
+                      id="demo-customized-button"
+                      aria-controls={open_ ? 'demo-customized-menu' : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open_ ? 'true' : undefined}
+                      variant="outlined"
+                      sx={{
+                        backgroundColor: 'lightgreen',
+                        borderRadius: '0 8px 8px 0', // Rounded corners for right side
+                        padding: '8px', // Ensure padding matches the Search button
+                        margin: 0, // Remove extra margin
+                        border: '1px solid green', // Consistent border with Search button
+                        minWidth: 0, // Adjust to fit icon properly
+                        '&:hover': {
+                          backgroundColor: 'rgb(116, 200, 116)',
+                        },
+                        color: "black"
+                      }}
+                      disableElevation
+                      onClick={handleClick_}
+                    // endIcon={<ExpandMoreRoundedIcon />}
+                    >
+                      <ExpandMoreRoundedIcon />
+                      {/* Advance */}
+                    </IconButton>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl_}
+                      open={open_}
+                      onClose={handleClose_}
+                      MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                      }}
+                      anchorOrigin={{
+                        vertical: 'bottom', // Align the bottom of the menu with the button
+                        horizontal: 'center', // Align the left side of the menu with the button
+                      }}
+                      transformOrigin={{
+                        vertical: 'top', // Align the top of the menu with the button
+                        horizontal: 'center', // Align the right side of the menu with the button
+                      }}
+                    >
+                      <Box sx={{ p: 2 }}>
+                        <Typography fontWeight="bold" fontSize="x-large" sx={{ fontFamily: "Quicksand", width: "100%", textAlign: "center", pb: 2 }}>
+                          Advanced Search
+                        </Typography>
+                        {/* Site Input Section */}
+                        <Box
+                          sx={{
+                            marginBottom: '10px',
+                            padding: '12px',
+                            borderRadius: '8px',
+                            backgroundColor: mode === 'light' ? '#f8f9fa' : '#343a40',
+                            border: `1px solid ${mode === 'light' ? '#ced4da' : '#495057'}`,
+                            textAlign: 'center',
+                          }}
+                        >
+                          <label
+                            htmlFor="site"
+                            className="form-label"
+                            style={{ color: mode === 'light' ? 'black' : 'white' }}
+                          >
+                            Site
+                          </label>
+                          <input
+                            type="text"
+                            id="site"
+                            value={advancedParams.site}
+                            onChange={(e) => setAdvancedParams({ ...advancedParams, site: e.target.value })}
+                            style={{
+                              border: '1px solid',
+                              borderColor: mode === 'light' ? '#ced4da' : '#495057',
+                              borderRadius: '4px',
+                              padding: '8px',
+                              width: '100%', // Keep input width at 100%
+                              boxSizing: 'border-box',
+                              color: mode === 'light' ? 'black' : 'white', // Input text color
+                              backgroundColor: mode === 'light' ? '#fff' : '#495057', // Input background color
+                            }}
+                            // Placeholder color styling
+                            placeholder="Enter site"
+                            className={`placeholder-${mode === 'dark' ? 'dark' : 'light'} form-control`}
+                          />
+                          <style>
+                            {`
+        .placeholder-dark::placeholder {
+          color: #bbb; /* Date range text color in dark mode */
+        }
+        .placeholder-light::placeholder {
+          color: #888; /* Placeholder color in light mode */
+        }
+      `}
+                          </style>
+                        </Box>
+
+                        {/* Date Range Section */}
+                        <Box
+                          sx={{
+                            padding: '12px',
+                            borderRadius: '8px',
+                            backgroundColor: mode === 'light' ? '#f8f9fa' : '#343a40',
+                            border: `1px solid ${mode === 'light' ? '#ced4da' : '#495057'}`,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            sx={{ color: mode === 'light' ? 'black' : 'white', fontSize: '1rem', textAlign: 'center' }}
+                          >
+                            Date Range
+                          </Typography>
+
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            {/* Start Date Picker */}
+                            <DatePicker
+                              label="Start Date"
+                              value={startDate}
+                              maxDate={safeDayjs(endDate) || dayjs()}
+                              onChange={(newValue) => setStartDate(newValue)}
+                              renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
+
+                            {/* End Date Picker */}
+                            <DatePicker
+                              label="End Date"
+                              value={endDate}
+                              minDate={safeDayjs(startDate)}
+                              maxDate={dayjs()}
+                              onChange={(newValue) => setEndDate(newValue)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  inputProps={{ ...params.inputProps, readOnly: true }}
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 2, width: "100%" }}>
+                          <Button
+                            onSubmit={() => { handleAdvancedSearch(); handleClose_(); }}
+                            variant="contained"
+                            color="primary"
+                          >
+                            Advanced Search
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Menu>
                   </div>
                 </form>
 
+
                 {advancedSearchOpen && (
-                  <div className="advanced-search-box" style={getAdvancedSearchBoxStyle()}>
+
+                  <div style={{ ...getAdvancedSearchBoxStyle(), zIndex: 999999999, }} onClick={(e) => { e.stopPropagation(); }}>
                     <h3 style={{ color: mode === 'light' ? 'black' : 'white', textAlign: "center" }}> Advanced Search</h3>
                     <IconButton
                       style={{ position: 'absolute', top: '0px', right: '0px' }}
@@ -369,10 +598,6 @@ const Navbar = () => {
                       </Button>
                     </form>
 
-
-
-
-
                   </div>
                 )}
               </div>
@@ -389,9 +614,9 @@ const Navbar = () => {
               )}
             </form>
           </div>
-        </div>
+        </div >
         <div style={afterStyle}></div>
-      </nav>
+      </nav >
 
 
 
@@ -403,8 +628,9 @@ const Navbar = () => {
           alignItems: 'center',
           padding: '10px 0',
           overflowX: 'auto', // Handles overflow on small screens
-          backgroundColor: mode === 'dark' ? '#333' : 'rgb(230, 230, 230)', // Background color for both modes
+          backgroundColor: mode === 'dark' ? '#464646' : 'rgb(230, 230, 230)', // Background color for both modes
           color: mode === 'dark' ? '#fff' : '#000', // Text color for both modes
+          zIndex: 1,
         }}
       >
         <div>
@@ -421,6 +647,9 @@ const Navbar = () => {
               fontSize: 'large',
               fontFamily: "Quicksand",
               color: mode === 'dark' ? 'rgb(255, 255, 255)' : '#000', // Button text color for both modes
+              backgroundColor: mode === 'dark' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)', // Button background color for both modes
+              m: 0.3,
+
             }}
           >
             Global
@@ -484,195 +713,121 @@ const Navbar = () => {
                   navigate(`/search?gl=${countryCode}&location=${city.name ? city.name : state.name ? state.name : ""}`);
                 }}
                 sx={{ fontWeight: "bold", fontSize: "large", borderRadius: 2, m: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '80%' }}
+                endIcon={<TravelExploreRoundedIcon fontSize='large' />}
+
               >
                 Localized News
               </Button>
             </div>
           </Menu>
         </div>
-        <div>
+
+
+        {quickSearchText.map((text, index) => (
+          <div key={index}>
+            <Button
+              onClick={() => navigate(`/search?q=${encodeURIComponent(text)}`)}
+              onContextMenu={(e) => handleRightClick(e, text)} // Right-click event to show remove option
+              sx={{
+                fontSize: 'large',
+                fontFamily: "Quicksand",
+                color: mode === 'dark' ? '#fff' : '#000',
+                boxShadow: 3, // Add some shadow for better visibility
+                borderRadius: 1, // Rounded corners
+                zIndex: 2,
+                backgroundColor: mode === 'dark' ? '#333' : '#f5f5f5', // Background color for both modes
+                border: `1px solid ${mode === 'dark' ? '#000000' : '#ffffff'}`, // Border for better visibility
+                m: 0.3,
+              }}
+            >
+              {text}
+            </Button>
+          </div>
+        ))}
+
+        <div style={{ marginLeft: 'auto' }}>
           <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
+            id="add-box-button"
+            aria-controls={showAddBox ? 'add-box-menu' : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
+            aria-expanded={showAddBox ? 'true' : undefined}
+            onClick={(e) => {
+              setAnchorElAddBox(e.currentTarget); // Track the button's position
+              setShowAddBox(!showAddBox); // Toggle the Add Box
+            }}
+            endIcon={<KeyboardArrowDownRoundedIcon />}
+            color="error"
             sx={{
+              mr: 2,
+              fontWeight: 'bold',
               fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('AI')}`);
-            }
-            }
-          >
-            AI
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Finance')}`);
-            }}
-          >
-            Finance
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Tech')}`);
+              fontFamily: 'Quicksand',
+              color: mode === 'dark' ? 'rgb(255, 255, 255)' : '#000',
+              display: advancedSearchOpen ? 'none' : 'flex',
             }}
           >
-            Tech
+            add topic
           </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
+
+          <Menu
+            id="add-box-menu"
+            anchorEl={anchorElAddBox}
+            open={showAddBox}
+            onClose={() => setShowAddBox(false)}
             sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
+              mt: 1.4,
+              ml: -1, // Shift the box slightly to the left
+              '& .MuiPaper-root': {
+                bgcolor: mode === 'dark' ? '#424242' : '#fff',
+                boxShadow: 3,
+                borderRadius: 1,
+              },
             }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Education')}`);
+            MenuListProps={{
+              'aria-labelledby': 'add-box-button',
             }}
           >
-            Education
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Entertainment')}`);
-            }}
-          >
-            Entertainment
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Climate Change')}`);
-            }}
-          >
-            Climate Change
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Society')}`);
-            }}
-          >
-            Society
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('culture')}`);
-            }}
-          >
-            culture
-          </Button>
-        </div>
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/search?q=${encodeURIComponent('Sports')}`);
-            }}
-          >
-            Sports
-          </Button>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                minWidth: '200px',
+                p: 1,
+              }}
+            >
+              <TextField
+                value={newQuickSearch}
+                onChange={(e) => setNewQuickSearch(e.target.value)}
+                placeholder="Topic Name"
+                size="small"
+                sx={{
+                  '& .MuiInputBase-root': {
+                    color: mode === 'dark' ? '#fff' : '#000',
+                    bgcolor: mode === 'dark' ? '#333' : '#f5f5f5',
+                  },
+                }}
+              />
+              <Button
+                onClick={() => {
+                  handleAddQuickSearch(newQuickSearch);
+                  setNewQuickSearch('');
+                  setShowAddBox(false);
+                }}
+                variant="contained"
+                sx={{
+                  fontFamily: 'Quicksand',
+                  width: '100%',
+                }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Menu>
         </div>
 
-        <div>
-          <Button
-            id="basic-button"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-              fontSize: 'large',
-              fontFamily: "Quicksand",
-              color: mode === 'dark' ? '#fff' : '#000', // Button text color for both modes
-            }}
-            onClick={() => {
-              navigate(`/myfeed`);
-            }}
-          >
-            MyFeed
-          </Button>
-        </div>
-      </Box>
+
+      </Box >
 
 
     </>

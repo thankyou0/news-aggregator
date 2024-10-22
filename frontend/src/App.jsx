@@ -141,3 +141,108 @@ function App() {
 }
 
 export default App;
+
+
+
+// import React from 'react';
+// import { Routes, Route, useLocation, useSearchParams } from 'react-router-dom';
+// import { ThemeProvider, createTheme } from '@mui/material/styles';
+// import { Box, CssBaseline, Toolbar, AppBar } from '@mui/material';
+// import SidebarNavigation from './components/DashboardLayoutBasic'; // Import the sidebar
+// import Navbar from './components/Navbar';
+// import LoggedHome from './pages/LoggedHome';
+// import SearchResults from './pages/SearchResults';
+// import Home from './pages/Home';
+// import Login from './pages/Login';
+// import Signup from './pages/Signup';
+// import MyFeed from './pages/MyFeed';
+// import PageNotFound from './pages/PageNotFound';
+// import { ThemeContextProvider, ThemeContext } from './context/ThemeContext';
+// import Brightness4Icon from '@mui/icons-material/Brightness4';
+// import Brightness7Icon from '@mui/icons-material/Brightness7';
+// import IconButton from '@mui/material/IconButton';
+
+// const theme = createTheme({
+//   typography: {
+//     fontFamily: 'Quicksand, Arial, sans-serif',
+//   },
+// });
+
+// function App() {
+//   const location = useLocation();
+//   const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed'];
+//   const hideNavbarRoutes = ['/login', '/signup'];
+
+//   const shouldShowNavbar =
+//     validRoutes.includes(location.pathname.split('?')[0]) &&
+//     !hideNavbarRoutes.includes(location.pathname.split('?')[0]);
+
+//   const [searchParams] = useSearchParams();
+//   const queries = {
+//     q: searchParams.get('q'),
+//     site: searchParams.get('site'),
+//     tbs: searchParams.get('tbs'),
+//     gl: searchParams.get('gl'),
+//     location: searchParams.get('location'),
+//   };
+
+//   return (
+//     <ThemeProvider theme={theme}>
+
+//       <ThemeContextProvider>
+//         <Box sx={{ display: 'flex' }}>
+//           <CssBaseline />
+
+//           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+//             <Toolbar /> {/* Add spacing to match the sidebar */}
+//             <AppBar >
+//               <SidebarNavigation /> {/* Include the sidebar */}
+//               <Box sx={{ marginLeft: "60px"}}>
+//                 {shouldShowNavbar && <Navbar />}
+//               </Box>
+//             </AppBar>
+//             {shouldShowNavbar && (
+//               <ThemeContext.Consumer>
+//                 {({ toggleTheme, mode }) => (
+//                   <IconButton
+//                     onClick={toggleTheme}
+//                     sx={{
+//                       position: 'fixed',
+//                       top: 10,
+//                       right: 10,
+//                       backgroundColor: mode === 'dark' ? 'white' : 'black',
+//                       color: mode === 'dark' ? 'black' : 'white',
+//                       zIndex: 999999999,
+//                     }}
+//                   >
+//                     {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+//                   </IconButton>
+//                 )}
+//               </ThemeContext.Consumer>
+//             )}
+//             <Routes>
+//               <Route
+//                 path="/"
+//                 element={
+//                   window.localStorage.getItem('token') ? (
+//                     <LoggedHome />
+//                   ) : (
+//                     <Home />
+//                   )
+//                 }
+//               />
+//               <Route path="/login" element={<Login />} />
+//               <Route path="/signup" element={<Signup />} />
+//               <Route path="/search" element={<SearchResults queries={queries} />} />
+//               <Route path="/myfeed" element={<MyFeed />} />
+//               <Route path="*" element={<PageNotFound />} />
+//             </Routes>
+//           </Box>
+//         </Box>
+//       </ThemeContextProvider>
+//     </ThemeProvider>
+//   );
+// }
+
+// export default App;
+

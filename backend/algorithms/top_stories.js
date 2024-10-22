@@ -58,7 +58,6 @@ const Scrap = async (searchby) => {
 		setTimeout(() => {
 		}, 0);
 
-		console.log(articles);
 		return articles;
 	}
 	catch (err) {

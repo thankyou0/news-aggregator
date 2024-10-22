@@ -11,6 +11,8 @@ const algorithmsroute = require("./routes/ralgorithms");
 const searchroute = require("./routes/rsearch.js");
 const userdoroute = require("./routes/ruserdo.js");
 const feedroute = require("./routes/rfeed.js");
+const quicksearchroute = require("./routes/rquicksearch.js");
+
 
 const port = process.env.PORT || 9000;
 
@@ -44,6 +46,8 @@ app.use("/api/search", checkAuth, searchroute);
 app.use("/api/userdo", checkAuth, userdoroute);
 
 app.use("/api/myfeed", checkAuth, feedroute);
+
+app.use("/api/quicksearch", checkAuth, quicksearchroute);
 
 
 app.listen(port, () => {
