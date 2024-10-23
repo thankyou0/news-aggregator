@@ -65,8 +65,8 @@ const SidebarNavigation = ({ open, setOpen }) => {
             width: open ? 240 : 60,
             boxSizing: 'border-box',
             background: mode === 'light'
-              ? 'linear-gradient(to bottom, #373737 5%, #ffffff 5%)' // Gradient for dark mode
-              : 'linear-gradient(to bottom, #ffffff 5%, #000000 5%)', // Gradient for light mode
+              ? 'linear-gradient(to bottom, #373737 4.93%, #ffffff 4.93%)' // Gradient for dark mode
+              : 'linear-gradient(to bottom, #ffffff 4.93%, #000000 4.93%)', // Gradient for light mode
             color: mode === 'dark' ? '#fff' : '#000',
             transition: 'width 0.3s ease, background-color 0.3s ease', // Smooth transition
             // boxShadow: '2px 0 5px rgb(215, 215, 25)', // Subtle shadow for depth

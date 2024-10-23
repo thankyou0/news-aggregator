@@ -23,7 +23,24 @@ const userschema = new mongoose.Schema({
     required: function () {
       return this.role === 'PROVIDER';
     }
-  }
+  },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  phoneNo: {
+    type: String,
+  },
+  age: {
+    type: Number,
+  },
+  topics: [
+    {
+      type: String
+    }
+  ],
 });
 
 const usermodel = mongoose.model('user', userschema);

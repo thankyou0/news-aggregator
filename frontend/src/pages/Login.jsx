@@ -25,6 +25,9 @@ import CryptoJS from 'crypto-js';
 import { POST } from '../api'; // Adjust the import path as needed
 import image1 from "../images/bg2.jpg";
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
+import { Modal } from 'react-bootstrap';
+import ForgotPassword from "../components/ForgotPassword";
+
 
 export default function Login() {
 
@@ -96,6 +99,10 @@ export default function Login() {
     setLoading(false);
   };
 
+
+  const [showModal, setShowModal] = useState(false);
+
+
   return (
     <Grid
       container
@@ -129,13 +136,60 @@ export default function Login() {
         <Avatar sx={{ backgroundColor: "#134611", mb: 2 }}>
           <LockOutlinedIcon />
         </Avatar>
+
+
         <Typography variant="h5" fontWeight="bold" mb={2} sx={{
           fontFamily: "'Quicksand', 'Arial', sans-serif",
         }}>
           Log In
         </Typography>
+
+
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <Grid container spacing={2}>
+
+            <Grid item xs={12}>
+              <FormControl size="small" fullWidth>
+                <InputLabel id="role-label" color="success">
+                  Role
+                </InputLabel>
+                <Select
+                  color="success"
+                  labelId="role-label"
+                  id="role"
+                  label="Role"
+                  value={role}
+                  onChange={(e) => { setRole(e.target.value); }}
+                  sx={{
+                    borderRadius: 25,
+                    fontWeight: "bold",
+                    "& .MuiSelect-select": {
+                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the selected value
+                    },
+                    "& .MuiInputLabel-root": {
+                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the label
+                    },
+                  }}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <PeopleAltRoundedIcon color="success" />
+                    </InputAdornment>
+                  }
+                >
+
+                  <MenuItem value="READER" sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+
+                  }}>READER</MenuItem>
+                  <MenuItem value="PROVIDER" sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+
+                  }}>PROVIDER</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+
             <Grid item xs={12}>
               <TextField
                 color="success"
@@ -245,45 +299,22 @@ export default function Login() {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControl size="small" fullWidth>
-                <InputLabel id="role-label" color="success">
-                  Role
-                </InputLabel>
-                <Select
-                  color="success"
-                  labelId="role-label"
-                  id="role"
-                  label="Role"
-                  value={role}
-                  onChange={(e) => { setRole(e.target.value); }}
-                  sx={{
-                    borderRadius: 25,
-                    fontWeight: "bold",
-                    "& .MuiSelect-select": {
-                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the selected value
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the label
-                    },
-                  }}
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <PeopleAltRoundedIcon color="success" />
-                    </InputAdornment>
-                  }
-                >
 
-                  <MenuItem value="READER" sx={{
-                    fontFamily: "'Quicksand', 'Arial', sans-serif",
 
-                  }}>READER</MenuItem>
-                  <MenuItem value="PROVIDER" sx={{
-                    fontFamily: "'Quicksand', 'Arial', sans-serif",
-
-                  }}>PROVIDER</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid item container justifyContent="space-between" xs={12}>
+              <Button
+                color="error"
+                variant="text"
+                onClick={() => setShowModal(true)}
+                sx={{
+                  fontFamily: "'Quicksand', 'Arial', sans-serif",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  marginTop: '-15px',
+                }}
+              >
+                Forgot Password?
+              </Button>
             </Grid>
 
 
@@ -317,7 +348,10 @@ export default function Login() {
                 )}
               </Button>
             </Grid>
-            <Grid item container justifyContent="space-between" xs={12}>
+
+
+
+            <Grid item container justifyContent="center" xs={12}>
               <Button
                 color="success"
                 variant="text"
@@ -328,14 +362,116 @@ export default function Login() {
                   fontFamily: "'Quicksand', 'Arial', sans-serif",
                   fontWeight: "bold",
                   textDecoration: "underline",
+                  display: "flex",
+                  textAlign: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                  width: '100%', // Ensures the button takes full width
                 }}
               >
                 Don't have an account? Sign Up
               </Button>
             </Grid>
+
+
           </Grid>
         </form>
       </Grid>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          {/* This adds the cross (X) button */}  
+          <Typography variant="h5" sx={{ mb: 1, fontWeight: 600}}>
+            Forgot password
+          </Typography>
+
+        </Modal.Header>
+        <Modal.Body>
+          <ForgotPassword />
+        </Modal.Body>
+      </Modal>
+
+      {/* <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Forgot Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '20px',
+              backgroundColor: '#f9f9f9',
+              borderRadius: '10px',
+            }}
+          >
+            <form
+              style={{
+                width: '100%',
+                maxWidth: '400px',
+                padding: '20px',
+                backgroundColor: '#fff',
+                borderRadius: '8px',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+              }}
+              onSubmit={() => { console.log('submit') }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginBottom: '20px',
+                }}
+              >
+                <label
+                  htmlFor="email"
+                  style={{
+                    marginBottom: '8px',
+                    fontSize: '1rem',
+                    color: '#333',
+                  }}
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                  style={{
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '5px',
+                    fontSize: '1rem',
+                    transition: 'border-color 0.3s ease',
+                  }}
+                />
+              </div>
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: '#007bff',
+                  border: 'none',
+                  color: 'white',
+                  fontSize: '1rem',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease',
+                }}
+                onMouseOver={(e) => (e.target.style.backgroundColor = '#0056b3')}
+                onMouseOut={(e) => (e.target.style.backgroundColor = '#007bff')}
+              >
+                Send Email
+              </button>
+            </form>
+          </div>
+        </Modal.Body>
+      </Modal> */}
     </Grid>
   );
 }

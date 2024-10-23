@@ -82,10 +82,11 @@ const signUpPost = async (req, res) => {
     await user.save();
 
 
-    if (role === "READER") { 
+    if (role === "READER") {
       const quickSearch = new quickSearch_model({
-        user_id: user._id, quickSearchText: [ 'AI', 'FINANCE', 'TECH', 'EDUCATION', 'ENTERTAINMENT', 'CLIMATE CHANGE', 'SOCIETY', 'CULTURE', 'SPORTS'
-        ] });
+        user_id: user._id, quickSearchText: ['AI', 'FINANCE', 'TECH', 'EDUCATION', 'ENTERTAINMENT', 'CLIMATE CHANGE', 'SOCIETY', 'CULTURE', 'SPORTS'
+        ]
+      });
       await quickSearch.save();
     }
 
@@ -101,4 +102,24 @@ const signUpPost = async (req, res) => {
 };
 
 
-module.exports = { logInPost, signUpPost };
+const getUserProfile = async (req, res) => {
+  const user = await usermodel.findById(req.user.id).select("-password");
+  return res.status(202).json({ success: true, user: user });
+}
+
+const updateUserProfile = async (req, res) => {
+
+  
+  const user =
+    await usermodel.findByIdAndUpdate
+      (req.user.id,
+        req.body,
+        { new: true }
+      );
+  return res.status(202).json({ success: true, user: user });
+}
+
+
+
+
+module.exports = { logInPost, signUpPost, getUserProfile, updateUserProfile };

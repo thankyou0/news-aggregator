@@ -13,7 +13,6 @@ const userdoroute = require("./routes/ruserdo.js");
 const feedroute = require("./routes/rfeed.js");
 const quicksearchroute = require("./routes/rquicksearch.js");
 
-
 const port = process.env.PORT || 9000;
 
 mongoose.connect(process.env.MONGO_URL).then(() => {

@@ -15,6 +15,7 @@ import { ThemeContextProvider, ThemeContext } from './context/ThemeContext';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
+import UserProfile from './pages/UserProfile';
 
 const theme = createTheme({
   typography: {
@@ -104,6 +105,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<SearchResults queries={queries} />} />
               <Route path="/myfeed" element={<MyFeed />} />
+              <Route path="/account" element={<UserProfile/>} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>
