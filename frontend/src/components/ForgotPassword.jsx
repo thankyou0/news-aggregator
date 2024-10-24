@@ -1,205 +1,18 @@
-// import React, { useState } from 'react';
-// import { Card, Button, Input } from '@mui/material';
-// import { ArrowLeft } from 'lucide-react';
-
-// const ForgotPassword = () => {
-//   const [currentStep, setCurrentStep] = useState(1);
-//   const [email, setEmail] = useState('');
-//   const [otp, setOtp] = useState(['', '', '', '']);
-//   const [newPassword, setNewPassword] = useState('');
-//   const [confirmPassword, setConfirmPassword] = useState('');
-
-//   const handleEmailSubmit = (e) => {
-//     e.preventDefault();
-//     setCurrentStep(2);
-//   };
-
-//   const handleOtpSubmit = (e) => {
-//     e.preventDefault();
-//     setCurrentStep(3);
-//   };
-
-//   const handlePasswordSubmit = (e) => {
-//     e.preventDefault();
-//     // Handle password update logic here
-//     console.log('Password updated');
-//   };
-
-//   const handleOtpChange = (index, value) => {
-//     const newOtp = [...otp];
-//     newOtp[index] = value;
-//     setOtp(newOtp);
-
-//     // Auto-focus next input
-//     if (value && index < 3) {
-//       const nextInput = document.getElementById(`otp-${index + 1}`);
-//       if (nextInput) nextInput.focus();
-//     }
-//   };
-
-//   const renderStep = () => {
-//     switch (currentStep) {
-//       case 1:
-//         return (
-//           <div className="w-full max-w-md p-6">
-//             <div className="mb-6">
-//               <Button
-//                 variant="ghost"
-//                 className="p-0 mb-4"
-//                 onClick={() => setCurrentStep(currentStep - 1)}
-//               >
-//                 <ArrowLeft className="h-5 w-5 mr-2" />
-//               </Button>
-//               <h2 className="text-xl font-semibold mb-2">Forgot password</h2>
-//               <p className="text-gray-600 text-sm">
-//                 Enter your email to reset the password
-//               </p>
-//             </div>
-
-//             <form onSubmit={handleEmailSubmit}>
-//               <div className="mb-4">
-//                 <Input
-//                   type="email"
-//                   placeholder="Enter your email"
-//                   value={email}
-//                   onChange={(e) => setEmail(e.target.value)}
-//                   className="w-full p-2"
-//                   required
-//                 />
-//               </div>
-//               <Button
-//                 type="submit"
-//                 className="w-full bg-blue-500 hover:bg-blue-600"
-//               >
-//                 Reset Password
-//               </Button>
-//             </form>
-//           </div>
-//         );
-
-//       case 2:
-//         return (
-//           <div className="w-full max-w-md p-6">
-//             <div className="mb-6">
-//               <Button
-//                 variant="ghost"
-//                 className="p-0 mb-4"
-//                 onClick={() => setCurrentStep(currentStep - 1)}
-//               >
-//                 <ArrowLeft className="h-5 w-5 mr-2" />
-//               </Button>
-//               <h2 className="text-xl font-semibold mb-2">Check your email</h2>
-//               <p className="text-gray-600 text-sm">
-//                 We sent a code to {email}
-//               </p>
-//             </div>
-
-//             <form onSubmit={handleOtpSubmit}>
-//               <div className="flex gap-2 mb-4 justify-center">
-//                 {otp.map((digit, index) => (
-//                   <Input
-//                     key={index}
-//                     id={`otp-${index}`}
-//                     type="text"
-//                     maxLength={1}
-//                     className="w-12 h-12 text-center text-xl"
-//                     value={digit}
-//                     onChange={(e) => handleOtpChange(index, e.target.value)}
-//                     required
-//                   />
-//                 ))}
-//               </div>
-//               <Button
-//                 type="submit"
-//                 className="w-full bg-blue-500 hover:bg-blue-600"
-//               >
-//                 Verify Code
-//               </Button>
-//               <p className="text-sm text-center mt-4">
-//                 Haven't got the email yet?{' '}
-//                 <button
-//                   type="button"
-//                   className="text-blue-500 hover:text-blue-600"
-//                   onClick={() => console.log('Resend email')}
-//                 >
-//                   Resend email
-//                 </button>
-//               </p>
-//             </form>
-//           </div>
-//         );
-
-//       case 3:
-//         return (
-//           <div className="w-full max-w-md p-6">
-//             <div className="mb-6">
-//               <Button
-//                 variant="ghost"
-//                 className="p-0 mb-4"
-//                 onClick={() => setCurrentStep(currentStep - 1)}
-//               >
-//                 <ArrowLeft className="h-5 w-5 mr-2" />
-//               </Button>
-//               <h2 className="text-xl font-semibold mb-2">Set a new password</h2>
-//               <p className="text-gray-600 text-sm">
-//                 Please enter your new password
-//               </p>
-//             </div>
-
-//             <form onSubmit={handlePasswordSubmit}>
-//               <div className="mb-4">
-//                 <Input
-//                   type="password"
-//                   placeholder="Password"
-//                   value={newPassword}
-//                   onChange={(e) => setNewPassword(e.target.value)}
-//                   className="w-full p-2 mb-3"
-//                   required
-//                 />
-//                 <Input
-//                   type="password"
-//                   placeholder="Confirm Password"
-//                   value={confirmPassword}
-//                   onChange={(e) => setConfirmPassword(e.target.value)}
-//                   className="w-full p-2"
-//                   required
-//                 />
-//               </div>
-//               <Button
-//                 type="submit"
-//                 className="w-full bg-blue-500 hover:bg-blue-600"
-//               >
-//                 Update Password
-//               </Button>
-//             </form>
-//           </div>
-//         );
-
-//       default:
-//         return null;
-//     }
-//   };
-
-//   return (
-//     <Card className="w-full max-w-md mx-auto">
-//       {renderStep()}
-//     </Card>
-//   );
-// };
-
-// export default ForgotPassword;
-
 import React, { useState } from 'react';
-import { 
-  Card, 
-  Button, 
-  Input,
+import {
+  Card,
+  Button,
   Typography,
   Box,
   InputBase,
   styled
 } from '@mui/material';
 import { ArrowLeft } from 'lucide-react';
+import { POST } from '../api';
+import toast from 'react-hot-toast';
+import DottedSpinner from './DottedSpinner.jsx';
+import CryptoJS from 'crypto-js';
+import config from '../config';
 
 // Custom styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -222,7 +35,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   }
 }));
 
-const StyledOTPInput = styled(InputBase)(({ theme }) => ({
+const StyledCodeInput = styled(InputBase)(({ theme }) => ({
   width: '48px',
   height: '48px',
   textAlign: 'center',
@@ -253,65 +66,125 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
   }
 }));
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ setShowModal }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [Code, setCode] = useState(['', '', '', '', '', '']);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    setCurrentStep(2);
+    setLoading(true); // Start loading
+
+    try {
+      const result = await POST('/api/sendemail/forgotpassword', { email });
+      if (result.data.success) {
+        toast.success(result.data.message);
+        setCurrentStep(2);
+      } else {
+        toast.error(result.data.message);
+      }
+    } catch (error) {
+      toast.error('Something went wrong.');
+    } finally {
+      setLoading(false); // Stop loading once the API call is complete
+    }
   };
 
-  const handleOtpSubmit = (e) => {
+  const handleCodeSubmit = async (e) => {
     e.preventDefault();
-    setCurrentStep(3);
+    const response = await POST('/api/sendemail/forgotpassword/verifycode', { email: email, code: Code });
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+      setCurrentStep(3);
+    } else {
+      toast.error(response.data.message);
+    }
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    console.log('Password updated');
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    const encryptedPassword = CryptoJS.AES.encrypt(newPassword, config.PWD_SECRET).toString();
+    const response = await POST('/api/sendemail/forgotpassword/resetpassword', { email: email, password: encryptedPassword });
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+      setShowModal(false);
+    } else {
+      toast.error(response.data.message);
+    }
   };
 
-  const handleOtpChange = (index, value) => {
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    
-    if (value && index < 3) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
+
+
+  const handleCodeChange = (index, value) => {
+    if (!/^\d$/.test(value)) return; // Only allow digits
+
+    const newCode = [...Code];
+    newCode[index] = value;
+    setCode(newCode);
+
+    // Auto-focus the next input field if not at the last input
+    if (index < 5 && value !== '') {
+      const nextInput = document.getElementById(`Code-${index + 1}`);
       if (nextInput) nextInput.focus();
     }
   };
+
+  const handleKeyDown = (index, event) => {
+    if (event.key === 'Backspace') {
+      event.preventDefault(); // Prevent default backspace behavior
+
+      const newCode = [...Code];
+
+      if (newCode[index] === '') {
+        // If current box is empty and we press backspace, clear previous box and move there
+        if (index > 0) {
+          newCode[index - 1] = '';
+          setCode(newCode);
+          const prevInput = document.getElementById(`Code-${index - 1}`);
+          if (prevInput) prevInput.focus();
+        }
+      } else {
+        // If current box has a number, just clear it and stay there
+        newCode[index] = '';
+        setCode(newCode);
+      }
+    }
+  };
+
+
+
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
-          <Box sx={{ p: 0 , marginTop: "-20px"}}>
-
+          <Box sx={{ p: 0, marginTop: "-20px" }}>
             <Box sx={{ mb: 1 }}>
               <Button
-                // startIcon={<ArrowLeft />}
-                sx={{ 
+                sx={{
                   minWidth: 'auto',
                   color: 'text.primary',
                   '&:hover': { backgroundColor: 'transparent' }
                 }}
                 onClick={() => setCurrentStep(currentStep - 1)}
               />
-              {/* <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
-                Forgot password
-              </Typography>*/}
               <Typography variant="body2" color="text.secondary">
                 Enter your registered email address to receive a verification code.
-              </Typography> 
+              </Typography>
             </Box>
 
             <form onSubmit={handleEmailSubmit}>
-              <Box sx={{ mb: 2}}>
+              <Box sx={{ mb: 2 }}>
                 <StyledInput
                   type="email"
                   placeholder="Enter your email"
@@ -321,8 +194,8 @@ const ForgotPassword = () => {
                   required
                 />
               </Box>
-              <StyledButton variant="contained" type="submit">
-                Reset Password
+              <StyledButton variant="contained" type="submit" disabled={loading}>
+                {loading ? <DottedSpinner /> : 'Reset Password'}
               </StyledButton>
             </form>
           </Box>
@@ -334,9 +207,9 @@ const ForgotPassword = () => {
             <Box sx={{ mb: 3 }}>
               <Button
                 startIcon={<ArrowLeft />}
-                sx={{ 
-                  p: 0, 
-                  mb: 2, 
+                sx={{
+                  p: 0,
+                  mb: 2,
                   minWidth: 'auto',
                   color: 'text.primary',
                   '&:hover': { backgroundColor: 'transparent' }
@@ -351,23 +224,24 @@ const ForgotPassword = () => {
               </Typography>
             </Box>
 
-            <form onSubmit={handleOtpSubmit}>
-              <Box 
-                sx={{ 
-                  display: 'flex', 
-                  gap: 1, 
+            <form onSubmit={handleCodeSubmit}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 1,
                   justifyContent: 'center',
-                  mb: 3 
+                  mb: 3
                 }}
               >
-                {otp.map((digit, index) => (
-                  <StyledOTPInput
+                {Code.map((digit, index) => (
+                  <StyledCodeInput
                     key={index}
-                    id={`otp-${index}`}
+                    id={`Code-${index}`}
                     type="text"
                     maxLength={1}
                     value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onChange={(e) => handleCodeChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)} 
                     required
                   />
                 ))}
@@ -375,22 +249,6 @@ const ForgotPassword = () => {
               <StyledButton variant="contained" type="submit">
                 Verify Code
               </StyledButton>
-              <Box sx={{ textAlign: 'center', mt: 2 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Haven't got the email yet?{' '}
-                  <Button
-                    sx={{ 
-                      p: 0, 
-                      textTransform: 'none',
-                      color: '#3b82f6',
-                      '&:hover': { backgroundColor: 'transparent', color: '#2563eb' }
-                    }}
-                    onClick={() => console.log('Resend email')}
-                  >
-                    Resend email
-                  </Button>
-                </Typography>
-              </Box>
             </form>
           </Box>
         );
@@ -400,10 +258,9 @@ const ForgotPassword = () => {
           <Box sx={{ p: 3 }}>
             <Box sx={{ mb: 3 }}>
               <Button
-                startIcon={<ArrowLeft />}
-                sx={{ 
-                  p: 0, 
-                  mb: 2, 
+                sx={{
+                  p: 0,
+                  mb: 2,
                   minWidth: 'auto',
                   color: 'text.primary',
                   '&:hover': { backgroundColor: 'transparent' }

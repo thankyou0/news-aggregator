@@ -25,6 +25,13 @@ import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded';
 
 const Navbar = () => {
 
+  let TokenExist = false;
+  if (window.localStorage.getItem('token')) {
+    TokenExist = true;
+  }
+
+
+
   const handleCountryChange = (event) => {
     const selectedCountry = event.target.value;
     setCountry(selectedCountry);  // Store selected country object
@@ -59,7 +66,6 @@ const Navbar = () => {
   const [city, setCity] = useState("");
 
 
-  const token = window.localStorage.getItem('token');
   const { mode } = useContext(ThemeContext);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
@@ -134,7 +140,7 @@ const Navbar = () => {
   };
 
   const handleAdvancedSearch = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log('Advanced Search:', searchQuery, advancedParams);
     console.log('Start Date:', startDate);
     let site = "";
@@ -195,9 +201,7 @@ const Navbar = () => {
 
   useEffect(() => {
 
-    console.log('Fetching quick search data...');
     const respose = GET('/api/quicksearch/get');
-    console.log(respose.data);
     respose.then((response) => {
       setQuickSearchText(response.data.quickSearchText);
     }).catch((error) => {
@@ -240,9 +244,11 @@ const Navbar = () => {
   const handleClick_ = (event) => {
     setAnchorEl_(event.currentTarget);
   };
+  
   const handleClose_ = () => {
     setAnchorEl_(null);
   };
+
 
 
 
@@ -262,7 +268,7 @@ const Navbar = () => {
               </li>
             </ul>
 
-            {token && (<>
+            {TokenExist && (<>
               <div>
                 <form className="d-flex mx-auto" onSubmit={handleSearch} style={{ flexGrow: 1, justifyContent: 'center' }}>
                   <input
@@ -316,12 +322,10 @@ const Navbar = () => {
                         },
                         color: "black"
                       }}
-                      disableElevation
                       onClick={handleClick_}
-                    // endIcon={<ExpandMoreRoundedIcon />}
                     >
+
                       <ExpandMoreRoundedIcon />
-                      {/* Advance */}
                     </IconButton>
                     <Menu
                       id="basic-menu"
@@ -393,7 +397,6 @@ const Navbar = () => {
                           </style>
                         </Box>
 
-                        {/* Date Range Section */}
                         <Box
                           sx={{
                             padding: '12px',
@@ -419,7 +422,8 @@ const Navbar = () => {
                               value={startDate}
                               maxDate={safeDayjs(endDate) || dayjs()}
                               onChange={(newValue) => setStartDate(newValue)}
-                              renderInput={(params) => <TextField {...params} fullWidth />}
+                              slots={{ textField: TextField }}
+                              slotProps={{ textField: { fullWidth: true } }}
                             />
 
                             {/* End Date Picker */}
@@ -429,19 +433,14 @@ const Navbar = () => {
                               minDate={safeDayjs(startDate)}
                               maxDate={dayjs()}
                               onChange={(newValue) => setEndDate(newValue)}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  inputProps={{ ...params.inputProps, readOnly: true }}
-                                  fullWidth
-                                />
-                              )}
+                              slots={{ textField: TextField }}
+                              slotProps={{ textField: { fullWidth: true, inputProps: { readOnly: true } } }}
                             />
                           </LocalizationProvider>
                         </Box>
                         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pt: 2, width: "100%" }}>
                           <Button
-                            onSubmit={() => { handleAdvancedSearch(); handleClose_(); }}
+                            onClick={() => { handleAdvancedSearch(); handleClose_(); }}
                             variant="contained"
                             color="primary"
                           >
@@ -554,7 +553,8 @@ const Navbar = () => {
                             value={startDate}
                             maxDate={safeDayjs(endDate) || dayjs()}
                             onChange={(newValue) => setStartDate(newValue)}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            slots={{ textField: TextField }}
+                            slotProps={{ textField: { fullWidth: true } }}
                           />
 
                           {/* End Date Picker */}
@@ -564,13 +564,8 @@ const Navbar = () => {
                             minDate={safeDayjs(startDate)}
                             maxDate={dayjs()}
                             onChange={(newValue) => setEndDate(newValue)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                inputProps={{ ...params.inputProps, readOnly: true }}
-                                fullWidth
-                              />
-                            )}
+                            slots={{ textField: TextField }}
+                            slotProps={{ textField: { fullWidth: true, inputProps: { readOnly: true } } }}
                           />
                         </LocalizationProvider>
                       </Box>
@@ -604,7 +599,7 @@ const Navbar = () => {
             </>)}
 
             <form className="d-flex mx-5">
-              {token ? (
+              {TokenExist ? (
                 <button className="btn btn-danger mx-1" onClick={handleLogout}>Logout</button>
               ) : (
                 <>
@@ -620,7 +615,7 @@ const Navbar = () => {
 
 
 
-      <Box
+      {TokenExist && <Box
         sx={{
           fontFamily: "Quicksand",
           display: 'flex',
@@ -723,7 +718,7 @@ const Navbar = () => {
         </div>
 
 
-        {quickSearchText.map((text, index) => (
+        {quickSearchText?.map((text, index) => (
           <div key={index}>
             <Button
               onClick={() => navigate(`/search?q=${encodeURIComponent(text)}`)}
@@ -827,7 +822,7 @@ const Navbar = () => {
         </div>
 
 
-      </Box >
+      </Box >}
 
 
     </>

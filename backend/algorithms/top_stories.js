@@ -1,6 +1,12 @@
 const puppeteer = require("puppeteer");
 const randomUseragent = require("random-useragent"); // Added random-useragent
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
 const top_stories_model = require("../models/mtopStories");
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
 const scanForLinks = async (page) => {
 
@@ -27,18 +33,68 @@ const scanForLinks = async (page) => {
 		});
 	});
 
+	// delay(10000);
+
 	return articles.filter(article => article !== null);
 
 };
 
+const findChromeUserDataDir = () => {
+	let possiblePaths = [];
+
+	if (process.platform === 'win32') {
+		const localAppData = process.env.LOCALAPPDATA;
+		const appData = process.env.APPDATA;
+		const username = process.env.USERNAME || os.userInfo().username;
+
+		if (localAppData) {
+			possiblePaths.push(path.join(localAppData, 'Google', 'Chrome', 'User Data'));
+		}
+		if (appData) {
+			possiblePaths.push(path.join(appData, 'Google', 'Chrome', 'User Data'));
+		}
+		possiblePaths.push(path.join('C:', 'Users', username, 'AppData', 'Local', 'Google', 'Chrome', 'User Data'));
+	} else if (process.platform === 'darwin') {
+		possiblePaths.push(path.join(os.homedir(), 'Library', 'Application Support', 'Google', 'Chrome'));
+	} else {
+		possiblePaths.push(path.join(os.homedir(), '.config', 'google-chrome'));
+	}
+
+	for (const dir of possiblePaths) {
+		if (fs.existsSync(dir)) {
+			return dir;
+		}
+	}
+
+	console.log('Could not find Chrome user data directory');
+	return null;
+};
+
 const Scrap = async (searchby) => {
+
+
+	const userDataDir = findChromeUserDataDir();
+	if (!userDataDir) {
+		console.error('Unable to find Chrome user data directory. Please specify it manually.');
+		return;
+	}
+
 
 	try {
 		let country = searchby.country;
 		const puppeteerOptions = {
-			headless: false, // Set headless to false to see the browser
-			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+			headless: false,
+			args: [
+				"--no-sandbox",
+				"--disable-setuid-sandbox",
+				`--user-data-dir=${userDataDir}`,
+				"--enable-automation"  // This flag might be necessary for some extensions
+			],
+			ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
+			executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+			defaultViewport: false,
 		};
+
 		const browser = await puppeteer.launch(puppeteerOptions);
 		const page = await browser.newPage();
 
@@ -71,6 +127,7 @@ const Scrap = async (searchby) => {
 
 const ScrapTop_stories = async (req, res) => {
 
+
 	const FETCH_INTERVAL = 1000 * 60000;  // 60000 seconds
 
 	let lastFetchTime = null;
@@ -95,13 +152,15 @@ const ScrapTop_stories = async (req, res) => {
 		});
 
 		try {
-			await top_stories_model.deleteMany({});
+			await top_stories_model?.deleteMany({});
 		} catch (err) {
 			res.status(210).json({ success: false, articles: "An error occurred while deleting the data from the database " });
 		}
 
 		try {
-			articles.forEach(async (article) => {
+			// console.log(articles);
+			
+			articles?.forEach(async (article) => {
 
 				if (article) {
 					const newArticle = new top_stories_model({
@@ -116,7 +175,8 @@ const ScrapTop_stories = async (req, res) => {
 			res.status(202).json({ success: true, articles: articles });
 		}
 		catch (err) {
-			res.status(210).json({ success: false, articles: "An error occurred while saving the data to the database " });
+			console.log(err);
+			res.status(210).json({ success: false, articles: "An error occurred while saving the data to the database "});
 
 		}
 

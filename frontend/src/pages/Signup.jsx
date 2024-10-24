@@ -105,7 +105,6 @@ export default function Register() {
           "authorization": "Bearer " + localStorage.getItem("token")
         }
       });
-      console.log(result.data);
 
       if (result.data.success) {
         window.localStorage.setItem('token', result.data.token);
@@ -129,13 +128,15 @@ export default function Register() {
         justifyContent="center"
         alignItems="center"
         sx={{
-          minHeight: "100vh",
-          padding: { xs: 2, sm: 3, md: 5 },
-          background: `url(${image1}) no-repeat bottom center fixed`,
-          backgroundSize: "cover",
-          boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-          backdropFilter: "blur(10px)",
-          backgroundColor: "transparent",
+          backgroundImage: `url(${image1})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100vh',
+          width: '100%',
+          position: 'fixed',
+          top: 0,
+          left: 0,
         }}
       >
         <Grid
@@ -150,6 +151,7 @@ export default function Register() {
             boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
             backdropFilter: "blur(16px)",
             backgroundColor: "transparent",
+            padding: 1.2,
           }}
         >
           <Grid
@@ -323,7 +325,7 @@ export default function Register() {
                 onChange={handlePasswordofLogin}
                 id="password"
                 label="Password"
-                placeholder="e.g. 12345678"
+                placeholder="e.g. 1A3a5$7"
                 variant="outlined"
                 name="password"
                 type={showPassword ? "text" : "password"}
@@ -380,7 +382,7 @@ export default function Register() {
               />
             </Grid>
 
-           
+
 
             <Grid item xs={12}>
               {role === 'PROVIDER' && (
@@ -458,7 +460,7 @@ export default function Register() {
                   textAlign: "center",
                   alignItems: "center",
                   alignContent: "center",
-                  width: '100%', 
+                  width: '100%',
 
                 }}
               >

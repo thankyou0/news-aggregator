@@ -12,7 +12,8 @@ const searchroute = require("./routes/rsearch.js");
 const userdoroute = require("./routes/ruserdo.js");
 const feedroute = require("./routes/rfeed.js");
 const quicksearchroute = require("./routes/rquicksearch.js");
-
+const sendemailroute = require("./routes/rsendemail.js");
+const changepasswordroute = require("./routes/rchangepassword.js");
 const port = process.env.PORT || 9000;
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
@@ -47,6 +48,11 @@ app.use("/api/userdo", checkAuth, userdoroute);
 app.use("/api/myfeed", checkAuth, feedroute);
 
 app.use("/api/quicksearch", checkAuth, quicksearchroute);
+
+app.use("/api/sendemail", sendemailroute);
+
+app.use("/api/changepassword", checkAuth, changepasswordroute);
+
 
 
 app.listen(port, () => {

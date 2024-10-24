@@ -10,6 +10,9 @@ import {
   styled
 } from '@mui/material';
 import { Eye, EyeOff, Check, X } from 'lucide-react';
+import { POST } from '../api';
+import toast from 'react-hot-toast';
+import CryptoJS from 'crypto-js';
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -83,7 +86,7 @@ const RequirementItem = styled(Box)(({ met }) => ({
   marginBottom: '4px'
 }));
 
-const ResetPassword = () => {
+const ResetPassword = ({ setShowModal }) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -108,8 +111,31 @@ const ResetPassword = () => {
     return 'none';
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    const EncryptOldPassword = CryptoJS.AES.encrypt(oldPassword, "news-aggregator-secret").toString();
+    const EncryptNewPassword = CryptoJS.AES.encrypt(newPassword, "news-aggregator-secret").toString();
+
+    const response = await POST('/api/changepassword', { password: EncryptNewPassword, CurrentPassword: EncryptOldPassword });
+    // console.log(response.data);
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+      setShowModal(false);
+      return;
+
+    } else {
+      toast.error(response.data.message);
+    }
+
+
+
     console.log('Password reset submitted');
   };
 

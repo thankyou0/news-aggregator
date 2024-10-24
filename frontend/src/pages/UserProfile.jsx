@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { Button, Form, Container, Row, Col, Image, Badge, Modal } from 'react-bootstrap';
 import { FaTimes } from 'react-icons/fa';
 import { GET, POST } from '../api';
 import { toast } from "react-hot-toast";
 import ResetPassword from '../components/ResetPassword';
-
+import { ThemeContext } from '../context/ThemeContext';
 
 const UserProfile = () => {
+  const { mode } = useContext(ThemeContext);
   const [firstName, setFirstName] = useState('');
   const [userName, setUserName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -15,20 +16,17 @@ const UserProfile = () => {
   const [email, setEmail] = useState('');
   const [topics, setTopics] = useState([]);
   const [inputValue, setInputValue] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await GET('/api/user/userprofile/get');
-        // Assuming response contains the user profile data
-        console.log('User Profile:', response.data);
-
         if (response.data.success === false) {
           console.log('Error:', response.data.message);
           return;
         }
-
         const { username, firstName, lastName, age, phoneNo, email, topics } = response.data.user;
         setUserName(username);
         setFirstName(firstName);
@@ -41,26 +39,22 @@ const UserProfile = () => {
         console.error(error);
       }
     };
-
     fetchUserProfile();
-  }, []); // Add empty dependency array to run effect only once
+  }, []);
 
   const handleAddTopic = () => {
     if (inputValue.trim() !== '') {
       setTopics([...topics, inputValue.trim()]);
       setInputValue('');
-      inputRef.current.focus(); // Keep the cursor in the text field
+      inputRef.current.focus();
     }
   };
 
   const handleRemoveTopic = (index) => {
-    const newTopics = topics.filter((_, i) => i !== index);
-    setTopics(newTopics);
+    setTopics(topics.filter((_, i) => i !== index));
   };
 
   const handleUpdateProfile = async () => {
-    // Print all text field values in the console
-
     const updatedData = {
       username: userName,
       firstName,
@@ -70,113 +64,174 @@ const UserProfile = () => {
       email,
       topics,
     };
-
     const response = await POST('/api/user/userprofile/update', updatedData);
-    console.log('Response:', response);
-    toast.success("Profile updated successfully");
+    toast.success(response.data.message);
   };
-
-  const [showModal, setShowModal] = useState(false); 
-
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-    // Handle password change logic here (e.g., send email)
-    toast.success("Password change link sent!");
-    setShowModal(false); // Close the modal after submission
-  };
-
 
   return (
-    <>
-      <style>{`
-        .container {
-          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-control {
-          border-radius: 5px;
-        }
-
-        button {
-          border-radius: 50px;
-          padding: 10px 40px;
-          background-color: #007bff;
-          color: white;
-        }
-
-        button:hover {
-          background-color: #0056b3;
-        }
-      `}</style>
-
-      <div className="text-center mb-4">
+    <div style={{
+      marginTop: "150px",
+      animation: "fadeIn 0.5s ease"
+    }}>
+      <div style={{
+        textAlign: "center",
+        marginBottom: "2rem"
+      }}>
         <Image
           src="https://1.bp.blogspot.com/-4XH4gYWBqkc/X_fjW3OyqKI/AAAAAAAAFaY/Tg3RZ4lICOIwmliLKBcGkVSkpk0hdH-wwCLcBGAsYHQ/s1200/News.jpg"
           roundedCircle
+          style={{
+            width: "150px",
+            height: "150px",
+            border: `4px solid ${mode === 'dark' ? '#2c2c2c' : 'white'}`,
+            boxShadow: mode === 'dark' ? '0 4px 12px rgba(0, 0, 0, 0.3)' : '0 4px 12px rgba(0, 0, 0, 0.15)',
+            transition: "transform 0.3s ease"
+          }}
           alt="Profile"
-          style={{ width: '150px', height: '150px', objectFit: 'cover' }}
         />
       </div>
 
-      <Container>
+      <Container style={{
+        maxWidth: "800px",
+        margin: "0 auto",
+        padding: "2rem",
+        background: mode === 'dark' ? 'rgba(30, 30, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+        boxShadow: mode === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 32px rgba(0, 0, 0, 0.1)',
+        borderRadius: "20px",
+        backdropFilter: "blur(10px)",
+        border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.2)'}`,
+        transition: "transform 0.3s ease, background-color 0.3s ease"
+      }}>
+
         <Form>
-          <Form.Group controlId="formFirstName">
-            <Form.Label>User Name</Form.Label>
+          <Form.Group style={{ marginBottom: "1.5rem" }}>
+            <Form.Label style={{
+              fontWeight: 600,
+              color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+              marginBottom: "0.5rem",
+              fontSize: "1.1rem"
+            }}>
+              User Name
+            </Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter User name"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
+              style={{
+                borderRadius: "10px",
+                border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                padding: "0.75rem 1rem",
+                background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                color: mode === 'dark' ? '#ffffff' : '#000000'
+              }}
             />
           </Form.Group>
 
-          <Row>
+          <Row style={{ marginBottom: "1.5rem" }}>
             <Col>
-              <Form.Group controlId="formFirstName">
-                <Form.Label>First Name</Form.Label>
+              <Form.Group>
+                <Form.Label style={{
+                  fontWeight: 600,
+                  color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+                  marginBottom: "0.5rem",
+                  fontSize: "1.1rem"
+                }}>
+                  First Name
+                </Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter first name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  style={{
+                    borderRadius: "10px",
+                    border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                    padding: "0.75rem 1rem",
+                    background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                  }}
                 />
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group controlId="formAge">
-                <Form.Label>Age</Form.Label>
+              <Form.Group>
+                <Form.Label style={{
+                  fontWeight: 600,
+                  color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+                  marginBottom: "0.5rem",
+                  fontSize: "1.1rem"
+                }}>
+                  Age
+                </Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Enter age"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
+                  style={{
+                    borderRadius: "10px",
+                    border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                    padding: "0.75rem 1rem",
+                    background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                  }}
                 />
               </Form.Group>
             </Col>
           </Row>
 
-
-          <Row>
+          <Row style={{ marginBottom: "1.5rem" }}>
             <Col>
               <Form.Group controlId="formLastName">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label
+                  style={
+                    {
+                      fontWeight: 600,
+                      color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+                      marginBottom: "0.5rem",
+                      fontSize: "1.1rem"
+                    }
+                  } >Last Name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter last name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  style={{
+                    borderRadius: "10px",
+                    border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                    padding: "0.75rem 1rem",
+                    background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                  }}
                 />
               </Form.Group>
             </Col>
 
             <Col>
               <Form.Group controlId="formPhone">
-                <Form.Label>Phone No.</Form.Label>
+                <Form.Label
+                  style={
+                    {
+                      fontWeight: 600,
+                      color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+                      marginBottom: "0.5rem",
+                      fontSize: "1.1rem"
+                    }
+                  } >Phone No.</Form.Label>
                 <Form.Control
                   type="tel"
                   placeholder="Enter phone number"
                   value={phoneNo}
                   onChange={(e) => setPhoneNo(e.target.value)}
+                  style={{
+                    borderRadius: "10px",
+                    border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                    padding: "0.75rem 1rem",
+                    background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                  }}
                 />
               </Form.Group>
 
@@ -184,166 +239,141 @@ const UserProfile = () => {
           </Row>
 
 
-          <Form.Group controlId="formEmail">
-            <Form.Label>Email</Form.Label>
+          <Form.Group controlId="formEmail" style={{ marginBottom: "1.5rem" }}>
+            <Form.Label
+              style={
+                {
+                  fontWeight: 600,
+                  color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+                  marginBottom: "0.5rem",
+                  fontSize: "1.1rem"
+                }
+              }>Email</Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter email"
               value={email}
               readOnly
+              style={{
+                borderRadius: "10px",
+                border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                padding: "0.75rem 1rem",
+                background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                color: mode === 'dark' ? '#ffffff' : '#000000'
+              }}
             />
           </Form.Group>
 
-          <Form.Group controlId="formTopics" className="mt-3">
-            <Form.Label>Topics</Form.Label>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginBottom: "1.5rem" }}>
+            <Form.Label style={{
+              fontWeight: 600,
+              color: mode === 'dark' ? '#e0e0e0' : '#2c3e50',
+              marginBottom: "0.5rem",
+              fontSize: "1.1rem"
+            }}>
+              Topics
+            </Form.Label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Form.Control
                 type="text"
                 placeholder="Enter topics of interest"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 ref={inputRef}
-                style={{ flex: 1 }}
+                style={{
+                  flex: 1,
+                  borderRadius: "10px",
+                  border: `1px solid ${mode === 'dark' ? '#404040' : '#e0e0e0'}`,
+                  padding: "0.75rem 1rem",
+                  background: mode === 'dark' ? 'rgba(45, 45, 45, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                  color: mode === 'dark' ? '#ffffff' : '#000000'
+                }}
               />
-              <Button variant="primary" onClick={handleAddTopic} style={{ marginLeft: '10px' }}>
+              <Button
+                onClick={handleAddTopic}
+                style={{
+                  padding: "0.75rem 2rem",
+                  borderRadius: "50px",
+                  background: mode === 'dark' ? 'linear-gradient(45deg, #0056b3, #003d80)' : 'linear-gradient(45deg, #007bff, #0056b3)',
+                  border: "none",
+                  boxShadow: mode === 'dark' ? '0 4px 15px rgba(0, 86, 179, 0.3)' : '0 4px 15px rgba(0, 123, 255, 0.2)',
+                  fontWeight: 600,
+                  letterSpacing: "0.5px",
+                  transition: "all 0.3s ease"
+                }}
+              >
                 Add
               </Button>
             </div>
-            <div className="mt-2">
+            <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "5px" }}>
               {topics?.map((topic, index) => (
-                <Badge key={index} pill variant="secondary" style={{ marginRight: '5px', marginBottom: '5px' }}>
-                  {topic} <FaTimes onClick={() => handleRemoveTopic(index)} style={{ cursor: 'pointer' }} />
+                <Badge
+                  key={index}
+                  pill
+                  style={{
+                    padding: "0.5rem 1rem",
+                    background: mode === 'dark' ? '#4a4a4a' : '#6c757d',
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    transition: "all 0.3s ease"
+                  }}
+                >
+                  {topic}
+                  <FaTimes
+                    onClick={() => handleRemoveTopic(index)}
+                    style={{ cursor: 'pointer' }}
+                  />
                 </Badge>
               ))}
             </div>
-          </Form.Group>
-
-          
-          <div className="text-center mt-4">
-            <Button variant="success" onClick={handleUpdateProfile}>Update Profile</Button>
           </div>
 
-
-          <div className="text-center mt-4">
-            <Button variant="primary" onClick={() => setShowModal(true)}>Change Password</Button>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            alignItems: "center",
+            marginTop: "2rem"
+          }}>
+            <Button
+              onClick={handleUpdateProfile}
+              style={{
+                padding: "0.75rem 2rem",
+                borderRadius: "50px",
+                background: mode === 'dark' ? 'linear-gradient(45deg, #1a7531, #158765)' : 'linear-gradient(45deg, #28a745, #20c997)',
+                border: "none",
+                boxShadow: mode === 'dark' ? '0 4px 15px rgba(26, 117, 49, 0.3)' : '0 4px 15px rgba(40, 167, 69, 0.2)',
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+                transition: "all 0.3s ease"
+              }}
+            >
+              Update Profile
+            </Button>
+            <Button
+              onClick={() => setShowModal(true)}
+              style={{
+                padding: "0.75rem 2rem",
+                borderRadius: "50px",
+                background: mode === 'dark' ? 'linear-gradient(45deg, #a82632, #c94f5c)' : 'linear-gradient(45deg, #dc3545, #f86778)',
+                border: "none",
+                boxShadow: mode === 'dark' ? '0 4px 15px rgba(168, 38, 50, 0.3)' : '0 4px 15px rgba(220, 53, 69, 0.2)',
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+                transition: "all 0.3s ease"
+              }}
+            >
+              Change Password
+            </Button>
           </div>
-
-
-          <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-              <ResetPassword />
-          </Modal>
-
-          {/* <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Forgot Password</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: '20px',
-                  backgroundColor: '#f9f9f9',
-                  borderRadius: '10px',
-                }}
-              >
-                <form
-                  style={{
-                    width: '100%',
-                    maxWidth: '400px',
-                    padding: '20px',
-                    backgroundColor: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  }}
-                  onSubmit={handleChangePassword}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    <label
-                      htmlFor="email"
-                      style={{
-                        marginBottom: '8px',
-                        fontSize: '1rem',
-                        color: '#333',
-                      }}
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      placeholder="Enter your email"
-                      required
-                      style={{
-                        padding: '10px',
-                        border: '1px solid #ddd',
-                        borderRadius: '5px',
-                        fontSize: '1rem',
-                        transition: 'border-color 0.3s ease',
-                      }}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      backgroundColor: '#007bff',
-                      border: 'none',
-                      color: 'white',
-                      fontSize: '1rem',
-                      borderRadius: '5px',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.3s ease',
-                    }}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = '#0056b3')}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = '#007bff')}
-                  >
-                    Send Email
-                  </button>
-                </form>
-                <p
-                  style={{
-                    marginTop: '20px',
-                    textAlign: 'center',
-                    fontSize: '0.9rem',
-                    color: '#666',
-                  }}
-                >
-                  Don't have an account?
-                  <a
-                    href="#"
-                    style={{
-                      color: '#007bff',
-                      textDecoration: 'none',
-                      marginLeft: '5px',
-                      transition: 'color 0.3s ease',
-                    }}
-                    onMouseOver={(e) => (e.target.style.color = '#0056b3')}
-                    onMouseOut={(e) => (e.target.style.color = '#007bff')}
-                  >
-                    Sign up now
-                  </a>
-                </p>
-              </div>
-            </Modal.Body>
-          </Modal> */}
-
-
-
-
         </Form>
       </Container>
-    </>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <ResetPassword setShowModal={setShowModal} />
+      </Modal>
+    </div>
   );
 };
 

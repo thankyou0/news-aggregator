@@ -6,7 +6,7 @@ const express = require('express');
 const getBookmarkArticle = async (req, res) => {
   const bookmarks = await bookmark_model.find({ user_id: req.user.id });
 
-  return res.status(200).json({ success: true, bookmarks });
+  return res.status(202).json({ success: true, bookmarks });
 }
 
 const isBookmarked = async (req, res) => {
@@ -19,10 +19,10 @@ const isBookmarked = async (req, res) => {
   const bookmark = await bookmark_model.findOne({ user_id: req.user.id, title, link });
 
   if (!bookmark) {
-    return res.status(200).json({ success: true, bookmarked: false });
+    return res.status(202).json({ success: true, bookmarked: false });
   }
 
-  return res.status(200).json({ success: true, bookmarked: true });
+  return res.status(202).json({ success: true, bookmarked: true });
 }
 
 const addBookmarkArticle = async (req, res) => {
@@ -102,10 +102,10 @@ const isLiked = async (req, res) => {
   const like = await like_model.findOne({ user_id: req.user.id, title });
 
   if (!like) {
-    return res.status(200).json({ success: true, liked: false });
+    return res.status(202).json({ success: true, liked: false });
   }
 
-  return res.status(200).json({ success: true, liked: true });
+  return res.status(202).json({ success: true, liked: true });
 }
 
 module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked };

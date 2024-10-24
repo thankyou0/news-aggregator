@@ -25,7 +25,7 @@ const getQuickSearch = async (req, res) => {
   console.log("quickSearchUser.quickSearchText", quickSearchUser.quickSearchText);
 
 
-  res.status(200).json({ success: true, quickSearchText: quickSearchUser.quickSearchText });
+  res.status(202).json({ success: true, quickSearchText: quickSearchUser.quickSearchText });
 
   // } catch (error) {
   //   res.status(210).json({ message: error.message });

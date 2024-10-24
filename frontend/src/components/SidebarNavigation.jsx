@@ -82,7 +82,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
               <Divider key={index} sx={{ borderColor: mode === 'dark' ? '#444' : '#ddd' }} /> // Adjust divider color
             ) : (
               <ListItem
-                button
+                button="true"
                 key={item.title}
                 onClick={() => navigate(item.path)}
                 sx={{
@@ -93,6 +93,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
                   marginBottom: '4px', // Small space between items
                   borderRadius: '8px', // Rounded item edges
                   transition: 'background-color 0.3s ease', // Smooth hover transition
+                  cursor: 'pointer', // Show pointer on hover
                 }}
               >
                 <Tooltip title={!open ? item.title : ''} placement="right">

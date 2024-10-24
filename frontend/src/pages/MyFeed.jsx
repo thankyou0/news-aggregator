@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import { Box, Grid } from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
 import { GET } from "../api.js";
+import { Stack } from 'react-bootstrap';
 
 const MyFeed = () => {
   const { mode } = useContext(ThemeContext);
@@ -87,99 +88,128 @@ const MyFeed = () => {
 
   return (
     <>
-      <div style={{marginTop: "130px"}}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '10px',
-          borderRadius: '25px',
-          transition: 'width 0.25s ease-in-out',
-        }}
-      >
-        <TextField
-          hiddenLabel
-          variant="outlined"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search from given articles..."
+      <div style={{ marginTop: "130px" }}>
+        <Box
           sx={{
-            m: 1,
-            width: '400px',
-            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '10px',
             borderRadius: '25px',
-            bgcolor: mode === 'dark' ? '#444' : 'rgb(251, 248, 248)',
             transition: 'width 0.25s ease-in-out',
-            "& .MuiOutlinedInput-root": {
+          }}
+        >
+          <TextField
+            hiddenLabel
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search from given articles..."
+            sx={{
+              m: 1,
+              width: '400px',
+              height: '100%',
               borderRadius: '25px',
-              "& fieldset": {
-                borderColor: "transparent",
+              bgcolor: mode === 'dark' ? '#444' : 'rgb(251, 248, 248)',
+              transition: 'width 0.25s ease-in-out',
+              "& .MuiOutlinedInput-root": {
+                borderRadius: '25px',
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "transparent",
+                },
               },
-              "&:hover fieldset": {
-                borderColor: "transparent",
+              "&:hover": {
+                bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
               },
-              "&.Mui-focused fieldset": {
-                borderColor: "transparent",
+              '&:focus-within': {
+                width: '600px',
+                bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
+                '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                  color: 'blue',
+                  transform: 'scale(1.4) rotateY(360deg)',
+                  transition: 'transform 1.1s ease-in-out, color 0.3s ease-in-out',
+                },
               },
-            },
-            "&:hover": {
-              bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
-            },
-            '&:focus-within': {
-              width: '600px',
-              bgcolor: mode === 'dark' ? '#555' : 'rgb(240, 240, 240)',
-              '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-                color: 'blue',
-                transform: 'scale(1.4) rotateY(360deg)',
-                transition: 'transform 1.1s ease-in-out, color 0.3s ease-in-out',
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRoundedIcon />
+                </InputAdornment>
+              ),
+              sx: {
+                "&::placeholder": {
+                  color: mode === 'dark' ? '#bbb' : '#888',
+                },
               },
-            },
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchRoundedIcon />
-              </InputAdornment>
-            ),
-            sx: {
-              "&::placeholder": {
-                color: mode === 'dark' ? '#bbb' : '#888',
-              },
-            },
-          }}
-        />
-      </Box>
-
-      {filteredArticles.map((article, index) => (
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ width: "100%", height: "210px" }}>
-          <NewsCard
-            title={article.title}
-            someText={article.someText}
-            imgURL={article.imgURL}
-            link={article.link}
-            time={article.time}
-            providerImg={article.providerImg}
-            providerName={article.providerName}
+            }}
           />
-        </Grid>
-      ))}
+        </Box>
 
-      {isLoading && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Skeleton animation="wave" variant="rounded" width={800} height={140} />
-        </div >
-      )}
-      {
-        isError && (
-          <div className="alert alert-warning" role="alert" style={{ width: "50%", margin: "0 auto", zIndex: -1 }}>
-            Error fetching articles.
-          </div>
-        )
-      }
+        {filteredArticles.map((article, index) => (
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={6} key={index} className="card_1" sx={{ width: "100%", height: "210px" }}>
+            <NewsCard
+              title={article.title}
+              someText={article.someText}
+              imgURL={article.imgURL}
+              link={article.link}
+              time={article.time}
+              providerImg={article.providerImg}
+              providerName={article.providerName}
+            />
+          </Grid>
+        ))}
 
-      {/* Observer target for infinite scrolling */}
-      <div ref={observerRef} style={{ height: '50px', marginTop: '20px' }}></div>
+        {isLoading && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center', // Centers horizontally
+              alignItems: 'center',     // Centers vertically
+              minHeight: '50vh',        // Minimum height to ensure vertical centering
+              width: '100%',            // Takes full width
+            }}
+          >
+            <Stack spacing={2} sx={{ width: '100%', alignItems: 'center' }}> {/* Center stack items horizontally */}
+              {[1, 2, 3, 4, 5, 6, 7].map((_, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',  // Centers the Skeleton inside the Box
+                    width: '100%',
+                    marginY: 1.4,
+                  }}
+                >
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width="80%"       // Use percentage width for Skeleton
+                    height={160}
+                    sx={{ maxWidth: 800 }} // Limit the max width
+                  />
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+        )}
+
+        {
+          isError && (
+            <div className="alert alert-warning" role="alert" style={{ width: "50%", margin: "0 auto", zIndex: -1 }}>
+              Error fetching articles.
+            </div>
+          )
+        }
+
+        {/* Observer target for infinite scrolling */}
+        <div ref={observerRef} style={{ height: '50px', marginTop: '20px' }}></div>
       </div>
     </>
   );

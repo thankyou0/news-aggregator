@@ -104,374 +104,299 @@ export default function Login() {
 
 
   return (
-    <Grid
-      container
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        minHeight: "100vh",
-        paddingX: { xs: 2, sm: 4 },
-        paddingY: { xs: 4, sm: 6 },
-        background: `url(${image1}) no-repeat bottom center fixed`,
-        backgroundSize: "cover",
-      }}
-    >
+
       <Grid
-        item
-        xs={12}
-        sm={8}
-        md={6}
-        lg={4}
+        container
+        justifyContent="center"
+        alignItems="center"
         sx={{
-          padding: { xs: 2, sm: 4 },
-          borderRadius: "16px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-          backdropFilter: "blur(12px)",
-          backgroundColor: "transparent",
+          backgroundImage: `url(${image1})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100vh',
+          width: '100%',
+          position: 'fixed',
+          top: 0,
+          left: 0,
         }}
       >
-        <Avatar sx={{ backgroundColor: "#134611", mb: 2 }}>
-          <LockOutlinedIcon />
-        </Avatar>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={6}
+          lg={4}
+          sx={{
+            padding: { xs: 2, sm: 4 },
+            borderRadius: "16px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+            backdropFilter: "blur(12px)",
+            backgroundColor: "transparent",
+          }}
+        >
+          <Avatar sx={{ backgroundColor: "#134611", mb: 2 }}>
+            <LockOutlinedIcon />
+          </Avatar>
 
 
-        <Typography variant="h5" fontWeight="bold" mb={2} sx={{
-          fontFamily: "'Quicksand', 'Arial', sans-serif",
-        }}>
-          Log In
-        </Typography>
-
-
-        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-          <Grid container spacing={2}>
-
-            <Grid item xs={12}>
-              <FormControl size="small" fullWidth>
-                <InputLabel id="role-label" color="success">
-                  Role
-                </InputLabel>
-                <Select
-                  color="success"
-                  labelId="role-label"
-                  id="role"
-                  label="Role"
-                  value={role}
-                  onChange={(e) => { setRole(e.target.value); }}
-                  sx={{
-                    borderRadius: 25,
-                    fontWeight: "bold",
-                    "& .MuiSelect-select": {
-                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the selected value
-                    },
-                    "& .MuiInputLabel-root": {
-                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the label
-                    },
-                  }}
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <PeopleAltRoundedIcon color="success" />
-                    </InputAdornment>
-                  }
-                >
-
-                  <MenuItem value="READER" sx={{
-                    fontFamily: "'Quicksand', 'Arial', sans-serif",
-
-                  }}>READER</MenuItem>
-                  <MenuItem value="PROVIDER" sx={{
-                    fontFamily: "'Quicksand', 'Arial', sans-serif",
-
-                  }}>PROVIDER</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-
-            <Grid item xs={12}>
-              <TextField
-                color="success"
-                value={emailUsername}
-                onChange={(e) => {
-                  setEmailUsername(e.target.value);
-                }}
-                id="username"
-                label="Email"
-                placeholder="email"
-                variant="outlined"
-                fullWidth
-                required
-                size="small"
-                autoComplete="on"
-                error={
-                  justVerify &&
-                  (emailUsername === "" || emailUsername.length >= 255)
-                }
-                helperText={
-                  justVerify &&
-                  (emailUsername === "" ? "This field cannot be empty." : "")
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailRoundedIcon color="success" />
-                    </InputAdornment>
-                  ),
-                  style: { fontFamily: "'Quicksand', 'Arial', sans-serif" }, // Use style for InputProps
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 25,
-                    fontWeight: "bold",
-                  },
-                  "& label": {
-                    fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to label
-                  },
-                  "& .MuiInputBase-input": {
-                    fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the input
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                color="success"
-                value={password}
-                onChange={handlePasswordofLogin}
-                id="password"
-                label="Password"
-                placeholder="password"
-                variant="outlined"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                fullWidth
-                required
-                size="small"
-                autoComplete="on"
-                error={
-                  justVerify &&
-                  (!validPassword || password === "" || password.length >= 255)
-                }
-                helperText={
-                  justVerify &&
-                  (password === ""
-                    ? "This field cannot be empty."
-                    : !validPassword
-                      ? "The password must contain at least 8 characters."
-                      : "")
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <VpnKeyRoundedIcon color="success" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <Visibility color="success" />
-                        ) : (
-                          <VisibilityOff color="success" />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 25,
-                    fontWeight: "bold",
-                  },
-                  "& label": {
-                    fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to label
-                  },
-                  "& .MuiInputBase-input": {
-                    fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the input
-                  },
-                }}
-              />
-            </Grid>
-
-
-            <Grid item container justifyContent="space-between" xs={12}>
-              <Button
-                color="error"
-                variant="text"
-                onClick={() => setShowModal(true)}
-                sx={{
-                  fontFamily: "'Quicksand', 'Arial', sans-serif",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                  marginTop: '-15px',
-                }}
-              >
-                Forgot Password?
-              </Button>
-            </Grid>
-
-
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                sx={{
-                  fontFamily: "'Quicksand', 'Arial', sans-serif",
-                  fontWeight: "bold",
-                  borderRadius: "12px",
-                  backgroundColor: "#134611",
-                  color: "white",
-                  "&:hover": {
-                    color: "white",
-                    backgroundColor: "#155d27",
-                  },
-                }}
-              >
-                {!loading ? "Log In" : "Logged In"}
-                {loading && <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>}
-                {loading && (
-                  <CircularProgress
-                    size={20}
-                    sx={{
-                      color: "white",
-                      right: 0,
-                    }}
-                  />
-                )}
-              </Button>
-            </Grid>
-
-
-
-            <Grid item container justifyContent="center" xs={12}>
-              <Button
-                color="success"
-                variant="text"
-                onClick={() => {
-                  navigate("/signup");
-                }}
-                sx={{
-                  fontFamily: "'Quicksand', 'Arial', sans-serif",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                  display: "flex",
-                  textAlign: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  width: '100%', // Ensures the button takes full width
-                }}
-              >
-                Don't have an account? Sign Up
-              </Button>
-            </Grid>
-
-
-          </Grid>
-        </form>
-      </Grid>
-
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          {/* This adds the cross (X) button */}  
-          <Typography variant="h5" sx={{ mb: 1, fontWeight: 600}}>
-            Forgot password
+          <Typography variant="h5" fontWeight="bold" mb={2} sx={{
+            fontFamily: "'Quicksand', 'Arial', sans-serif",
+          }}>
+            Log In
           </Typography>
 
-        </Modal.Header>
-        <Modal.Body>
-          <ForgotPassword />
-        </Modal.Body>
-      </Modal>
 
-      {/* <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Forgot Password</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '20px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '10px',
-            }}
-          >
-            <form
-              style={{
-                width: '100%',
-                maxWidth: '400px',
-                padding: '20px',
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-              }}
-              onSubmit={() => { console.log('submit') }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  marginBottom: '20px',
-                }}
-              >
-                <label
-                  htmlFor="email"
-                  style={{
-                    marginBottom: '8px',
-                    fontSize: '1rem',
-                    color: '#333',
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <Grid container spacing={2}>
+
+              <Grid item xs={12}>
+                <FormControl size="small" fullWidth>
+                  <InputLabel id="role-label" color="success">
+                    Role
+                  </InputLabel>
+                  <Select
+                    color="success"
+                    labelId="role-label"
+                    id="role"
+                    label="Role"
+                    value={role}
+                    onChange={(e) => { setRole(e.target.value); }}
+                    sx={{
+                      borderRadius: 25,
+                      fontWeight: "bold",
+                      "& .MuiSelect-select": {
+                        fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the selected value
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the label
+                      },
+                    }}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <PeopleAltRoundedIcon color="success" />
+                      </InputAdornment>
+                    }
+                  >
+
+                    <MenuItem value="READER" sx={{
+                      fontFamily: "'Quicksand', 'Arial', sans-serif",
+
+                    }}>READER</MenuItem>
+                    <MenuItem value="PROVIDER" sx={{
+                      fontFamily: "'Quicksand', 'Arial', sans-serif",
+
+                    }}>PROVIDER</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+
+              <Grid item xs={12}>
+                <TextField
+                  color="success"
+                  value={emailUsername}
+                  onChange={(e) => {
+                    setEmailUsername(e.target.value);
                   }}
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email"
+                  id="username"
+                  label="Email"
+                  placeholder="email"
+                  variant="outlined"
+                  fullWidth
                   required
-                  style={{
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '5px',
-                    fontSize: '1rem',
-                    transition: 'border-color 0.3s ease',
+                  size="small"
+                  autoComplete="on"
+                  error={
+                    justVerify &&
+                    (emailUsername === "" || emailUsername.length >= 255)
+                  }
+                  helperText={
+                    justVerify &&
+                    (emailUsername === "" ? "This field cannot be empty." : "")
+                  }
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailRoundedIcon color="success" />
+                      </InputAdornment>
+                    ),
+                    style: { fontFamily: "'Quicksand', 'Arial', sans-serif" }, // Use style for InputProps
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 25,
+                      fontWeight: "bold",
+                    },
+                    "& label": {
+                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to label
+                    },
+                    "& .MuiInputBase-input": {
+                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the input
+                    },
                   }}
                 />
-              </div>
-              <button
-                type="submit"
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  backgroundColor: '#007bff',
-                  border: 'none',
-                  color: 'white',
-                  fontSize: '1rem',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.3s ease',
-                }}
-                onMouseOver={(e) => (e.target.style.backgroundColor = '#0056b3')}
-                onMouseOut={(e) => (e.target.style.backgroundColor = '#007bff')}
-              >
-                Send Email
-              </button>
-            </form>
-          </div>
-        </Modal.Body>
-      </Modal> */}
-    </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  color="success"
+                  value={password}
+                  onChange={handlePasswordofLogin}
+                  id="password"
+                  label="Password"
+                  placeholder="password"
+                  variant="outlined"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  fullWidth
+                  required
+                  size="small"
+                  autoComplete="on"
+                  error={
+                    justVerify &&
+                    (!validPassword || password === "" || password.length >= 255)
+                  }
+                  helperText={
+                    justVerify &&
+                    (password === ""
+                      ? "This field cannot be empty."
+                      : !validPassword
+                        ? "The password must contain at least 8 characters."
+                        : "")
+                  }
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <VpnKeyRoundedIcon color="success" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <Visibility color="success" />
+                          ) : (
+                            <VisibilityOff color="success" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 25,
+                      fontWeight: "bold",
+                    },
+                    "& label": {
+                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to label
+                    },
+                    "& .MuiInputBase-input": {
+                      fontFamily: "'Quicksand', 'Arial', sans-serif", // Apply font family to the input
+                    },
+                  }}
+                />
+              </Grid>
+
+
+              <Grid item container justifyContent="space-between" xs={12}>
+                <Button
+                  color="error"
+                  variant="text"
+                  onClick={() => setShowModal(true)}
+                  sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    marginTop: '-15px',
+                  }}
+                >
+                  Forgot Password?
+                </Button>
+              </Grid>
+
+
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+                    fontWeight: "bold",
+                    borderRadius: "12px",
+                    backgroundColor: "#134611",
+                    color: "white",
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: "#155d27",
+                    },
+                  }}
+                >
+                  {!loading ? "Log In" : "Logged In"}
+                  {loading && <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>}
+                  {loading && (
+                    <CircularProgress
+                      size={20}
+                      sx={{
+                        color: "white",
+                        right: 0,
+                      }}
+                    />
+                  )}
+                </Button>
+              </Grid>
+
+
+
+              <Grid item container justifyContent="center" xs={12}>
+                <Button
+                  color="success"
+                  variant="text"
+                  onClick={() => {
+                    navigate("/signup");
+                  }}
+                  sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    display: "flex",
+                    textAlign: "center",
+                    alignItems: "center",
+                    alignContent: "center",
+                    width: '100%', // Ensures the button takes full width
+                  }}
+                >
+                  Don't have an account? Sign Up
+                </Button>
+              </Grid>
+
+
+            </Grid>
+          </form>
+        </Grid>
+
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+          <Modal.Header closeButton>
+            {/* This adds the cross (X) button */}
+            <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
+              Forgot password
+            </Typography>
+
+          </Modal.Header>
+          <Modal.Body>
+            <ForgotPassword setShowModal={setShowModal} />
+          </Modal.Body>
+        </Modal>
+
+
+      </Grid>
   );
 }

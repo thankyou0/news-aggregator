@@ -175,7 +175,7 @@ const NewsCard = (props) => {
             border: 'none',
             boxShadow: 'none',
             width: '900px',
-            height: '200px',
+            height: '100%',
             backgroundColor: mode === 'light' ? 'rgb(246  , 246 , 246  )' : 'rgb(50, 50, 50)',
             '&:hover': {
               backgroundColor: mode === 'light' ? 'rgb(240, 240, 240)' : 'rgb(60, 60, 60)',
@@ -327,7 +327,7 @@ const NewsCard = (props) => {
                     width: '48px',
                     alignSelf: 'center',
                     marginBottom: '8px',
-                    }}
+                  }}
                   aria-label="like"
                   onClick={handleLikeClick}
                 >

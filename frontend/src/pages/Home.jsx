@@ -3,7 +3,7 @@ import { Container, Typography, Button, Grid, Paper } from '@mui/material';
 
 const Home = () => {
   return (
-    <Container>
+    <Container sx={{marginTop: "30px"}}>
       <Typography variant="h2" align="center" gutterBottom>
         Welcome to My Project
       </Typography>

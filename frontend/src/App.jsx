@@ -27,7 +27,7 @@ const theme = createTheme({
 function App() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed'];
+  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/account'];
   const hideNavbar_SidebarRoutes = ['/login', '/signup'];
 
   const shouldShowNavbar_Sidebar =
@@ -42,6 +42,7 @@ function App() {
     gl: searchParams.get('gl'),
     location: searchParams.get('location'),
   };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -105,7 +106,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<SearchResults queries={queries} />} />
               <Route path="/myfeed" element={<MyFeed />} />
-              <Route path="/account" element={<UserProfile/>} />
+              <Route path="/account" element={<UserProfile />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>
