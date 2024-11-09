@@ -17,10 +17,13 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { ThemeContext } from '../context/ThemeContext';
 import feedImgDark from '../images/feed_dark.png'; // Dark mode feed image
 import feedImgLight from '../images/feed_light.png'; // Light mode feed image
+import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
+
 
 const NAVIGATION = [
   { title: 'Home', icon: <HomeRoundedIcon />, path: '/' },
   { title: 'Feed', icon: 'feedImg', path: '/myfeed' }, // Custom image for "My Feed"
+  { title: 'Bookmark', icon: <BookmarkRoundedIcon />, path: '/bookmark' }, // Custom image for "My Feed"
   { kind: 'divider' },
   { title: 'Account', icon: <AccountCircleRoundedIcon />, path: '/account' },
 ];

@@ -3,7 +3,7 @@ const quickSearch_model = require("../models/mquicksearch");
 
 const getQuickSearch = async (req, res) => {
 
-  console.log("getQuickSearch");
+  // console.log("getQuickSearch");
 
   // try {
 
@@ -16,13 +16,13 @@ const getQuickSearch = async (req, res) => {
 
   const quickSearchUser = await quickSearch_model.findOne({ user_id });
 
-  console.log("quickSearchUser", quickSearchUser);
+  // console.log("quickSearchUser", quickSearchUser);
 
   if (!quickSearchUser) {
     return res.status(210).json({ success: false, message: "No quick search found for the user" });
   }
 
-  console.log("quickSearchUser.quickSearchText", quickSearchUser.quickSearchText);
+  // console.log("quickSearchUser.quickSearchText", quickSearchUser.quickSearchText);
 
 
   res.status(202).json({ success: true, quickSearchText: quickSearchUser.quickSearchText });

@@ -1,6 +1,5 @@
 const bookmark_model = require('../models/mbookmark');
 const like_model = require('../models/mlike');
-const express = require('express');
 
 
 const getBookmarkArticle = async (req, res) => {

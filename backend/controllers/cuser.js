@@ -32,7 +32,7 @@ const logInPost = async (req, res) => {
     return res.status(210).json({ success: false, message: "User not exist" });
   }
 
-  console.log(req.body.email);
+  // console.log(req.body.email);
   // Decrypt the stored password
   const decryptedPwd = CryptoJS.AES.decrypt(password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
   console.log("decryptedPwd", decryptedPwd);
@@ -98,7 +98,7 @@ const signUpPost = async (req, res) => {
 
     const token = jsonwebtoken.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    console.log("token", token);
+    // console.log("token", token);
 
     const verificationCode = new verificationcodemodel({
       username,
@@ -120,6 +120,7 @@ const getUserProfile = async (req, res) => {
   const user = await usermodel.findById(req.user.id).select("-password");
   return res.status(202).json({ success: true, user: user });
 }
+
 
 const updateUserProfile = async (req, res) => {
 

@@ -10,12 +10,14 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import MyFeed from './pages/MyFeed';
+import Bookmark from './pages/Bookmark.jsx';
 import PageNotFound from './pages/PageNotFound';
 import { ThemeContextProvider, ThemeContext } from './context/ThemeContext';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import UserProfile from './pages/UserProfile';
+
 
 const theme = createTheme({
   typography: {
@@ -27,7 +29,7 @@ const theme = createTheme({
 function App() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/account'];
+  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/account', '/bookmark'];
   const hideNavbar_SidebarRoutes = ['/login', '/signup'];
 
   const shouldShowNavbar_Sidebar =
@@ -107,6 +109,7 @@ function App() {
               <Route path="/search" element={<SearchResults queries={queries} />} />
               <Route path="/myfeed" element={<MyFeed />} />
               <Route path="/account" element={<UserProfile />} />
+              <Route path="/bookmark" element={<Bookmark />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>

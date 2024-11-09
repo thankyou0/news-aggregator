@@ -14,7 +14,15 @@ const feedroute = require("./routes/rfeed.js");
 const quicksearchroute = require("./routes/rquicksearch.js");
 const sendemailroute = require("./routes/rsendemail.js");
 const changepasswordroute = require("./routes/rchangepassword.js");
+const path = require('path');
 const port = process.env.PORT || 9000;
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+// });
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log("connected to mongodb");
@@ -34,6 +42,13 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "authorization"],
   // credentials: true,
 }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 
 
 

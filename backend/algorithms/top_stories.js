@@ -4,15 +4,52 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const top_stories_model = require("../models/mtopStories");
+const newsProviderNamemodel = require("../models/mnewsProviderName.js");
+
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
+
+
+// const findChromeUserDataDir = () => {
+// 	let possiblePaths = [];
+
+// 	if (process.platform === 'win32') {
+// 		const localAppData = process.env.LOCALAPPDATA;
+// 		const appData = process.env.APPDATA;
+// 		const username = process.env.USERNAME || os.userInfo().username;
+
+// 		if (localAppData) {
+// 			possiblePaths.push(path.join(localAppData, 'Google', 'Chrome', 'User Data'));
+// 		}
+// 		if (appData) {
+// 			possiblePaths.push(path.join(appData, 'Google', 'Chrome', 'User Data'));
+// 		}
+// 		possiblePaths.push(path.join('C:', 'Users', username, 'AppData', 'Local', 'Google', 'Chrome', 'User Data'));
+// 	} else if (process.platform === 'darwin') {
+// 		possiblePaths.push(path.join(os.homedir(), 'Library', 'Application Support', 'Google', 'Chrome'));
+// 	} else {
+// 		possiblePaths.push(path.join(os.homedir(), '.config', 'google-chrome'));
+// 	}
+
+// 	for (const dir of possiblePaths) {
+// 		if (fs.existsSync(dir)) {
+// 			return dir;
+// 		}
+// 	}
+
+// 	console.log('Could not find Chrome user data directory');
+// 	return null;
+// };
+
 
 
 const scanForLinks = async (page) => {
 
 	await page.waitForSelector('article');
 
-	const articles = await page.$$eval('article', articles => {
+	const articles = await page.$$eval('article.UwIKyb', articles => {
 		return articles.map(article => {
 			const linkElement = article.querySelector('a.gPFEn');
 			const timeElement = article.querySelector('div.UOVeFe time.hvbAAd');
@@ -39,45 +76,16 @@ const scanForLinks = async (page) => {
 
 };
 
-const findChromeUserDataDir = () => {
-	let possiblePaths = [];
 
-	if (process.platform === 'win32') {
-		const localAppData = process.env.LOCALAPPDATA;
-		const appData = process.env.APPDATA;
-		const username = process.env.USERNAME || os.userInfo().username;
-
-		if (localAppData) {
-			possiblePaths.push(path.join(localAppData, 'Google', 'Chrome', 'User Data'));
-		}
-		if (appData) {
-			possiblePaths.push(path.join(appData, 'Google', 'Chrome', 'User Data'));
-		}
-		possiblePaths.push(path.join('C:', 'Users', username, 'AppData', 'Local', 'Google', 'Chrome', 'User Data'));
-	} else if (process.platform === 'darwin') {
-		possiblePaths.push(path.join(os.homedir(), 'Library', 'Application Support', 'Google', 'Chrome'));
-	} else {
-		possiblePaths.push(path.join(os.homedir(), '.config', 'google-chrome'));
-	}
-
-	for (const dir of possiblePaths) {
-		if (fs.existsSync(dir)) {
-			return dir;
-		}
-	}
-
-	console.log('Could not find Chrome user data directory');
-	return null;
-};
 
 const Scrap = async (searchby) => {
 
 
-	const userDataDir = findChromeUserDataDir();
-	if (!userDataDir) {
-		console.error('Unable to find Chrome user data directory. Please specify it manually.');
-		return;
-	}
+	// const userDataDir = findChromeUserDataDir();
+	// if (!userDataDir) {
+	// 	console.error('Unable to find Chrome user data directory. Please specify it manually.');
+	// 	return;
+	// }
 
 
 	try {
@@ -87,11 +95,11 @@ const Scrap = async (searchby) => {
 			args: [
 				"--no-sandbox",
 				"--disable-setuid-sandbox",
-				`--user-data-dir=${userDataDir}`,
+				// `--user-data-dir=${userDataDir}`,
 				"--enable-automation"  // This flag might be necessary for some extensions
 			],
 			ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
-			executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+			// executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
 			defaultViewport: false,
 		};
 
@@ -104,8 +112,10 @@ const Scrap = async (searchby) => {
 		console.log(`Starting to search for Top stories in ${country}`);
 
 		const url = `https://news.google.com/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKSlRpZ0FQAQ?hl=en-${country}&gl=${country}&ceid=${country}%3Aen`;
-
 		await page.goto(url, { waitUntil: "networkidle2" });
+		// await page.waitForTimeout(2000);
+
+		// delay(30000);
 
 		const articles = await scanForLinks(page);
 		console.log(articles.length);
@@ -114,7 +124,7 @@ const Scrap = async (searchby) => {
 		setTimeout(() => {
 		}, 0);
 
-		return articles;
+		return articles;yy
 	}
 	catch (err) {
 		return "An error occurred while Scraping top stories data.";
@@ -128,7 +138,7 @@ const Scrap = async (searchby) => {
 const ScrapTop_stories = async (req, res) => {
 
 
-	const FETCH_INTERVAL = 1000 * 60000;  // 60000 seconds
+	const FETCH_INTERVAL = 1000;  // 60000 seconds
 
 	let lastFetchTime = null;
 	lastFetchTime = await top_stories_model.findOne({}, { createdAt: 1 });
@@ -152,14 +162,13 @@ const ScrapTop_stories = async (req, res) => {
 		});
 
 		try {
-			await top_stories_model?.deleteMany({});
 		} catch (err) {
 			res.status(210).json({ success: false, articles: "An error occurred while deleting the data from the database " });
 		}
 
 		try {
 			// console.log(articles);
-			
+
 			articles?.forEach(async (article) => {
 
 				if (article) {
@@ -172,11 +181,61 @@ const ScrapTop_stories = async (req, res) => {
 					await newArticle.save();
 				}
 			});
+
+			articles.forEach(async (article) => {
+				const url = new URL(article.providerImg);
+				const params = new URLSearchParams(url.search);
+				const baseUrl = params.get('url');
+				const finalURL = baseUrl ? new URL(baseUrl).origin : null;
+
+				let providerName = finalURL.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/^m\./, "").replace(/\.com$/, "").replace(/\.in$/, "");
+
+				if (providerName.includes('.')) {
+					providerName = providerName.replace(/\./g, '-');
+				}
+
+				try {
+					const provider = await newsProviderNamemodel.findOne({ url: finalURL });
+
+					if (!provider) {
+						await newsProviderNamemodel.create({ name: providerName, url: finalURL });
+					}
+				} catch (err) {
+					console.log(err);
+				}
+
+			});
+			// for (const article of articles) {
+			// 	const url = new URL(article.providerImg);
+			// 	const params = new URLSearchParams(url.search);
+			// 	const baseUrl = params.get('url');
+			// 	const finalURL = baseUrl ? new URL(baseUrl).origin : null;
+
+			// 	let providerName = finalURL.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/^m\./, "").replace(/\.com$/, "").replace(/\.in$/, "");
+
+			// 	if (providerName.includes('.')) {
+			// 		providerName = providerName.replace(/\./g, '-');
+			// 	}
+
+			// 	console.log(providerName);	
+
+			// 	try {
+			// 		const provider = await newsProviderNamemodel.findOne({ url: finalURL });
+
+			// 		if (!provider) {
+			// 			await newsProviderNamemodel.create({ name: providerName, url: finalURL });
+			// 		}
+			// 	} catch (err) {
+			// 		console.log(err);
+			// 	}
+			// }
+
+
 			res.status(202).json({ success: true, articles: articles });
 		}
 		catch (err) {
 			console.log(err);
-			res.status(210).json({ success: false, articles: "An error occurred while saving the data to the database "});
+			res.status(210).json({ success: false, articles: "An error occurred while saving the data to the database " });
 
 		}
 
@@ -184,6 +243,7 @@ const ScrapTop_stories = async (req, res) => {
 	else {
 		try {
 			const top_stories = await top_stories_model.find();
+
 			res.status(202).json({ success: true, articles: top_stories });
 		} catch (error) {
 			res.status(210).json({ success: false, message: error });
@@ -196,6 +256,7 @@ const ScrapTop_stories = async (req, res) => {
 
 
 module.exports = { ScrapTop_stories };
+
 
 
 
