@@ -1,10 +1,7 @@
 const puppeteer = require("puppeteer");
 const randomUseragent = require("random-useragent"); // Added random-useragent
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
 const top_stories_model = require("../models/mtopStories");
-const newsProviderNamemodel = require("../models/mnewsProviderName.js");
+const newsProvidermodel = require("../models/mnewsProvider.js");
 
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -124,7 +121,7 @@ const Scrap = async (searchby) => {
 		setTimeout(() => {
 		}, 0);
 
-		return articles;yy
+		return articles; yy
 	}
 	catch (err) {
 		return "An error occurred while Scraping top stories data.";
@@ -133,12 +130,10 @@ const Scrap = async (searchby) => {
 
 
 
-
-
 const ScrapTop_stories = async (req, res) => {
 
 
-	const FETCH_INTERVAL = 1000;  // 60000 seconds
+	const FETCH_INTERVAL = 1000 * 600000;  // 600000 seconds
 
 	let lastFetchTime = null;
 	lastFetchTime = await top_stories_model.findOne({}, { createdAt: 1 });
@@ -182,29 +177,33 @@ const ScrapTop_stories = async (req, res) => {
 				}
 			});
 
+			// await newsProvidermodel.deleteMany({});
+
 			articles.forEach(async (article) => {
 				const url = new URL(article.providerImg);
 				const params = new URLSearchParams(url.search);
 				const baseUrl = params.get('url');
 				const finalURL = baseUrl ? new URL(baseUrl).origin : null;
 
-				let providerName = finalURL.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/^m\./, "").replace(/\.com$/, "").replace(/\.in$/, "");
+				let providerName = finalURL.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\.com$/, "").replace(/\.in$/, "");
 
 				if (providerName.includes('.')) {
 					providerName = providerName.replace(/\./g, '-');
 				}
 
 				try {
-					const provider = await newsProviderNamemodel.findOne({ url: finalURL });
+					const provider = await newsProvidermodel.findOne({ baseURL: finalURL });
+					// console.log(finalURL, provider);
 
 					if (!provider) {
-						await newsProviderNamemodel.create({ name: providerName, url: finalURL });
+						await newsProvidermodel.create({ name: providerName, baseURL: finalURL, logo: article.providerImg });
 					}
 				} catch (err) {
 					console.log(err);
 				}
 
 			});
+
 			// for (const article of articles) {
 			// 	const url = new URL(article.providerImg);
 			// 	const params = new URLSearchParams(url.search);
@@ -220,10 +219,10 @@ const ScrapTop_stories = async (req, res) => {
 			// 	console.log(providerName);	
 
 			// 	try {
-			// 		const provider = await newsProviderNamemodel.findOne({ url: finalURL });
+			// 		const provider = await newsProvidermodel.findOne({ url: finalURL });
 
 			// 		if (!provider) {
-			// 			await newsProviderNamemodel.create({ name: providerName, url: finalURL });
+			// 			await newsProvidermodel.create({ name: providerName, url: finalURL });
 			// 		}
 			// 	} catch (err) {
 			// 		console.log(err);

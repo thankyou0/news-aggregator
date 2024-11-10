@@ -264,7 +264,7 @@ const Navbar = () => {
                 <Link className={`nav-link active ${mode === 'dark' ? 'text-dark' : 'text-light'}`} aria-current="page" to="/">Home</Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="#">Link</Link>
+                <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/providers/all">Providers</Link>
               </li>
             </ul>
 

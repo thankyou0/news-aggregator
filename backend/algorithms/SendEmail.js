@@ -11,7 +11,7 @@ async function sendEmail(username, email, code) {
   const REDIRECT_URI = process.env.REDIRECT_URI;
   const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
-  console.log(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REFRESH_TOKEN);
+  // console.log(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REFRESH_TOKEN);
 
   const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 

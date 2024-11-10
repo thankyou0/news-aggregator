@@ -12,7 +12,6 @@ const getQuickSearch = async (req, res) => {
   if (!user_id) {
     return res.status(210).json({ success: false, message: "User id is required" });
   }
-  console.log("user_id", user_id);
 
   const quickSearchUser = await quickSearch_model.findOne({ user_id });
 

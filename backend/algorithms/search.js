@@ -2,7 +2,7 @@
 const { Cluster } = require("puppeteer-cluster");
 const randomUseragent = require("random-useragent"); // Added random-useragent
 const addSearchLocation = require("../controllers/csearchLocation.js");
-const newsProviderNamemodel = require("../models/mnewsProviderName.js");
+const newsProvidermodel = require("../models/mnewsProvider.js");
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -207,21 +207,20 @@ const scrapSearch = async (req, res) => {
     await addSearchLocation(req, res, Text);
   }
 
-  articles.forEach((article) => {
+  articles.forEach(async (article) => {
     const urlObj = new URL(article.link);
 
     const ProviderBaseURL = `${urlObj.protocol}//${urlObj.hostname}`;
 
-    newsProviderNamemodel.findOne({ url: ProviderBaseURL })
+    await newsProvidermodel.findOne({ baseURL: ProviderBaseURL })
       .then(provider => {
         if (provider) {
           // console.log("Provider already exists");
         } else {
-          return newsProviderNamemodel.create({ name: article.providerName, url: ProviderBaseURL });
+          return newsProvidermodel.create({ name: article.providerName, baseURL: ProviderBaseURL, logo: article.providerImg });
         }
       })
       .catch(err => console.log(err));
-
   });
 
 

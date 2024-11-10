@@ -17,6 +17,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import UserProfile from './pages/UserProfile';
+import NewsProviderPage from './pages/NewsProviderPage.jsx';
 
 
 const theme = createTheme({
@@ -29,7 +30,7 @@ const theme = createTheme({
 function App() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/account', '/bookmark'];
+  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/account', '/bookmark', '/providers/all', '/providers/following'];
   const hideNavbar_SidebarRoutes = ['/login', '/signup'];
 
   const shouldShowNavbar_Sidebar =
@@ -44,6 +45,7 @@ function App() {
     gl: searchParams.get('gl'),
     location: searchParams.get('location'),
   };
+
 
 
   return (
@@ -110,6 +112,8 @@ function App() {
               <Route path="/myfeed" element={<MyFeed />} />
               <Route path="/account" element={<UserProfile />} />
               <Route path="/bookmark" element={<Bookmark />} />
+              <Route path="/providers/all" element={<NewsProviderPage provider={"all"} />} />
+              <Route path="/providers/following" element={<NewsProviderPage provider={"following"} />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>

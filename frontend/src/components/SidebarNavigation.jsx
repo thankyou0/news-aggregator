@@ -18,11 +18,14 @@ import { ThemeContext } from '../context/ThemeContext';
 import feedImgDark from '../images/feed_dark.png'; // Dark mode feed image
 import feedImgLight from '../images/feed_light.png'; // Light mode feed image
 import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
+import following_light from '../images/following_light.png';
+import following_dark from '../images/following_dark.png';
 
 
 const NAVIGATION = [
   { title: 'Home', icon: <HomeRoundedIcon />, path: '/' },
   { title: 'Feed', icon: 'feedImg', path: '/myfeed' }, // Custom image for "My Feed"
+  { title: 'Following', icon: 'followingImg', path: '/providers/following' }, // Custom image for "Following"
   { title: 'Bookmark', icon: <BookmarkRoundedIcon />, path: '/bookmark' }, // Custom image for "My Feed"
   { kind: 'divider' },
   { title: 'Account', icon: <AccountCircleRoundedIcon />, path: '/account' },
@@ -34,6 +37,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
 
   const toggleDrawer = (state) => () => setOpen(state); // Toggle sidebar open/close
   const feedImg = mode === 'light' ? feedImgDark : feedImgLight;
+  const followingImg = mode === 'light' ? following_light : following_dark;
   return (
     <>
       {/* Sidebar toggle button */}
@@ -109,7 +113,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
                   >
                     {item.icon === 'feedImg' ? (
                       <img src={feedImg} alt="feed icon" style={{ width: 24, height: 24 }} /> // Use the custom feed image
-                    ) : (
+                      ) : item.icon === 'followingImg' ? <img src={followingImg} alt="following icon" style={{ width: 24, height: 24 }}/> : (
                       item.icon
                     )}
                   </ListItemIcon>

@@ -1,6 +1,7 @@
 const bookmark_model = require('../models/mbookmark');
 const like_model = require('../models/mlike');
-
+const usermodel = require('../models/muser');
+const newsProvidermodel = require('../models/mnewsProvider');
 
 const getBookmarkArticle = async (req, res) => {
   const bookmarks = await bookmark_model.find({ user_id: req.user.id });
@@ -107,7 +108,70 @@ const isLiked = async (req, res) => {
   return res.status(202).json({ success: true, liked: true });
 }
 
-module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked };
+const addFollow = async (req, res) => {
+  const { baseURL } = req.body;
+
+  if (!baseURL) {
+    return res.status(210).json({ success: false, message: "BaseURL is required" });
+  }
+
+  const provider = await newsProvidermodel.findOneAndUpdate({ baseURL }, { $addToSet: { followers: req.user.id } });
+
+  const user = await usermodel.findByIdAndUpdate(req.user.id, { $addToSet: { following: baseURL } });
+
+
+
+
+  if (!provider|| !user) {
+    return res.status(210).json({ success: false, message: "error while Follow" });
+  }
+
+  return res.status(202).json({ success: true, message: "Followed successfully" });
+}
+
+const deleteFollow = async (req, res) => { 
+
+  const { baseURL } = req.body;
+
+  if (!baseURL) {
+    return res.status(210).json({ success: false, message: "BaseURL is required" });
+  }
+
+  const provider = await newsProvidermodel.findOneAndUpdate({ baseURL }, { $pull: { followers: req.user.id } });
+
+  const user = await usermodel.findByIdAndUpdate(req.user.id, { $pull: { following: baseURL } });
+
+  if (!provider|| !user) {
+    return res.status(210).json({ success: false, message: "error while unfollow" });
+  }
+
+  return res.status(202).json({ success: true, message: "Unfollowed successfully" });
+}
+
+const isFollowed = async (req, res) => {
+
+  try {
+    const { baseURL } = req.body;
+
+    if (!baseURL) {
+      return res.status(210).json({ success: false, message: "BaseURL is required" });
+    }
+
+    const user_follow = await usermodel.findById(req.user.id).select('following');
+
+    if (user_follow.following.includes(baseURL)) {
+      return res.status(202).json({ success: true, isFollowing: true });
+    }
+
+    return res.status(202).json({ success: true, isFollowing: false });
+  } catch (error) {
+    console.error('Failed to check follow status:', error);
+    return res.status(210).json({ success: false, message: "Error while checking follow status" });
+  }
+}
+
+
+module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed };
 
 
 

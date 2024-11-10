@@ -40,8 +40,8 @@ const Bookmark = () => {
     onError: (error) => {
       console.error("GET request error:", error);
     },
-    staleTime: 6000000,
-    cacheTime: 6000000,
+    staleTime: 0,
+    cacheTime: 0,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retry: false,

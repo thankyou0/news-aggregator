@@ -58,7 +58,7 @@ const getTextByCount = async (id) => {
 let TextArray = [];
 
 const ByText1 = async (req, res) => {
-  console.log("ByText1");
+  // console.log("ByText1");
   
 
   try {

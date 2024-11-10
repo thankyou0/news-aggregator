@@ -14,6 +14,7 @@ const feedroute = require("./routes/rfeed.js");
 const quicksearchroute = require("./routes/rquicksearch.js");
 const sendemailroute = require("./routes/rsendemail.js");
 const changepasswordroute = require("./routes/rchangepassword.js");
+const providerroute = require("./routes/rprovider.js");
 const path = require('path');
 const port = process.env.PORT || 9000;
 
@@ -68,6 +69,7 @@ app.use("/api/sendemail", sendemailroute);
 
 app.use("/api/changepassword", checkAuth, changepasswordroute);
 
+app.use("/api/provider", checkAuth, providerroute);
 
 
 app.listen(port, () => {
