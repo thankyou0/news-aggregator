@@ -15,10 +15,15 @@ const NewsProviderPage = (props) => {
 
   useEffect(() => {
     const fetchProviders = async () => {
+
+      console.log('asfafd');
       try {
-        const result = await GET(props.provider==="all" ? '/api/provider/get_all_providers' : '/api/provider/get_following_providers');
+        const result = await GET(props.provider === "all" ? '/api/provider/get_all_providers' : '/api/provider/get_following_providers');
         if (result.data.success) {
           setProviders(result.data.providers);
+        }
+        else {
+          console.log('error');
         }
       } catch (error) {
         console.error('Failed to fetch providers:', error);
@@ -46,7 +51,7 @@ const NewsProviderPage = (props) => {
     <Box sx={{
       minHeight: '100vh',
       py: 6,
-      marginTop:"100px"
+      marginTop: "100px"
 
     }}>
       <Container maxWidth="lg">

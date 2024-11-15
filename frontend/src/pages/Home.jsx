@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { GET } from "../api.js";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
@@ -15,19 +15,73 @@ import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 import { useNavigate } from "react-router-dom";
 gsap.registerPlugin(ScrollTrigger);
 
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window;
+  // console.log(width, height);
+  return {
+    width,
+    height,
+  };
+}
+
+function useWindowDimensions() {
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowDimensions;
+}
+
 const Home = () => {
   const { mode } = useContext(ThemeContext);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [ isLoggedIn, setIsLoggedIn ] = useState( false ); // New state for login status
-  const navigator = useNavigate(); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for login status
+  const navigator = useNavigate();
   const PAGE_SIZE = 15;
+  useWindowDimensions();
+  // const { Height, Width } = getWindowDimensions();
+  const [innerheight, setInnerHeight] = useState(0);
+  const [innerwidth, setInnerWidth] = useState(0);
+  useEffect(() => {
+    setInnerHeight(window.innerHeight);
+    setInnerWidth(window.innerWidth);
+  }, [innerheight, innerwidth]);
+  // console.log( innerwidth, innerheight );
+
+
+  const [initialDevicePixelRatio] = useState(window.devicePixelRatio);
+
+  // Add a resize listener to detect zoom
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.devicePixelRatio !== initialDevicePixelRatio) {
+        window.location.reload(); // Reloads the page if zoom is detected
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [initialDevicePixelRatio]);
+
 
   const LoginPage = () => {
-    navigator( "/login" );
-  }
+    navigator("/login");
+  };
   const {
     data: articles = [],
     isLoading,
@@ -191,7 +245,15 @@ const Home = () => {
             className="news-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns:
+                innerwidth >= 2752 && innerheight >= 2244
+                  ? "repeat(4,1fr)"
+                  : innerwidth >= 1376 && innerheight >= 1122
+                    ? "repeat(3, 1fr)"
+                    : (innerwidth >= 1223 && innerheight >= 997) ||
+                      (innerwidth >= 1147 && innerheight >= 935)
+                      ? "repeat(2,1fr)"
+                      : "1fr",
               gap: "1rem",
               alignItems: "start",
             }}
@@ -218,8 +280,8 @@ const Home = () => {
             )}
           </div>
 
-          <style jsx>{`
-            @media (max-width: 900px) {
+          {/* <style jsx>{`
+            @media screen and (max-width: 900px) {
               .news-grid {
                 grid-template-columns: repeat(2, 1fr);
               }
@@ -230,25 +292,25 @@ const Home = () => {
                 grid-template-columns: 1fr;
               }
             }
-          `}</style>
+          `}</style> */}
 
           {!isLoggedIn && (
-                <button
-                type="submit"
-                style={{
-                  fontFamily: "'Quicksand', 'Arial', sans-serif",
-                  fontWeight: "bold",
-                  borderRadius: "12px",
-                  backgroundColor: "#134611",
-                  color: "white",
-                  cursor: "pointer",
-                  width: "100%",
-                  padding: "10px",
-                }}
-                onClick={LoginPage}
-              >
-                Login to view more articles
-              </button>
+            <button
+              type="submit"
+              style={{
+                fontFamily: "'Quicksand', 'Arial', sans-serif",
+                fontWeight: "bold",
+                borderRadius: "12px",
+                backgroundColor: "#134611",
+                color: "white",
+                cursor: "pointer",
+                width: "100%",
+                padding: "10px",
+              }}
+              onClick={LoginPage}
+            >
+              Login to view more articles
+            </button>
           )}
 
           {isLoggedIn && (

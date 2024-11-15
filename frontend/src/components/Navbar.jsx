@@ -180,6 +180,7 @@ const Navbar = () => {
     position: 'relative',
     backgroundColor: mode === 'dark' ? '#f0f0f0' : '#464646',
     backdropFilter: "blur(10px)",
+    paddingLeft: '20px',
   };
 
   const afterStyle = {
@@ -626,6 +627,7 @@ const Navbar = () => {
           backgroundColor: mode === 'dark' ? '#464646' : 'rgb(230, 230, 230)', // Background color for both modes
           color: mode === 'dark' ? '#fff' : '#000', // Text color for both modes
           zIndex: 1,
+          marginLeft: '20px',
         }}
       >
         <div>
