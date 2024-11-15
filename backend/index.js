@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 
 app.use("/api/user", userroute);
 
-app.use("/api/algorithms", checkAuth, algorithmsroute);
+app.use("/api/algorithms", algorithmsroute);
 
 app.use("/api/search", checkAuth, searchroute);
 
@@ -69,7 +69,7 @@ app.use("/api/sendemail", sendemailroute);
 
 app.use("/api/changepassword", checkAuth, changepasswordroute);
 
-app.use("/api/provider", checkAuth, providerroute);
+app.use("/api/provider", providerroute);
 
 
 app.listen(port, () => {

@@ -339,72 +339,80 @@ const NewsCard = (props) => {
               </Tooltip>
 
               <Tooltip title="Like" placement="bottom" arrow>
-                <IconButton
-                  sx={{
-                    height: '48px',
-                    width: '48px',
-                    alignSelf: 'center',
-                    marginBottom: '8px',
-                  }}
-                  aria-label="like"
-                  onClick={handleLikeClick}
-                >
-                  {liked ? (
-                    <HeartIcon sx={{ fontSize: '28px', color: 'red' }} />
-                  ) : (
-                    <HeartBorderIcon sx={{ fontSize: '28px' }} />
-                  )}
-                </IconButton>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <IconButton
+                    sx={{
+                      height: '48px',
+                      width: '48px',
+                      alignSelf: 'center',
+                      marginBottom: '4px',
+                    }}
+                    aria-label="like"
+                    onClick={handleLikeClick}
+                  >
+                    {liked ? (
+                      <HeartIcon sx={{ fontSize: '28px', color: 'red' }} />
+                    ) : (
+                      <HeartBorderIcon sx={{ fontSize: '28px' }} />
+                    )}
+                  </IconButton>
+                  <Typography variant="caption" color="text.secondary">
+                    {2} {/* Assuming likeCount is passed as a prop */}
+                  </Typography>
+                </Box>
               </Tooltip>
 
-              <Tooltip title="Comments" placement="bottom" arrow>
-                <IconButton
-                  sx={{
-                    height: '48px',
-                    width: '48px',
-                    alignSelf: 'center',
-                    marginBottom: '8px',
-                  }}
-                  aria-label="comments"
-                  onClick={handleCommentsClick}
-                >
-                  <InsertCommentRoundedIcon sx={{ fontSize: '28px' }} />
-                </IconButton>
-              </Tooltip>
 
-              <CommentsMenu
-                isOpen={showComments}
-                anchorEl={anchorEl}
-                onClose={() => setShowComments(false)}
-                articleURL={props.link}
-              />
+            <Tooltip title="Comments" placement="bottom" arrow>
+              <IconButton
+                sx={{
+                  height: '48px',
+                  width: '48px',
+                  alignSelf: 'center',
+                  marginBottom: '8px',
+                }}
+                aria-label="comments"
+                onClick={handleCommentsClick}
+              >
+                <InsertCommentRoundedIcon sx={{ fontSize: '28px' }} />
+              </IconButton>
+            </Tooltip>
 
-              <Tooltip title="Share" placement="bottom" arrow>
-                <IconButton
-                  sx={{
-                    height: '48px',
-                    width: '48px',
-                    alignSelf: 'center',
-                  }}
-                  aria-label="share"
-                  onClick={() => setShowShareDialog(true)}
-                >
-                  <ShareButton sx={{ fontSize: '28px' }} />
-                </IconButton>
-              </Tooltip>
-            </Box>
+            <CommentsMenu
+              isOpen={showComments}
+              anchorEl={anchorEl}
+              onClose={() => setShowComments(false)}
+              articleURL={props.link}
+            />
+
+            <Tooltip title="Share" placement="bottom" arrow>
+              <IconButton
+                sx={{
+                  height: '48px',
+                  width: '48px',
+                  alignSelf: 'center',
+                }}
+                aria-label="share"
+                onClick={() => setShowShareDialog(true)}
+              >
+                <ShareButton sx={{ fontSize: '28px' }} />
+              </IconButton>
+            </Tooltip>
           </Box>
-        </Card>
       </Box>
+    </Card>
+      </Box >
 
 
-      {/* Share Dialog */}
-      {showShareDialog && (
-        <div ref={shareDialogRef}>
-          <ShareDialog link={props.link} onClose={() => setShowShareDialog(false)} id="share-dialog" />
-        </div>
-      )}
-    </Box>
+  {/* Share Dialog */ }
+{
+  showShareDialog && (
+    <div ref={shareDialogRef}>
+      <ShareDialog link={props.link} onClose={() => setShowShareDialog(false)} id="share-dialog" />
+    </div>
+  )
+}
+    </Box >
   );
 };
 
