@@ -7,9 +7,11 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { POST } from '../api';
 import HeartIcon from '@mui/icons-material/Favorite';
 import HeartBorderIcon from '@mui/icons-material/FavoriteBorder';
+import InsertCommentRoundedIcon from '@mui/icons-material/InsertCommentRounded';
 import ShareButton from '@mui/icons-material/Share';
 import ShareDialog from './ShareDialog';
 import { toast } from "react-hot-toast";
+import CommentsMenu from './CommentsMenu';
 
 const NewsCard = (props) => {
   const { mode } = useContext(ThemeContext);
@@ -133,6 +135,15 @@ const NewsCard = (props) => {
     }
   };
 
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleCommentsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setShowComments(true);
+  };
+
+
   useEffect(() => {
     if (showShareDialog) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -144,6 +155,9 @@ const NewsCard = (props) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showShareDialog]);
+
+  const [showComments, setShowComments] = useState(false);
+
 
   return (
     <Box
@@ -176,9 +190,13 @@ const NewsCard = (props) => {
             boxShadow: 'none',
             width: '900px',
             height: '100%',
-            backgroundColor: mode === 'light' ? 'rgb(246  , 246 , 246  )' : 'rgb(50, 50, 50)',
+            backgroundColor: showComments
+              ? (mode === 'light' ? 'rgb(230, 230, 230)' : 'rgb(70, 70, 70)')
+              : (mode === 'light' ? 'rgb(246, 246, 246)' : 'rgb(50, 50, 50)'),
             '&:hover': {
-              backgroundColor: mode === 'light' ? 'rgb(240, 240, 240)' : 'rgb(60, 60, 60)',
+              backgroundColor: showComments
+                ? (mode === 'light' ? 'rgb(220, 220, 220)' : 'rgb(80, 80, 80)')
+                : (mode === 'light' ? 'rgb(240, 240, 240)' : 'rgb(60, 60, 60)'),
             },
           }}
         >
@@ -339,6 +357,28 @@ const NewsCard = (props) => {
                 </IconButton>
               </Tooltip>
 
+              <Tooltip title="Comments" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: '48px',
+                    width: '48px',
+                    alignSelf: 'center',
+                    marginBottom: '8px',
+                  }}
+                  aria-label="comments"
+                  onClick={handleCommentsClick}
+                >
+                  <InsertCommentRoundedIcon sx={{ fontSize: '28px' }} />
+                </IconButton>
+              </Tooltip>
+
+              <CommentsMenu
+                isOpen={showComments}
+                anchorEl={anchorEl}
+                onClose={() => setShowComments(false)}
+                articleURL={props.link}
+              />
+
               <Tooltip title="Share" placement="bottom" arrow>
                 <IconButton
                   sx={{
@@ -357,73 +397,6 @@ const NewsCard = (props) => {
         </Card>
       </Box>
 
-      {/* Action Buttons */}
-      {/* <Box
-        className="action-buttons"
-        sx={{
-          position: 'absolute',
-          right: 0,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          opacity: 0,
-          visibility: 'hidden',
-          transition: 'opacity 0.2s ease-in-out',
-        }}
-      >
-        <Tooltip title="Save" placement="right" arrow>
-          <IconButton
-            sx={{
-              height: '48px',
-              width: '48px',
-              alignSelf: 'center',
-              marginBottom: '8px',
-            }}
-            aria-label="save"
-            onClick={handleBookmarkClick}
-          >
-            {bookmarked ? (
-              <BookmarkIcon sx={{ fontSize: '28px', color: 'primary.main' }} />
-            ) : (
-              <BookmarkBorderIcon sx={{ fontSize: '28px' }} />
-            )}
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Like" placement="right" arrow>
-          <IconButton
-            sx={{
-              height: '48px',
-              width: '48px',
-              alignSelf: 'center',
-              marginBottom: '8px',
-            }}
-            aria-label="like"
-            onClick={handleLikeClick}
-          >
-            {liked ? (
-              <HeartIcon sx={{ fontSize: '28px', color: 'red' }} />
-            ) : (
-              <HeartBorderIcon sx={{ fontSize: '28px' }} />
-            )}
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Share" placement="right" arrow>
-          <IconButton
-            sx={{
-              height: '48px',
-              width: '48px',
-              alignSelf: 'center',
-            }}
-            aria-label="share"
-            onClick={() => setShowShareDialog(true)}
-          >
-            <ShareButton sx={{ fontSize: '28px' }} />
-          </IconButton>
-        </Tooltip>
-      </Box> */}
 
       {/* Share Dialog */}
       {showShareDialog && (

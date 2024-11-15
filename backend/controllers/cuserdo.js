@@ -2,6 +2,9 @@ const bookmark_model = require('../models/mbookmark');
 const like_model = require('../models/mlike');
 const usermodel = require('../models/muser');
 const newsProvidermodel = require('../models/mnewsProvider');
+const comment_model = require('../models/mcomments');
+const { v4: uuidv4 } = require('uuid');
+
 
 const getBookmarkArticle = async (req, res) => {
   const bookmarks = await bookmark_model.find({ user_id: req.user.id });
@@ -122,14 +125,14 @@ const addFollow = async (req, res) => {
 
 
 
-  if (!provider|| !user) {
+  if (!provider || !user) {
     return res.status(210).json({ success: false, message: "error while Follow" });
   }
 
   return res.status(202).json({ success: true, message: "Followed successfully" });
 }
 
-const deleteFollow = async (req, res) => { 
+const deleteFollow = async (req, res) => {
 
   const { baseURL } = req.body;
 
@@ -141,7 +144,7 @@ const deleteFollow = async (req, res) => {
 
   const user = await usermodel.findByIdAndUpdate(req.user.id, { $pull: { following: baseURL } });
 
-  if (!provider|| !user) {
+  if (!provider || !user) {
     return res.status(210).json({ success: false, message: "error while unfollow" });
   }
 
@@ -170,8 +173,121 @@ const isFollowed = async (req, res) => {
   }
 }
 
+const addComment = async (req, res) => {
 
-module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed };
+  try {
+    const { articleURL, comment } = req.body;
+
+    // Check for required fields
+    if (!articleURL || !comment) {
+      return res.status(210).json({
+        success: false, message: "ArticleURL, Username, and Comment are required"
+      });
+    }
+
+    const existingComment = await comment_model.findOne({ articleURL });
+
+    if (existingComment) {
+      existingComment.user.push({
+        username: req.user.username,
+        comment,
+        commentId: uuidv4()
+      });
+      await existingComment.save();
+      return res.status(210).json({ success: true, message: "Comment added successfully", username: req.user.username });
+    }
+    else {
+      const newComment = new comment_model({
+        articleURL,
+        user: [
+          {
+            username: req.user.username, // Adding username from request body
+            comment: comment,
+            commentId: uuidv4()
+          }
+        ]
+      });
+
+      // Save the new comment to the database
+      console.log(newComment);
+      await newComment.save();
+
+      // Respond with success
+      return res.status(202).json({
+        success: true, message: "Comment added successfully",
+      });
+    }
+
+  } catch (error) {
+    console.error("Failed to add comment:", error);
+    return res.status(210).json({
+      success: false,
+      message: "Error while adding comment"
+    });
+  }
+
+}
+
+const deleteComment = async (req, res) => {
+
+  try {
+    const { articleURL, commentId } = req.body;
+
+    // Check for required fields
+    if (!articleURL || !commentId) {
+      return res.status(210).json({ success: false, message: "ArticleURL and timestamp are required" });
+    }
+
+
+    const existingComment = await comment_model.findOne({ articleURL });
+
+    if (!existingComment) {
+      return res.status(210).json({ success: false, message: "Comment not found" });
+    }
+
+    existingComment.user = existingComment.user.filter((user) => user.commentId !== commentId);
+
+
+    await existingComment.save();
+
+    return res.status(202).json({ success: true, message: "Comment deleted successfully" });
+
+  }
+  catch (error) {
+    console.error('Failed to delete comment:', error);
+    return res.status(210).json({ success: false, message: "Error while deleting comment" });
+  }
+
+}
+
+const getCommentsOfArticles = async (req, res) => {
+  try {
+    const { articleURL } = req.body;
+
+    if (!articleURL) {
+      return res.status(210).json({ success: false, message: "ArticleURL is required" });
+    }
+
+    const comments = await comment_model.findOne({ articleURL });
+
+    if (!comments) {
+      return res.status(210).json({ success: true, comments: [] });
+    }
+
+    return res.status(202).json({ success: true, comments: comments.user, loggedUserName: req.user.username });
+
+
+  }
+  catch (error) {
+    console.error('Failed to get comments:', error);
+    return res.status(210).json({ success: false, message: "Error while getting comments" });
+  }
+}
+
+
+
+
+module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles };
 
 
 

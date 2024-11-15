@@ -36,16 +36,16 @@ const logInPost = async (req, res) => {
   // Decrypt the stored password
   const decryptedPwd = CryptoJS.AES.decrypt(password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
   console.log("decryptedPwd", decryptedPwd);
-  
+
   const decrypteuserExistPwd = CryptoJS.AES.decrypt(userExist.password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
   console.log("decrypteuserExistPwd", decrypteuserExistPwd);
-  
+
 
   if (decryptedPwd !== decrypteuserExistPwd) {
     return res.status(210).json({ success: false, message: "Invalid password" });
   }
 
-  const token = jsonwebtoken.sign({ id: userExist._id }, process.env.JWT_SECRET);
+  const token = jsonwebtoken.sign({ id: userExist._id, username: userExist.username }, process.env.JWT_SECRET);
 
   return res.status(202).json({ success: true, message: "User signed in successfully", token: token });
 
@@ -96,14 +96,14 @@ const signUpPost = async (req, res) => {
     }
 
 
-    const token = jsonwebtoken.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jsonwebtoken.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET);
 
     // console.log("token", token);
 
     const verificationCode = new verificationcodemodel({
       username,
       email,
-      code : "123456"
+      code: "123456"
     })
     await verificationCode.save();
 
@@ -124,15 +124,15 @@ const getUserProfile = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
 
-  
+
   const user =
     await usermodel.findByIdAndUpdate
       (req.user.id,
         req.body,
         { new: true }
-    );
-  
-  if(!user){
+      );
+
+  if (!user) {
     return res.status(210).json({ success: false, message: "User not found" });
   }
   return res.status(202).json({ success: true, message: "Profile Updated Successfully" });
