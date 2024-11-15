@@ -25,6 +25,8 @@ const NewsCard = (props) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [liked, setLiked] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [numLikes, setNumLikes] = useState(0);
+  const [numComments, setNumComments] = useState(0);
   const shareDialogRef = useRef(null);
 
   useEffect(() => {
@@ -49,23 +51,25 @@ const NewsCard = (props) => {
       if (result.data.success) {
         setLiked(result.data.liked);
       }
+
+      const NumLikesResult = await POST('/api/userdo/numLikes', ArticleDetails);
+      if (NumLikesResult.data.success) {
+        setNumLikes(NumLikesResult.data.numLikes);
+      }
+
     })();
-  }, [props.title]);
+  }, [props.title, numLikes]);
 
-  // const handleBookmarkClick = async () => {
-  //   setBookmarked(!bookmarked);
-  //   const ArticleDetails = { title: props.title, link: props.link, imgURL: props.imgURL, providerName: props.providerName, providerImg: props.providerImg, time: props.time, someText: props.someText };
+  useEffect(() => {
 
-  //   const result = bookmarked
-  //     ? await POST('/api/userdo/deleteBookmark', ArticleDetails)
-  //     : await POST('/api/userdo/addBookmark', ArticleDetails);
+    (async () => {
+      const numCommentsResult = await POST('/api/userdo/numComments', { articleURL: props.link });
+      if (numCommentsResult.data.success) {
+        setNumComments(numCommentsResult.data.numComments);
+      }
+    })();
+  }, [props.link, numComments]);
 
-  //   if (result.data.success) {
-  //     showAlert(bookmarked ? "Article Unsaved Successfully" : "Article Saved Successfully", "success");
-  //   } else {
-  //     showAlert(result.data.message, "error");
-  //   }
-  // };
   const handleBookmarkClick = async () => {
     setBookmarked(!bookmarked);
 
@@ -127,6 +131,11 @@ const NewsCard = (props) => {
       }
     );
     await likePromise;
+
+    const NumLikesResult = await POST('/api/userdo/numLikes', ArticleDetails);
+    if (NumLikesResult.data.success) {
+      setNumLikes(NumLikesResult.data.numLikes);
+    }
   };
 
   const handleClickOutside = (event) => {
@@ -357,61 +366,68 @@ const NewsCard = (props) => {
                     )}
                   </IconButton>
                   <Typography variant="caption" color="text.secondary">
-                    {2} {/* Assuming likeCount is passed as a prop */}
+                    {numLikes} {/* Assuming likeCount is passed as a prop */}
                   </Typography>
                 </Box>
               </Tooltip>
 
 
-            <Tooltip title="Comments" placement="bottom" arrow>
-              <IconButton
-                sx={{
-                  height: '48px',
-                  width: '48px',
-                  alignSelf: 'center',
-                  marginBottom: '8px',
-                }}
-                aria-label="comments"
-                onClick={handleCommentsClick}
-              >
-                <InsertCommentRoundedIcon sx={{ fontSize: '28px' }} />
-              </IconButton>
-            </Tooltip>
+              <Tooltip title="Comments" placement="bottom" arrow>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <IconButton
+                    sx={{
+                      height: '48px',
+                      width: '48px',
+                      alignSelf: 'center',
+                      marginBottom: '8px',
+                    }}
+                    aria-label="comments"
+                    onClick={handleCommentsClick}
+                  >
+                    <InsertCommentRoundedIcon sx={{ fontSize: '28px' }} />
+                  </IconButton>
 
-            <CommentsMenu
-              isOpen={showComments}
-              anchorEl={anchorEl}
-              onClose={() => setShowComments(false)}
-              articleURL={props.link}
-            />
+                  <Typography variant="caption" color="text.secondary">
+                    {numComments}
+                  </Typography>
+                </Box>
+              </Tooltip>
 
-            <Tooltip title="Share" placement="bottom" arrow>
-              <IconButton
-                sx={{
-                  height: '48px',
-                  width: '48px',
-                  alignSelf: 'center',
-                }}
-                aria-label="share"
-                onClick={() => setShowShareDialog(true)}
-              >
-                <ShareButton sx={{ fontSize: '28px' }} />
-              </IconButton>
-            </Tooltip>
+              <CommentsMenu
+                isOpen={showComments}
+                anchorEl={anchorEl}
+                onClose={() => setShowComments(false)}
+                articleURL={props.link}
+                setNumComments={setNumComments}
+              />
+
+              <Tooltip title="Share" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: '48px',
+                    width: '48px',
+                    alignSelf: 'center',
+                  }}
+                  aria-label="share"
+                  onClick={() => setShowShareDialog(true)}
+                >
+                  <ShareButton sx={{ fontSize: '28px' }} />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
-      </Box>
-    </Card>
+        </Card>
       </Box >
 
 
-  {/* Share Dialog */ }
-{
-  showShareDialog && (
-    <div ref={shareDialogRef}>
-      <ShareDialog link={props.link} onClose={() => setShowShareDialog(false)} id="share-dialog" />
-    </div>
-  )
-}
+      {/* Share Dialog */}
+      {
+        showShareDialog && (
+          <div ref={shareDialogRef}>
+            <ShareDialog link={props.link} onClose={() => setShowShareDialog(false)} id="share-dialog" />
+          </div>
+        )
+      }
     </Box >
   );
 };

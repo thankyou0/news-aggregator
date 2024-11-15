@@ -111,6 +111,22 @@ const isLiked = async (req, res) => {
   return res.status(202).json({ success: true, liked: true });
 }
 
+const getNumLikes = async (req, res) => {
+
+  
+  const { title } = req.body;
+
+  if (!title) {
+    return res.status(210).json({ success: false, message: "title is required" });
+  }
+
+  const likes = await like_model.find({ title: title });
+
+  return res.status(202).json({ success: true, numLikes: likes.length });
+
+}
+
+
 const addFollow = async (req, res) => {
   const { baseURL } = req.body;
 
@@ -284,10 +300,31 @@ const getCommentsOfArticles = async (req, res) => {
   }
 }
 
+const getNumComments = async (req, res) => {
+  try {
+    const { articleURL } = req.body;
+
+    if (!articleURL) {
+      return res.status(210).json({ success: false, message: "ArticleURL is required" });
+    }
+
+    const comments = await comment_model.findOne({ articleURL });
+
+    if (!comments) {
+      return res.status(202).json({ success: true, numComments: 0 });
+    }
+
+    return res.status(202).json({ success: true, numComments: comments.user.length });
+
+  }
+  catch (error) {
+    console.error('Failed to get comments:', error);
+    return res.status(210).json({ success: false, message: "Error while getting comments" });
+  }
+}
 
 
-
-module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles };
+module.exports = { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments };
 
 
 

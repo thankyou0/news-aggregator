@@ -18,6 +18,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import UserProfile from './pages/UserProfile';
 import NewsProviderPage from './pages/NewsProviderPage.jsx';
+import CreateChannel from './pages/CreateChannel.jsx';
 
 
 const theme = createTheme({
@@ -114,6 +115,7 @@ function App() {
               <Route path="/bookmark" element={<Bookmark />} />
               <Route path="/providers/all" element={<NewsProviderPage provider={"all"} />} />
               <Route path="/providers/following" element={<NewsProviderPage provider={"following"} />} />
+              <Route path="/providers/create" element={<CreateChannel/>} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>

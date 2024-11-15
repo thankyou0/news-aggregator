@@ -15,7 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { POST } from '../api';
 import toast from 'react-hot-toast';
 
-const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL }) => {
+const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loggedUserName, setLoggedUserName] = useState('');
@@ -37,6 +37,24 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL }) => {
       fetchComments();
     }
   }, [isOpen, articleURL]);
+
+
+  useEffect(() => {
+
+    const HandleNumComments = async () => {
+      try {
+        const response = await POST('/api/userdo/numComments', { articleURL });
+        if (response.data.success === true) {
+          setNumComments(response.data.numComments);
+
+        }
+      } catch (error) {
+        console.error('Failed to fetch comments:', error);
+      }
+    };
+    HandleNumComments();
+
+  }, [articleURL, comments, newComment, setNumComments]);
 
 
   const handleAddComment = () => {

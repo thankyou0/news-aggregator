@@ -24,7 +24,6 @@ const checkAuth = (req, res, next) => {
     }
     req.user = user; // Store the user info for use in other routes
     // console.log("User:", user);
-
     next();
   });
 

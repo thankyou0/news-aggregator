@@ -12,9 +12,15 @@ const newsProviderschema = new mongoose.Schema({
   },
   logo: {
     type: String,
+    required: true,
   },
   followers: {
     type: [String],
+  },
+  provider_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
   }
 },
   {
