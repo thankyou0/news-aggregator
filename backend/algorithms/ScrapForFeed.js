@@ -92,10 +92,11 @@ const ScrapForFeed = async (SearchTexts) => {
       headless: false,
       args: ["--no-sandbox",
         "--disable-setuid-sandbox",
-        `--user-data-dir=${userDataDir}`,
-        "--enable-automation"],
-      ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
-      executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        // `--user-data-dir=${userDataDir}`,
+        // "--enable-automation"
+      ],
+      // ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
+      // executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
 
       defaultViewport: false,
     };

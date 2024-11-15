@@ -20,7 +20,6 @@ const newsProviderschema = new mongoose.Schema({
   provider_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true
   }
 },
   {

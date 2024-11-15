@@ -110,11 +110,11 @@ const Scrap = async ({ searchText, site, tbs, gl, location, page }) => {
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        `--user-data-dir=${userDataDir}`,
-        "--enable-automation"  // This flag might be necessary for some extensions
+        // `--user-data-dir=${userDataDir}`,
+        // "--enable-automation"  // This flag might be necessary for some extensions
       ],
-      ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
-      executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+      // ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
+      // executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
       defaultViewport: false,
     };
 

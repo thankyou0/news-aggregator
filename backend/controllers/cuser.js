@@ -59,7 +59,6 @@ const signUpPost = async (req, res) => {
   }
   try {
 
-
     const userExist = await usermodel.findOne({ email, role });
 
     if (userExist) {

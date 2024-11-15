@@ -69,10 +69,10 @@ const createChannel = async (req, res) => {
 
 const getChannels = async (req, res) => {
 
-  console.log(req.user);
+  // console.log(req.user);
 
   try {
-    console.log(req.user.id);
+    // console.log(req.user.id);
 
     const channels = await newsProvidermodel.find({ provider_id: req.user.id });
 
