@@ -15,11 +15,11 @@ const quicksearchroute = require("./routes/rquicksearch.js");
 const sendemailroute = require("./routes/rsendemail.js");
 const changepasswordroute = require("./routes/rchangepassword.js");
 const providerroute = require("./routes/rprovider.js");
+const quiz_router = require("./routes/rquiz.js");
 const path = require('path');
 const port = process.env.PORT || 9000;
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
@@ -71,6 +71,7 @@ app.use("/api/changepassword", checkAuth, changepasswordroute);
 
 app.use("/api/provider", providerroute);
 
+app.use("/api/quiz",quiz_router);
 
 app.listen(port, () => {
   console.log(`listening at port : ${port}`);
