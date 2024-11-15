@@ -17,7 +17,7 @@ import HeartIcon from "@mui/icons-material/Favorite";
 import HeartBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareButton from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
-import ShareDialog from "./ShareDialog";
+import ShareDialog from "../components/ShareDialog";
 import { toast } from "react-hot-toast";
 
 const NewsCard = (props) => {

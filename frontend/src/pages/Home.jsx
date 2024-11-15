@@ -21,7 +21,6 @@ const Home = () => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  // eslint-disable-next-line
   const [ isLoggedIn, setIsLoggedIn ] = useState( false ); // New state for login status
   const navigator = useNavigate(); 
   const PAGE_SIZE = 15;

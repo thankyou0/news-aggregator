@@ -133,8 +133,6 @@ const Navbar = () => {
   };
 
   const handleSearch = (e) => {
-    console.log('Search:', searchQuery);
-    
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
@@ -287,7 +285,6 @@ const Navbar = () => {
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={handleSearch}
                       sx={{
                         backgroundColor: 'lightgreen',
                         borderRadius: '8px 0 0 8px',
