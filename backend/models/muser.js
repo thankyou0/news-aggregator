@@ -1,10 +1,12 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 
 const userschema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    // unique: true
+    unique: true
   },
   email: {
     type: String,
@@ -48,4 +50,5 @@ const userschema = new mongoose.Schema({
 
 const usermodel = mongoose.model('user', userschema);
 
-module.exports = usermodel;
+// export default usermodel;
+export default usermodel;

@@ -1,7 +1,12 @@
-const puppeteer = require("puppeteer");
-const randomUseragent = require("random-useragent"); // Added random-useragent
-const top_stories_model = require("../models/mtopStories");
-const newsProvidermodel = require("../models/mnewsProvider.js");
+import puppeteer from "puppeteer";
+import randomUseragent from "random-useragent";
+import top_stories_model from "../models/mtopStories";
+import newsProvidermodel from "../models/mnewsProvider.js";
+
+// const puppeteer = require("puppeteer");
+// const randomUseragent = require("random-useragent"); // Added random-useragent
+// const top_stories_model = require("../models/mtopStories");
+// const newsProvidermodel = require("../models/mnewsProvider.js");
 
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

@@ -1,5 +1,9 @@
-const reportarticlesModel = require('../models/reportarticles');
-const newsProvidermodel = require('../models/newsProvider');
+// const reportarticlesModel = require('../models/reportarticles');
+// const newsProvidermodel = require('../models/newsProvider');
+
+import reportarticlesModel from '../models/mreportarticles.js';
+import newsProvidermodel from '../models/mnewsProvider.js';
+
 
 const AddreportArticles = async (req, res) => {
 

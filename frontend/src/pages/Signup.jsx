@@ -27,6 +27,9 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InfoIcon from "@mui/icons-material/Info";
 import image1 from "../images/bg2.jpg";
+import { POST } from "../api";
+import { Modal } from "react-bootstrap";
+import VerifyEmail from "../components/VerifyEmail.jsx";
 
 export default function Register() {
   // axios.defaults.withCredentials = true;
@@ -67,6 +70,12 @@ export default function Register() {
   const navigate = useNavigate();
   // const { validateUser, isLoggedIn } = useAuth();
 
+
+
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalResponse, setModalResponse] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setJustVerify(true);
@@ -75,7 +84,7 @@ export default function Register() {
       errorEmailId ||
       username === "" ||
       email === "" ||
-      !validPassword ||
+      // !validPassword ||
       role === "" ||
       username.length >= 255 ||
       email.length >= 255 ||
@@ -87,18 +96,53 @@ export default function Register() {
       return;
     }
 
-    setloading(true);
     const data = new FormData();
     data.append("username", username);
     data.append("email", email);
     data.append("role", role);
     data.append("certificate", selectedFile);
 
+
+    try {
+      const result = await POST(`/api/user/isuserexistwhensignup`, { email, role });
+      console.log(result.data);
+
+      if (!result.data.success) {
+        toast.error(result.data.error);
+        return;
+      }
+    }
+    catch (error) {
+      toast.error("Signup failed");
+      return;
+    }
+
+
+    setShowModal(true);
+
+    // Wait for the modal's response
+    const response = await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (modalResponse !== null) {
+          clearInterval(interval);
+          resolve(modalResponse);
+        }
+      }, 100);
+    });
+
+    // If the response is not valid, return early
+    if (!response) {
+      toast.error("Invalid code");
+      return;
+    }
+
+
+    setloading(true);
     const encryptedPassword = CryptoJS.AES.encrypt(password, config.PWD_SECRET).toString();
     data.append('password', encryptedPassword);
 
-    try {
 
+    try {
       const result = await axios.post(`${config.BACKEND_API}/api/user/signup`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -120,6 +164,8 @@ export default function Register() {
     }
 
   };
+
+
 
   return (
     <>
@@ -466,6 +512,24 @@ export default function Register() {
               >
                 Already have an account? Log In
               </Button>
+
+              <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                <Modal.Header closeButton>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 600, pt: -3
+                    }}
+                  >
+                    Verify Email
+                  </Typography>
+
+                </Modal.Header>
+                <Modal.Body>
+                  <VerifyEmail setShowModal={setShowModal} setModalResponse={setModalResponse} email={email} username={username} />
+                </Modal.Body>
+              </Modal>
+
             </Grid>
           </Grid>
         </Grid>

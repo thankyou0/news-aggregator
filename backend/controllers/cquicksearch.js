@@ -1,5 +1,6 @@
-const quickSearch_model = require("../models/mquicksearch");
+// const quickSearch_model = require("../models/mquicksearch");
 
+import quickSearch_model from "../models/mquicksearch.js";
 
 const getQuickSearch = async (req, res) => {
 
@@ -71,7 +72,7 @@ const addQuickSearch = async (req, res) => {
 }
 
 
-deleteQuickSearch = async (req, res) => {
+const deleteQuickSearch = async (req, res) => {
   try {
 
     const user_id = req.user.id;
@@ -105,4 +106,9 @@ deleteQuickSearch = async (req, res) => {
 
 
 
-module.exports = { addQuickSearch, deleteQuickSearch, getQuickSearch };  
+// module.exports = { addQuickSearch, deleteQuickSearch, getQuickSearch };
+
+export { addQuickSearch, deleteQuickSearch, getQuickSearch };
+// const temp = { addQuickSearch, deleteQuickSearch, getQuickSearch };
+
+// export default temp;

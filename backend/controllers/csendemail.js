@@ -1,12 +1,12 @@
-const sendEmail = require('../algorithms/SendEmail');
-const verificationcodemodel = require('../models/mverificationcode');
-const usermodel = require('../models/muser');
-const username = 'Parthiv';
-const email = 'dhanyvadh2@gmail.com'
-const code = '123456';
-const jwt = require('jsonwebtoken');
-const CryptoJS = require('crypto-js');
-const dotenv = require('dotenv');
+// const sendEmail = require('../algorithms/SendEmail');
+// const verificationcodemodel = require('../models/mverificationcode');
+// const usermodel = require('../models/muser');
+
+import sendEmail from '../algorithms/SendEmail.js';
+import verificationcodemodel from '../models/mverificationcode.js';
+import usermodel from '../models/muser.js';
+import dotenv from 'dotenv';
+
 dotenv.config();
 
 
@@ -14,32 +14,34 @@ dotenv.config();
 
 const ForgotPassword = async (req, res) => {
 
-  const { email } = req.body;
+  const { username, email, CheckUserExist } = req.body;
 
   const randomNumber = Math.floor(Math.random() * 1000000);
   const code = String(randomNumber).padStart(6, '0');
 
-  const result = await verificationcodemodel.findOneAndUpdate({
-    email: email
-  }, {
-    code: code
-  });
+  if (CheckUserExist) {
+    const result = await verificationcodemodel.findOneAndUpdate({
+      email: email
+    }, {
+      code: code
+    });
 
-  if (!result) {
-    return res.status(210).json({ success: false, message: "User associated with this email doesn't exist" });
+    if (!result) {
+      return res.status(210).json({ success: false, message: "User associated with this email doesn't exist" });
+    }
   }
 
 
   try {
 
-    await sendEmail(result.username, email, code).then((result) => console.log('Email sent...\n', result)).catch((error) => console.log(error.message));
+    await sendEmail(username, email, code).then((result) => console.log('Email sent...\n', result)).catch((error) => console.log(error.message));
   }
   catch (err) {
     return res.status(210).json({ success: false, message: `Failed to send email\n ${err}` });
   }
 
 
-  return res.status(202).json({ success: true, message: "Verification code sent successfully" });
+  return res.status(202).json({ success: true, message: "Verification code sent successfully", code: code });
 };
 
 
@@ -81,4 +83,6 @@ const ForgotPasswordResetPassword = async (req, res) => {
 }
 
 
-module.exports = { ForgotPassword, ForgotPasswordVarifyCode, ForgotPasswordResetPassword };
+// module.exports = { ForgotPassword, ForgotPasswordVarifyCode, ForgotPasswordResetPassword };
+
+export { ForgotPassword, ForgotPasswordVarifyCode, ForgotPasswordResetPassword };

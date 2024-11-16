@@ -1,15 +1,28 @@
-const usermodel = require("../models/muser");
-const quickSearch_model = require("../models/mquicksearch");
-const verificationcodemodel = require("../models/mverificationcode");
-const jsonwebtoken = require("jsonwebtoken");
-const CryptoJS = require('crypto-js');
-const dotenv = require('dotenv');
-const express = require("express");
+// const usermodel = require("../models/muser");
+// const quickSearch_model = require("../models/mquicksearch");
+// const verificationcodemodel = require("../models/mverificationcode");
+// const jsonwebtoken = require("jsonwebtoken");
+// const CryptoJS = require('crypto-js');
+// const dotenv = require('dotenv');
+// const express = require("express");
+
+import usermodel from "../models/muser.js";
+import quickSearch_model from "../models/mquicksearch.js";
+import verificationcodemodel from "../models/mverificationcode.js";
+import jsonwebtoken from "jsonwebtoken";
+import CryptoJS from 'crypto-js';
+import dotenv from 'dotenv';
+import express from "express";
+
+
+
 const app = express();
 
 dotenv.config();
 
-const cloudinary_v2 = require('../utils/cloudinary').v2;
+// const cloudinary_v2 = require('../utils/cloudinary').v2;
+
+import { v2 as cloudinary_v2 } from 'cloudinary';
 
 const logInPost = async (req, res) => {
 
@@ -138,6 +151,17 @@ const updateUserProfile = async (req, res) => {
 }
 
 
+const isUserExistWhenSignUp = async (req, res) => {
+  const { email, role } = req.body;
+  const userExist = await usermodel.findOne({ email, role });
+  if (userExist) {
+    return res.status(210).json({ success: false, message: "User already exists for given role" });
+  }
+  return res.status(202).json({ success: true, message: "User does not exist" });
+}
 
+// module.exports = { logInPost, signUpPost,isUserExistWhenSignUp, getUserProfile, updateUserProfile };
 
-module.exports = { logInPost, signUpPost, getUserProfile, updateUserProfile };
+const cuser = { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };
+
+export default cuser;

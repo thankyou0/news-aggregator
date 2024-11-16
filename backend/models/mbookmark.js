@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const bookmarkschema = new mongoose.Schema({
 
@@ -36,4 +37,4 @@ const bookmarkschema = new mongoose.Schema({
 
 const bookmark_model = mongoose.model('bookmark', bookmarkschema);
 
-module.exports = bookmark_model;
+export default bookmark_model;

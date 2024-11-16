@@ -1,4 +1,6 @@
-const searchLocation_model = require("../models/msearchLocation.js");
+// const searchLocation_model = require("../models/msearchLocation.js");
+
+import searchLocation_model from "../models/msearchLocation.js";
 
 
 const addSearchLocation = async (req, res, Text) => {
@@ -41,4 +43,4 @@ const addSearchLocation = async (req, res, Text) => {
 
 }
 
-module.exports = addSearchLocation;
+export default addSearchLocation;

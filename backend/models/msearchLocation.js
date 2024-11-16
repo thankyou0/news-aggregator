@@ -1,5 +1,9 @@
-const mongoose = require("mongoose");
-const { Schema, model, Types } = mongoose;
+// const mongoose = require("mongoose");
+import mongoose from 'mongoose';
+
+// const { Schema, model, Types } = mongoose;
+import { Schema, model, Types } from 'mongoose';
+
 
 const searchLocationSchema = new Schema(
   {
@@ -23,4 +27,4 @@ const searchLocationSchema = new Schema(
 
 const searchLocation_model = model("searchLocation", searchLocationSchema);
 
-module.exports = searchLocation_model;
+export default searchLocation_model;

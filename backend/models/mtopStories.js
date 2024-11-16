@@ -1,4 +1,6 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 
 const top_stories_schema = new mongoose.Schema({
   title: {
@@ -24,4 +26,4 @@ const top_stories_schema = new mongoose.Schema({
 
 const top_stories_model = mongoose.model('top_stories', top_stories_schema);
 
-module.exports = top_stories_model;
+export default top_stories_model;

@@ -1,7 +1,6 @@
-const searchLocation_model = require('../models/msearchLocation');
-const { ScrapForFeed } = require('../algorithms/ScrapForFeed');
-const mongoose = require('mongoose');
-
+import mongoose from "mongoose";
+import searchLocation_model from "../models/msearchLocation.js";
+import { ScrapForFeed } from "../algorithms/ScrapForFeed.js";
 
 const getTextByCount = async (id) => {
 
@@ -134,4 +133,6 @@ const ByTopic2 = async (req, res) => {
 }
 
 
-module.exports = { ByText1, ByText2, ByTopic1, ByText3, ByText4, ByTopic2 };
+// module.exports = { ByText1, ByText2, ByTopic1, ByText3, ByText4, ByTopic2 };
+
+export { ByText1, ByText2, ByTopic1, ByText3, ByText4, ByTopic2 };

@@ -1,11 +1,20 @@
 
-const { Cluster } = require("puppeteer-cluster");
-const randomUseragent = require("random-useragent"); // Added random-useragent
-const addSearchLocation = require("../controllers/csearchLocation.js");
-const newsProvidermodel = require("../models/mnewsProvider.js");
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+// const { Cluster } = require("puppeteer-cluster");
+// const randomUseragent = require("random-useragent"); // Added random-useragent
+// const addSearchLocation = require("../controllers/csearchLocation.js");
+// const newsProvidermodel = require("../models/mnewsProvider.js");
+// const fs = require('fs');
+// const path = require('path');
+// const os = require('os');
+
+import { Cluster } from "puppeteer-cluster";
+import randomUseragent from "random-useragent"; // Added random-useragent
+import addSearchLocation from "../controllers/csearchLocation.js";
+import newsProvidermodel from "../models/mnewsProvider.js";
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -229,6 +238,8 @@ const scrapSearch = async (req, res) => {
 };
 
 
-module.exports = { scrapSearch, Scrap };
+// module.exports = { scrapSearch, Scrap };
+const temp = { scrapSearch, Scrap };
 
+export default temp;
 

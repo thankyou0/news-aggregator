@@ -1,9 +1,23 @@
-const router = require("express").Router();
-const { logInPost, signUpPost } = require("../controllers/cuser");
-const { getUserProfile, updateUserProfile } = require("../controllers/cuser");
+// const router = require("express").Router();
+// const { logInPost, signUpPost, isUserExistWhenSignUp } = require("../controllers/cuser");
+// const { getUserProfile, updateUserProfile } = require("../controllers/cuser");
 
-const multer = require("multer");
-const checkAuth = require("../middleware/checkAuth");
+// const multer = require("multer");
+// const checkAuth = require("../middleware/checkAuth");
+
+import express from "express";
+const router = express.Router();
+// import { logInPost, signUpPost, isUserExistWhenSignUp } from "../controllers/cuser.js";
+// import { getUserProfile, updateUserProfile } from "../controllers/cuser.js";
+import cuser from "../controllers/cuser.js";
+const { logInPost, signUpPost, isUserExistWhenSignUp,getUserProfile, updateUserProfile } = cuser;
+// import { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile } from "../controllers/cuser.js";
+
+
+import multer from "multer";
+import checkAuth from "../middleware/checkAuth.js";
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
 
@@ -21,8 +35,11 @@ router.post("/login", logInPost);
 
 router.post("/signup", upload.single("certificate"), signUpPost);
 
-router.get("/userprofile/get",checkAuth, getUserProfile);
+router.post("/isuserexistwhensignup", isUserExistWhenSignUp);
 
-router.post("/userprofile/update",checkAuth, updateUserProfile);
+router.get("/userprofile/get", checkAuth, getUserProfile);
 
-module.exports = router;
+router.post("/userprofile/update", checkAuth, updateUserProfile);
+
+
+export default router;;

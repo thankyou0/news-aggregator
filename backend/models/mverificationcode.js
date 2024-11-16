@@ -1,4 +1,6 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 
 const verificationcodeschema = new mongoose.Schema({
   username: {
@@ -19,4 +21,4 @@ const verificationcodeschema = new mongoose.Schema({
 
 const verificationcodemodel = mongoose.model('verificationcode', verificationcodeschema);
 
-module.exports = verificationcodemodel;
+export default verificationcodemodel;

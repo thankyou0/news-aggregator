@@ -1,30 +1,121 @@
-const express = require("express");
-const mongoose = require("mongoose");
+// import express from 'express';
+// import mongoose from 'mongoose';
+// import dotenv from 'dotenv';
+// import cors from 'cors';
+// import checkAuth from './middleware/checkAuth.js';
+// import userroute from './routes/ruser.js';
+// // import algorithmsroute from './routes/ralgorithms.js';
+// import * as algorithmsroute from './routes/ralgorithms.js';
+
+// import searchroute from './routes/rsearch.js';
+// import userdoroute from './routes/ruserdo.js';
+// import feedroute from './routes/rfeed.js';
+// import quicksearchroute from './routes/rquicksearch.js';
+// import sendemailroute from './routes/rsendemail.js';
+// import changepasswordroute from './routes/rchangepassword.js';
+// import providerroute from './routes/rprovider.js';
+// import quiz_router from './routes/rquiz.js';
+// import path from 'path';
+
+// const app = express();
+
+// dotenv.config();
+
+// const port = process.env.PORT || 9000;
+
+// app.use(express.static(path.join(__dirname, '../frontend/build')));
+// // Serve static files from the React app
+
+// // app.get('*', (req, res) => {
+// //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+// // });
+
+// mongoose.connect(process.env.MONGO_URL).then(() => {
+//   console.log("connected to mongodb");
+// }).catch((err) => {
+//   console.log(`${err} \n error connecting mongoDB `);
+// });
+
+
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }))
+// // app.use(cookieparser());
+
+
+// app.use(cors({
+//   origin: "*",
+//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//   allowedHeaders: ["Content-Type", "authorization"],
+//   credentials: true,
+// }));
+
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
+
+
+
+
+// app.use("/api/user", userroute);
+
+// app.use("/api/algorithms", algorithmsroute);
+
+// app.use("/api/search", checkAuth, searchroute);
+
+// app.use("/api/userdo", checkAuth, userdoroute);
+
+// app.use("/api/myfeed", checkAuth, feedroute);
+
+// app.use("/api/quicksearch", checkAuth, quicksearchroute);
+
+// app.use("/api/sendemail", sendemailroute);
+
+// app.use("/api/changepassword", checkAuth, changepasswordroute);
+
+// app.use("/api/provider", providerroute);
+
+// app.use("/api/quiz",quiz_router);
+
+// app.listen(port, () => {
+//   console.log(`listening at port : ${port}`);
+// });
+
+
+
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import checkAuth from './middleware/checkAuth.js';
+import userroute from './routes/ruser.js';
+// import algorithmsroute from './routes/ralgorithms.js';
+import algorithmsroute from './routes/ralgorithms.js';
+
+import searchroute from './routes/rsearch.js';
+import userdoroute from './routes/ruserdo.js';
+import feedroute from './routes/rfeed.js';
+import quicksearchroute from './routes/rquicksearch.js';
+import sendemailroute from './routes/rsendemail.js';
+import changepasswordroute from './routes/rchangepassword.js';
+import providerroute from './routes/rprovider.js';
+import quiz_router from './routes/rquiz.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 const app = express();
-const dotenv = require("dotenv");
+
 dotenv.config();
-// const cookieparser = require("cookie-parser");
-const cors = require("cors");
-const checkAuth = require("./middleware/checkAuth.js");
-const userroute = require("./routes/ruser");
-const algorithmsroute = require("./routes/ralgorithms");
-const searchroute = require("./routes/rsearch.js");
-const userdoroute = require("./routes/ruserdo.js");
-const feedroute = require("./routes/rfeed.js");
-const quicksearchroute = require("./routes/rquicksearch.js");
-const sendemailroute = require("./routes/rsendemail.js");
-const changepasswordroute = require("./routes/rchangepassword.js");
-const providerroute = require("./routes/rprovider.js");
-const quiz_router = require("./routes/rquiz.js");
-const path = require('path');
+
+// Create __dirname for ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const port = process.env.PORT || 9000;
 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 // Serve static files from the React app
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-// });
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log("connected to mongodb");
@@ -32,12 +123,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log(`${err} \n error connecting mongoDB `);
 });
 
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
-// app.use(cookieparser());
-
-
+app.use(express.urlencoded({ extended: false }));
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
@@ -51,30 +138,17 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
-
 app.use("/api/user", userroute);
-
 app.use("/api/algorithms", algorithmsroute);
-
 app.use("/api/search", checkAuth, searchroute);
-
 app.use("/api/userdo", checkAuth, userdoroute);
-
 app.use("/api/myfeed", checkAuth, feedroute);
-
 app.use("/api/quicksearch", checkAuth, quicksearchroute);
-
 app.use("/api/sendemail", sendemailroute);
-
 app.use("/api/changepassword", checkAuth, changepasswordroute);
-
 app.use("/api/provider", providerroute);
-
-app.use("/api/quiz",quiz_router);
+app.use("/api/quiz", quiz_router);
 
 app.listen(port, () => {
   console.log(`listening at port : ${port}`);
 });
-

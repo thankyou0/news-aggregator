@@ -1,7 +1,12 @@
-const router = require("express").Router();
+// const router = require("express").Router();
 
-const { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } = require("../controllers/cuserdo.js");
+// const { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } = require("../controllers/cuserdo.js");
 
+import express from "express";
+const router = express.Router();
+// import { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } from "../controllers/cuserdo.js";
+import temp from "../controllers/cuserdo.js";
+const { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } = temp;
 
 router.post("/isbookmarked", isBookmarked);
 
@@ -30,4 +35,4 @@ router.post("/numComments", getNumComments);
 
 
 
-module.exports = router;
+export default router;;

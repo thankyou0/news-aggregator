@@ -1,5 +1,8 @@
-const mongoose = require("mongoose");
-const { Schema, model, Types } = mongoose;
+// const mongoose = require("mongoose");
+import mongoose from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
+
+// const { Schema, model, Types } = mongoose;
 
 const quickSearchSchema = new Schema(
   {
@@ -22,4 +25,4 @@ const quickSearchSchema = new Schema(
 
 const quickSearch_model = model("quicksearch", quickSearchSchema);
 
-module.exports = quickSearch_model;
+export default quickSearch_model;

@@ -1,6 +1,12 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-require('dotenv').config();
+// const nodemailer = require('nodemailer');
+// const { google } = require('googleapis');
+
+import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
+
+import dotenv from 'dotenv';
+dotenv.config();
+// require('dotenv').config();
 
 async function sendEmail(username, email, code) {
 
@@ -64,4 +70,6 @@ async function sendEmail(username, email, code) {
   }
 }
 
-module.exports = sendEmail;
+// module.exports = sendEmail;
+
+export default sendEmail;
