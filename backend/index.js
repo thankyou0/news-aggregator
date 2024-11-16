@@ -19,6 +19,7 @@ const quiz_router = require("./routes/rquiz.js");
 const path = require('path');
 const port = process.env.PORT || 9000;
 
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 // Serve static files from the React app
 
 // app.get('*', (req, res) => {

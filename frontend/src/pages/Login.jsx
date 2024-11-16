@@ -23,7 +23,7 @@ import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import config from "../config";
 import CryptoJS from 'crypto-js';
 import { POST } from '../api'; // Adjust the import path as needed
-import image1 from "../images/bg2.jpg";
+// import image1 from "../images/bg2.jpg";
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import { Modal } from 'react-bootstrap';
 import ForgotPassword from "../components/ForgotPassword";
@@ -109,7 +109,7 @@ export default function Login() {
       justifyContent="center"
       alignItems="center"
       sx={{
-        backgroundImage: `url(${image1})`,
+        // backgroundImage: `url(${image1})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

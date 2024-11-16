@@ -157,12 +157,13 @@ const ScrapTop_stories = async (req, res) => {
 		});
 
 		try {
+			await top_stories_model.deleteMany({});
 		} catch (err) {
 			res.status(210).json({ success: false, articles: "An error occurred while deleting the data from the database " });
 		}
 
 		try {
-			// console.log(articles);
+			console.log(articles);
 
 			articles?.forEach(async (article) => {
 
