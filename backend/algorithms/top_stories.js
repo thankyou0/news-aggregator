@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import randomUseragent from "random-useragent";
-import top_stories_model from "../models/mtopStories";
+import top_stories_model from "../models/mtopStories.js";
 import newsProvidermodel from "../models/mnewsProvider.js";
 
 // const puppeteer = require("puppeteer");
@@ -260,8 +260,13 @@ const ScrapTop_stories = async (req, res) => {
 };
 
 
-module.exports = { ScrapTop_stories };
+// module.exports = { ScrapTop_stories };
 
+// const temp = { ScrapTop_stories };
+
+export default ScrapTop_stories;
+
+// export { ScrapTop_stories };
 
 
 
