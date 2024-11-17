@@ -12,10 +12,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { POST } from '../api';
 import { toast } from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -45,12 +47,16 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
         if (response.data.success) {
           setIsFollowing(response.data.isFollowing);
         }
+        else if (response.data.caught) {
+          navigate("/login");
+          // toast.error(response.data.message);
+        }
       } catch (error) {
         console.error('Failed to check follow status:', error);
       }
     };
     checkFollow();
-  }, [baseURL]);
+  }, [baseURL, navigate]);
 
   const toggleFollow = async () => {
     try {
@@ -68,7 +74,11 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
             onUnfollow();
           }, 500); // Duration of the shrinking effect
         }
-      } else {
+      } else if (response.data.caught) {
+        navigate("/login");
+        // toast.error(response.data.message);
+      }
+      else {
         console.error(response.data.message);
         toast.error('Something went wrong, please try again later.');
       }

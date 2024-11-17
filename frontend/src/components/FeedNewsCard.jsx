@@ -16,14 +16,15 @@ import { POST } from "../api";
 import HeartIcon from "@mui/icons-material/Favorite";
 import HeartBorderIcon from "@mui/icons-material/FavoriteBorder";
 import InsertCommentRoundedIcon from "@mui/icons-material/InsertCommentRounded";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ShareButton from "@mui/icons-material/Share";
+// import FavoriteIcon from "@mui/icons-material/Favorite";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import ShareButton from "@mui/icons-material/Share";
 import ShareDialog from "./ShareDialog";
 import { toast } from "react-hot-toast";
 import CommentsMenu from "./CommentsMenu";
 import ShareIcon from "@mui/icons-material/Share";
-import CommentIcon from "@mui/icons-material/Comment";
+// import CommentIcon from "@mui/icons-material/Comment";
+import { useNavigate } from "react-router-dom";
 
 const FeedNewsCard = (props) => {
   const { mode } = useContext(ThemeContext);
@@ -41,6 +42,7 @@ const FeedNewsCard = (props) => {
   const [numLikes, setNumLikes] = useState(0);
   const [numComments, setNumComments] = useState(0);
   const shareDialogRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleArticleDetails = async () => {
@@ -50,10 +52,14 @@ const FeedNewsCard = (props) => {
       if (result.data.success) {
         setBookmarked(result.data.bookmarked);
       }
+      if (result.data.caught) {
+        navigate('/login'); return;
+        // toast.error(result.data.message);
+      }
     };
 
     handleArticleDetails();
-  }, [props.title, props.link]);
+  }, [props.title, props.link, navigate]);
 
   useEffect(() => {
     (async () => {
@@ -63,13 +69,17 @@ const FeedNewsCard = (props) => {
       if (result.data.success) {
         setLiked(result.data.liked);
       }
+      if (result.data.caught) {
+        navigate('/login'); return;
+        // toast.error(result.data.message);
+      }
 
       const NumLikesResult = await POST("/api/userdo/numLikes", ArticleDetails);
       if (NumLikesResult.data.success) {
         setNumLikes(NumLikesResult.data.numLikes);
       }
     })();
-  }, [props.title, numLikes]);
+  }, [props.title, numLikes, navigate]);
 
   useEffect(() => {
     (async () => {
@@ -79,8 +89,12 @@ const FeedNewsCard = (props) => {
       if (numCommentsResult.data.success) {
         setNumComments(numCommentsResult.data.numComments);
       }
+      if (numCommentsResult.data.caught) {
+        navigate('/login'); return;
+        // toast.error(numCommentsResult.data.message);
+      }
     })();
-  }, [props.link, numComments]);
+  }, [props.link, numComments, navigate]);
 
   const handleBookmarkClick = async () => {
     setBookmarked(!bookmarked);
@@ -106,6 +120,9 @@ const FeedNewsCard = (props) => {
           return bookmarked
             ? "Bookmark removed successfully!"
             : "Bookmark added successfully!";
+        } else if (result.data.caught) {
+          navigate('/login'); return;
+          throw new Error(result.data.message);
         } else {
           throw new Error(result.data.message);
         }
@@ -141,6 +158,9 @@ const FeedNewsCard = (props) => {
           return liked
             ? "Like removed successfully!"
             : "Like added successfully!";
+        } else if (result.data.caught) {
+          // toast.error(result.data.message);
+          navigate('/login'); return;
         } else {
           throw new Error(result.data.message);
         }
@@ -152,6 +172,10 @@ const FeedNewsCard = (props) => {
     const NumLikesResult = await POST("/api/userdo/numLikes", ArticleDetails);
     if (NumLikesResult.data.success) {
       setNumLikes(NumLikesResult.data.numLikes);
+    }
+    if (NumLikesResult.data.caught) {
+      navigate('/login'); return;
+      // toast.error(NumLikesResult.data.message);
     }
 
     // Determine if likes are increasing or decreasing
@@ -328,7 +352,7 @@ const FeedNewsCard = (props) => {
                       display: "flex",
                       width: "100%",
                       height: "300px",
-                    //   backgroundColor: "gray",
+                      //   backgroundColor: "gray",
                       alignItems: "center",
                       justifyContent: "center",
                       padding: 2,

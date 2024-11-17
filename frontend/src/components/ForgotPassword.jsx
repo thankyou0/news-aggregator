@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import DottedSpinner from './DottedSpinner.jsx';
 import CryptoJS from 'crypto-js';
 import config from '../config';
-
+import { useNavigate } from 'react-router-dom';
 // Custom styled components
 const StyledCard = styled(Card)(({ theme }) => ({
   width: '100%',
@@ -73,6 +73,7 @@ const ForgotPassword = ({ setShowModal }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
@@ -83,6 +84,9 @@ const ForgotPassword = ({ setShowModal }) => {
       if (result.data.success) {
         toast.success(result.data.message);
         setCurrentStep(2);
+      } else if (result.data.caught) {
+        navigate('/login'); return;
+        // toast.error(result.data.message);
       } else {
         toast.error(result.data.message);
       }
@@ -100,6 +104,9 @@ const ForgotPassword = ({ setShowModal }) => {
     if (response.data.success) {
       toast.success(response.data.message);
       setCurrentStep(3);
+    } else if (response.data.caught) {
+      // toast.error(response.data.message);
+      navigate('/login'); return;
     } else {
       toast.error(response.data.message);
     }
@@ -118,6 +125,9 @@ const ForgotPassword = ({ setShowModal }) => {
     if (response.data.success) {
       toast.success(response.data.message);
       setShowModal(false);
+    } else if (response.data.caught) {
+      navigate('/login'); return;
+      // toast.error(response.data.message);
     } else {
       toast.error(response.data.message);
     }
@@ -241,7 +251,7 @@ const ForgotPassword = ({ setShowModal }) => {
                     maxLength={1}
                     value={digit}
                     onChange={(e) => handleCodeChange(index, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(index, e)} 
+                    onKeyDown={(e) => handleKeyDown(index, e)}
                     required
                   />
                 ))}

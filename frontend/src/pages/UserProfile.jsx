@@ -5,6 +5,7 @@ import { GET, POST } from '../api';
 import { toast } from "react-hot-toast";
 import ResetPassword from '../components/ResetPassword';
 import { ThemeContext } from '../context/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
   const { mode } = useContext(ThemeContext);
@@ -18,14 +19,29 @@ const UserProfile = () => {
   const [inputValue, setInputValue] = useState('');
   const [showModal, setShowModal] = useState(false);
   const inputRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+
+
     const fetchUserProfile = async () => {
+
+        const checkauth = await GET('/api/checkauth');
+      if (checkauth.data.caught)
+      {
+        toast.error(checkauth.data.message);
+        navigate('/login');
+      }
+
       try {
         const response = await GET('/api/user/userprofile/get');
         if (response.data.success === false) {
           console.log('Error:', response.data.message);
           return;
+        }
+        if (response.data.caught) {
+          // toast.error(response.data.message);
+          navigate('/login'); return;
         }
         const { username, firstName, lastName, age, phoneNo, email, topics } = response.data.user;
         setUserName(username);
@@ -40,7 +56,7 @@ const UserProfile = () => {
       }
     };
     fetchUserProfile();
-  }, []);
+  }, [navigate]);
 
   const handleAddTopic = () => {
     if (inputValue.trim() !== '') {
@@ -65,7 +81,14 @@ const UserProfile = () => {
       topics,
     };
     const response = await POST('/api/user/userprofile/update', updatedData);
-    toast.success(response.data.message);
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+    }
+    else if (response.data.caught) {
+      // toast.error(response.data.message);
+      navigate('/login'); return;
+    }
   };
 
   return (

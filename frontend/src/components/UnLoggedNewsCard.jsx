@@ -55,6 +55,7 @@ const NewsCard = (props) => {
       if (result.data.success) {
         setBookmarked(result.data.bookmarked);
       }
+      
     };
 
     handleArticleDetails();

@@ -29,7 +29,7 @@
 //     queryFn: async () => {
 //       const resultFromBackend = await GET('/api/algorithms/top_stories');
 //       // console.log(resultFromBackend);
-      
+
 //       if (resultFromBackend.data.success) {
 //         return resultFromBackend.data.articles;
 //       } else {
@@ -159,7 +159,7 @@
 //           </Stack>
 //         </div>
 //       ) : isError ? (
-          
+
 //         <div style={{ display: "flex", justifyContent: "center" }}>
 //           <span>Error fetching articles.</span>
 //         </div>
@@ -217,6 +217,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -235,6 +237,7 @@ const LoggedHome = () => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const navigate = useNavigate();
   const PAGE_SIZE = 75;
 
   // Fetching data using useQuery
@@ -246,7 +249,11 @@ const LoggedHome = () => {
 
       if (resultFromBackend.data.success) {
         return resultFromBackend.data.articles;
-      } else {
+      } else if (resultFromBackend.data.caught) {
+        // toast.error(resultFromBackend.data.message);
+        navigate('/login'); return;
+      }
+      else {
         throw new Error('Error fetching data from backend');
       }
     },
@@ -435,6 +442,7 @@ const LoggedHome = () => {
                     (article, index) =>
                       article && (
                         <NewsCard
+                          key={index}
                           title={article.title}
                           link={article.link}
                           time={article.time}

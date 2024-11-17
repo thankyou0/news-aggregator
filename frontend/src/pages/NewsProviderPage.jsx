@@ -8,11 +8,13 @@ import {
 } from '@mui/material';
 import NewsProviderCard from '../components/NewsProviderCard';
 import { GET } from '../api.js';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const NewsProviderPage = (props) => {
   const [providers, setProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProviders = async () => {
 
@@ -23,7 +25,12 @@ const NewsProviderPage = (props) => {
         if (result.data.success) {
           setProviders(result.data.providers);
         }
+        else if (result.data.caught) {
+          // toast.error(result.data.message);
+          navigate('/login'); return;
+        }
         else {
+
           console.log('error');
         }
       } catch (error) {
@@ -33,7 +40,7 @@ const NewsProviderPage = (props) => {
       }
     };
     fetchProviders();
-  }, [props.provider]);
+  }, [props.provider, navigate]);
 
   if (isLoading) {
     return (

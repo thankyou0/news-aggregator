@@ -371,7 +371,7 @@
 
 
 import React, { useEffect, useRef, useState, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, Typography, Box, Tooltip, Zoom, IconButton } from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -388,6 +388,7 @@ const BookmarkCard = (props) => {
   const isSearchPage = location.pathname === '/search' || location.pathname === '/myfeed' || location.pathname === "/bookmark";
   const [isRemoving, setIsRemoving] = useState(false);
   const boxRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleClick = () => {
     window.open(props.link, '_blank');
@@ -405,8 +406,12 @@ const BookmarkCard = (props) => {
       if (result.data.success) {
         setLiked(result.data.liked);
       }
+      if (result.data.caught) {
+        navigate('/login'); return;
+        // toast.error(result.data.message);
+      }
     })();
-  }, [props.title]);
+  }, [props.title, navigate]);
 
   const handleBookmarkClick = async () => {
     setIsRemoving(true);
@@ -428,8 +433,15 @@ const BookmarkCard = (props) => {
         }, 500); // 500ms matches the CSS transition duration
         toast.success('Bookmark removed successfully!');
       } else {
-        setIsRemoving(false);
-        toast.error('Error removing bookmark');
+
+        if (result.data.caught) {
+          navigate('/login'); return;
+          // toast.error(result.data.message);
+        }
+        else {
+          setIsRemoving(false);
+          toast.error('Error removing bookmark');
+        }
       }
     } catch (error) {
       setIsRemoving(false);
@@ -455,6 +467,9 @@ const BookmarkCard = (props) => {
         success: (result) => {
           if (result.data.success) {
             return liked ? 'Like removed successfully!' : 'Like added successfully!';
+          } else if (result.data.caught) {
+            navigate('/login'); return;
+            // toast.error(result.data.message);
           } else {
             throw new Error(result.data.message);
           }

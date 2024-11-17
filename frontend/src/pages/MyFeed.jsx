@@ -227,6 +227,8 @@ import { Box, Grid } from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
 import { GET } from "../api.js";
 import { Stack } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const parentstyle = {
   // backgroundColor:"black",
@@ -246,6 +248,7 @@ const MyFeed = () => {
   const [isError, setIsError] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
   const observerRef = useRef(null);
+  const navigate = useNavigate();
 
   // URLs to fetch articles from (based on pageIndex)
   const urls = useMemo(() => {
@@ -261,13 +264,30 @@ const MyFeed = () => {
 
   // Function to load more articles
   const loadMoreArticles = useCallback(async () => {
+
+
+    const checkauth = await GET("/api/checkauth");
+
+    if (checkauth.data.caught) {
+      toast.error(checkauth.data.message);
+      navigate("/login");
+      return;
+    }
+
+
     if (pageIndex >= urls.length || isLoading) return; // Prevent further loading if no more URLs or if loading
 
     setIsLoading(true);
     try {
       const response = await GET(urls[pageIndex]);
+      console.log(response.data);
+
       if (response.data.success === false) {
         throw new Error("No more articles found");
+      }
+      if (response.data.caught) {
+        // toast.error(response.data.message);
+        navigate("/login");
       }
 
       const newArticles = response.data?.partialArticles || [];
@@ -279,7 +299,7 @@ const MyFeed = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [pageIndex, isLoading, urls]);
+  }, [pageIndex, isLoading, urls, navigate]);
 
   // Filtering articles based on search query
   useEffect(() => {
@@ -310,6 +330,7 @@ const MyFeed = () => {
 
   // Initial load of articles
   useEffect(() => {
+
     loadMoreArticles();
     // eslint-disable-next-line
   }, []); // Empty dependency array to run only once on mount

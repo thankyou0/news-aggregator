@@ -366,6 +366,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
+import toast from "react-hot-toast";
 gsap.registerPlugin(ScrollTrigger);
 
 // function getWindowDimensions() {
@@ -413,6 +414,7 @@ const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for login status
   const navigator = useNavigate();
   const PAGE_SIZE = 15;
+  console.log("Home.jsx");
   // useWindowDimensions();
   // const { Height, Width } = getWindowDimensions();
   // const [innerheight, setInnerHeight] = useState(0);
@@ -443,7 +445,7 @@ const Home = () => {
   const LoginPage = () => {
     navigator("/login");
   };
-  
+
   const {
     data: articles = [],
     isLoading,
@@ -452,11 +454,17 @@ const Home = () => {
     queryKey: ["top_stories"],
     queryFn: async () => {
       const resultFromBackend = await GET("/api/algorithms/top_stories");
-      console.log(resultFromBackend);
+      console.log(resultFromBackend.data);
+      console.log(localStorage.getItem('token'));
 
       if (resultFromBackend.data.success) {
         return resultFromBackend.data.articles;
-      } else {
+      } else if (localStorage.getItem('token')!=null &&  resultFromBackend.data.caught) {
+        // toast.error(resultFromBackend.data.message);
+        // console.log("caught");
+        navigator("/login");
+      }
+      else {
         throw new Error("Error fetching data from backend");
       }
     },
@@ -645,6 +653,7 @@ const Home = () => {
 
           {!isLoggedIn && (
             <button
+
               type="submit"
               style={{
                 fontFamily: "'Quicksand', 'Arial', sans-serif",

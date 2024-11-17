@@ -138,6 +138,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/api/checkauth", checkAuth);
 app.use("/api/user", userroute);
 app.use("/api/algorithms", algorithmsroute);
 app.use("/api/search", checkAuth, searchroute);
@@ -146,8 +147,9 @@ app.use("/api/myfeed", checkAuth, feedroute);
 app.use("/api/quicksearch", checkAuth, quicksearchroute);
 app.use("/api/sendemail", sendemailroute);
 app.use("/api/changepassword", checkAuth, changepasswordroute);
-app.use("/api/provider", providerroute);
-app.use("/api/quiz", quiz_router);
+app.use("/api/provider", checkAuth, providerroute);
+app.use("/api/quiz", checkAuth, quiz_router);
+app.get('/api/checkauth', checkAuth);
 
 app.listen(port, () => {
   console.log(`listening at port : ${port}`);

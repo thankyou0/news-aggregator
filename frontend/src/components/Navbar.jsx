@@ -22,6 +22,7 @@ import { GET, POST, DELETE } from '../api';
 // import zIndex from '@mui/material/styles/zIndex';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
 
@@ -129,7 +130,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/login'); return;
   };
 
   const handleSearch = (e) => {
@@ -204,11 +205,17 @@ const Navbar = () => {
 
     const respose = GET('/api/quicksearch/get');
     respose.then((response) => {
-      setQuickSearchText(response.data.quickSearchText);
+
+      if (response.data.success)
+        setQuickSearchText(response.data.quickSearchText);
+      // else if (response.data.caught) {
+      //   navigate('/login'); return;
+      //   toast.error(response.data.message);
+      // }
     }).catch((error) => {
       console.error('Error fetching quick search data:', error);
     });
-  }, []);
+  }, [navigate]);
 
 
   const handleAddQuickSearch = () => {
@@ -216,9 +223,16 @@ const Navbar = () => {
 
     const response = POST('/api/quicksearch/add', { quickSearchTextFromFrontend: newQuickSearch });
     response.then((response) => {
-      setQuickSearchText([...quickSearchText, newQuickSearch]);
-      setNewQuickSearch('');
-      setShowAddBox(false);
+
+      if (response.data.caught) {
+        navigate('/login'); return;
+        // toast.error(response.data.message);
+      }
+      else if (response.data.success) {
+        setQuickSearchText([...quickSearchText, newQuickSearch]);
+        setNewQuickSearch('');
+        setShowAddBox(false);
+      }
     }).catch((error) => {
       console.error('Error adding quick search:', error);
     });
@@ -232,7 +246,13 @@ const Navbar = () => {
 
       const response = DELETE('/api/quicksearch/delete', { quickSearchText: textToRemove });
       response.then(() => {
-        setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI
+        if (response.data.caught) {
+          navigate('/login'); return;
+          // toast.error(response.data.message);
+        }
+        else if (response.data.success) {
+          setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI
+        }
       }).catch((error) => {
         console.error('Error removing quick search:', error);
       });
@@ -245,7 +265,7 @@ const Navbar = () => {
   const handleClick_ = (event) => {
     setAnchorEl_(event.currentTarget);
   };
-  
+
   const handleClose_ = () => {
     setAnchorEl_(null);
   };

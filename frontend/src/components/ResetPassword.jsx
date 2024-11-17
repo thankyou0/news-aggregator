@@ -13,6 +13,7 @@ import { Eye, EyeOff, Check, X } from 'lucide-react';
 import { POST } from '../api';
 import toast from 'react-hot-toast';
 import CryptoJS from 'crypto-js';
+import { useNavigate } from 'react-router-dom';
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -93,7 +94,7 @@ const ResetPassword = ({ setShowModal }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const navigate = useNavigate();
   // Password requirements
   const requirements = {
     length: newPassword.length >= 8,
@@ -130,6 +131,11 @@ const ResetPassword = ({ setShowModal }) => {
       setShowModal(false);
       return;
 
+    } else if (response.data.caught) {
+      // toast.error(response.data.message);
+      setShowModal(false);
+      navigate('/login'); return;
+      return;
     } else {
       toast.error(response.data.message);
     }

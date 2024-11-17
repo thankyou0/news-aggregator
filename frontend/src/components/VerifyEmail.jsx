@@ -12,6 +12,7 @@ import { POST } from '../api.js';
 import toast from 'react-hot-toast';
 import CryptoJS from 'crypto-js';
 import config from '../config.js';
+import { useNavigate } from 'react-router-dom';
 
 // Custom styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -72,6 +73,7 @@ const VerifyEmail = (props) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -80,11 +82,15 @@ const VerifyEmail = (props) => {
       setLoading(true); // Start loading
 
       try {
-        const result = await POST('/api/sendemail/forgotpassword', {username:props.username ,email: props.email, CheckUserExist:false });
+        const result = await POST('/api/sendemail/forgotpassword', { username: props.username, email: props.email, CheckUserExist: false });
         if (result.data.success) {
           toast.success(result.data.message);
           setBackendCode(result.data.code);
           setCurrentStep(2);
+        } else if (result.data.caught) {
+          // toast.error(result.data.message);
+          navigate("/login");
+
         } else {
           toast.error(result.data.message);
         }
@@ -97,12 +103,12 @@ const VerifyEmail = (props) => {
 
     handleEmailSubmit();
 
-  }, [props.email]);
+  }, [props.email, props.username, navigate]);
 
   const handleCodeSubmit = async (e) => {
 
 
-    if(BackendCode !== Code.join('')){
+    if (BackendCode !== Code.join('')) {
       toast.error('Invalid verification code');
       return;
     }
@@ -135,7 +141,10 @@ const VerifyEmail = (props) => {
     if (response.data.success) {
       toast.success(response.data.message);
       props.setShowModal(false);
-    } else {
+    } else if (response.data.caught) {
+      // toast.error(response.data.message);
+      navigate('/login'); return;
+    } {
       toast.error(response.data.message);
     }
   };
@@ -187,7 +196,7 @@ const VerifyEmail = (props) => {
         return (
           <Box sx={{ p: 3 }}>
             <Box sx={{ mb: 3 }}>
-              
+
               <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
                 Check your email
               </Typography>

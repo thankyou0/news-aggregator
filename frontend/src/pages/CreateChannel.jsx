@@ -139,6 +139,7 @@ import {
 import axios from 'axios';
 import { toast } from "react-hot-toast";
 import config from '../config';
+import { useNavigate } from 'react-router-dom';
 
 const CreateChannel = () => {
   const [open, setOpen] = useState(false);
@@ -146,9 +147,12 @@ const CreateChannel = () => {
   const [baseURL, setBaseURL] = useState('');
   const [logo, setLogo] = useState(null);
   const [channels, setChannels] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchChannels();
+// eslint-disable-next-line
   }, []);
 
   const fetchChannels = async () => {
@@ -162,6 +166,10 @@ const CreateChannel = () => {
 
       if (response.data.success) {
         setChannels(response.data.channels || []);
+      }
+      else if (response.data.caught) {
+        navigate("/login");
+        // toast.error(response.data.message);
       }
     } catch (error) {
       console.error('Error fetching channels:', error);
@@ -198,6 +206,9 @@ const CreateChannel = () => {
       if (response.data.success) {
         toast.success("Channel created successfully");
         fetchChannels(); // Refresh the channels list after creation
+      } else if (response.data.caught) {
+        navigate("/login");
+        // toast.error(response.data.message);
       } else {
         toast.error("Channel creation failed");
       }
@@ -218,6 +229,9 @@ const CreateChannel = () => {
       if (response.data.success) {
         toast.success("Channel deleted successfully");
         fetchChannels(); // Refresh the channels list after deletion
+      } else if (response.data.caught) {
+        navigate("/login");
+        // toast.error(response.data.message);
       } else {
         toast.error("Channel deletion failed");
       }

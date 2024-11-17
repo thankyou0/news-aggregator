@@ -12,6 +12,9 @@ import { useQuery } from '@tanstack/react-query';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,7 +25,7 @@ const Bookmark = () => {
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const PAGE_SIZE = 15;
-
+  const navigate = useNavigate();
   // Fetching data using useQuery
   const { data: articles = [], isLoading, isError } = useQuery({
     queryKey: ['bookmark'],
@@ -33,9 +36,13 @@ const Bookmark = () => {
       if (resultFromBackend.data.success) {
         // console.log(resultFromBackend.data.articles);
         return resultFromBackend.data.bookmarks || [];
-      } else {
-        throw new Error('Error fetching data from backend');
+      } else if (resultFromBackend.data.caught) {
+        toast.error(resultFromBackend.data.message);
+        navigate('/login'); return;
       }
+      else
+        throw new Error('Error fetching data from backend');
+
     },
     onError: (error) => {
       console.error("GET request error:", error);

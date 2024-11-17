@@ -154,7 +154,8 @@ export default function Register() {
         window.localStorage.setItem('token', result.data.token);
         toast.success("Signup successfully");
         navigate('/');
-      } else {
+      }
+      else {
         toast.error(result.data.message);
       }
     } catch (error) {

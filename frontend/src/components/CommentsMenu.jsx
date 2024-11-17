@@ -14,11 +14,13 @@ import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import { POST } from '../api';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loggedUserName, setLoggedUserName] = useState('');
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -29,6 +31,10 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           setComments(response.data.comments);
           setLoggedUserName(response.data.loggedUserName);
         }
+        if (response.data.caught) {
+          navigate('/login'); return;
+          // toast.error(response.data.message);
+        }
       } catch (error) {
         console.error('Failed to fetch comments:', error);
       }
@@ -36,7 +42,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
     if (isOpen) {
       fetchComments();
     }
-  }, [isOpen, articleURL]);
+  }, [isOpen, articleURL, newComment, navigate]);
 
 
   useEffect(() => {
@@ -46,7 +52,11 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
         const response = await POST('/api/userdo/numComments', { articleURL });
         if (response.data.success === true) {
           setNumComments(response.data.numComments);
+        }
 
+        if (response.data.caught) {
+          navigate('/login'); return;
+          // toast.error(response.data.message);
         }
       } catch (error) {
         console.error('Failed to fetch comments:', error);
@@ -54,7 +64,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
     };
     HandleNumComments();
 
-  }, [articleURL, comments, newComment, setNumComments]);
+  }, [articleURL, comments, newComment, setNumComments, navigate]);
 
 
   const handleAddComment = () => {
@@ -75,6 +85,12 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           setNewComment('');
           toast.success('Comment added successfully');
         }
+
+        if (response.data.caught) {
+          navigate('/login'); return;
+          // toast.error(response.data.message);
+        }
+
       } catch (error) {
         console.error('Failed to add comment:', error);
       }
@@ -96,6 +112,12 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           setComments(comments.filter((comment) => comment.commentId !== commentId));
           toast.success('Comment deleted successfully');
         }
+
+        if (response.data.caught) {
+          navigate('/login'); return;
+          // toast.error(response.data.message);
+        }
+
       } catch (error) {
         console.error('Failed to delete comment:', error);
       }
