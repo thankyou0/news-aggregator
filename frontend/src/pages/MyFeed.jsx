@@ -268,7 +268,7 @@ const MyFeed = () => {
     const checkauth = await GET("/api/checkauth");
 
     if (checkauth.data?.caught) {
-      toast.error(checkauth.data.message);
+      toast.error(checkauth.data?.message);
       navigate("/login");
       return;
     }
@@ -282,7 +282,7 @@ const MyFeed = () => {
         throw new Error("No more articles found");
       }
       if (response.data?.caught) {
-        // toast.error(response.data.message);
+        // toast.error(response.data?.message);
         navigate("/login");
       }
 

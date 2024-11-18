@@ -210,7 +210,7 @@ const Navbar = () => {
         setQuickSearchText(response.data.quickSearchText);
       // else if (response.data?.caught) {
       //   navigate('/login'); return;
-      //   toast.error(response.data.message);
+      //   toast.error(response.data?.message);
       // }
     }).catch((error) => {
       console.error('Error fetching quick search data:', error);
@@ -226,7 +226,7 @@ const Navbar = () => {
 
       if (response.data?.caught) {
         navigate('/login'); return;
-        // toast.error(response.data.message);
+        // toast.error(response.data?.message);
       }
       else if (response.data?.success) {
         setQuickSearchText([...quickSearchText, newQuickSearch]);
@@ -248,7 +248,7 @@ const Navbar = () => {
       response.then(() => {
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
         else if (response.data?.success) {
           setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI

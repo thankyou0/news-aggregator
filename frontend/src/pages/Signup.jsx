@@ -156,7 +156,7 @@ export default function Register() {
         navigate('/');
       }
       else {
-        toast.error(result.data.message);
+        toast.error(result.data?.message);
       }
     } catch (error) {
       toast.error("Signup failed");

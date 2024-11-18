@@ -263,7 +263,7 @@ const SearchResults = (props) => {
       return { articles, noMoreData: false, endMessage: '' };
     }
     else if (response.data?.caught) {
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
       navigate('/login'); return;
     }
   };

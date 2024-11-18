@@ -49,7 +49,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
         }
         else if (response.data?.caught) {
           navigate("/login");
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
       } catch (error) {
         console.error('Failed to check follow status:', error);
@@ -76,10 +76,10 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
         }
       } else if (response.data?.caught) {
         navigate("/login");
-        // toast.error(response.data.message);
+        // toast.error(response.data?.message);
       }
       else {
-        console.error(response.data.message);
+        console.error(response.data?.message);
         toast.error('Something went wrong, please try again later.');
       }
     } catch (error) {

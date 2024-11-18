@@ -127,17 +127,17 @@ const ResetPassword = ({ setShowModal }) => {
     // console.log(response.data);
 
     if (response.data?.success) {
-      toast.success(response.data.message);
+      toast.success(response.data?.message);
       setShowModal(false);
       return;
 
     } else if (response.data?.caught) {
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
       setShowModal(false);
       navigate('/login'); return;
       return;
     } else {
-      toast.error(response.data.message);
+      toast.error(response.data?.message);
     }
 
 

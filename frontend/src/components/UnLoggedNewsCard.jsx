@@ -97,7 +97,7 @@ const NewsCard = (props) => {
             ? "Bookmark removed successfully!"
             : "Bookmark added successfully!";
         } else {
-          throw new Error(result.data.message);
+          throw new Error(result.data?.message);
         }
       },
       error: (err) => `Error: ${err.message}`,
@@ -125,7 +125,7 @@ const NewsCard = (props) => {
             ? "Like removed successfully!"
             : "Like added successfully!";
         } else {
-          throw new Error(result.data.message);
+          throw new Error(result.data?.message);
         }
       },
       error: (err) => `Error: ${err.message}`,

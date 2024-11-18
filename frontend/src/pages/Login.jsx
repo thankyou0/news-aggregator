@@ -89,7 +89,7 @@ export default function Login() {
         navigate('/');
       }
       else {
-        toast.error(result.data.message);
+        toast.error(result.data?.message);
       }
     } catch (err) {
       toast.error("Error Occured !!");

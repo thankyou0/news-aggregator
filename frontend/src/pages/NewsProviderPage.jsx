@@ -26,7 +26,7 @@ const NewsProviderPage = (props) => {
           setProviders(result.data.providers);
         }
         else if (result.data?.caught) {
-          // toast.error(result.data.message);
+          // toast.error(result.data?.message);
           navigate('/login'); return;
         }
         else {

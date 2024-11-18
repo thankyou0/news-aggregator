@@ -33,7 +33,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
         }
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
       } catch (error) {
         console.error('Failed to fetch comments:', error);
@@ -56,7 +56,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
 
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
       } catch (error) {
         console.error('Failed to fetch comments:', error);
@@ -88,7 +88,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
 
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
 
       } catch (error) {
@@ -115,7 +115,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
 
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
 
       } catch (error) {

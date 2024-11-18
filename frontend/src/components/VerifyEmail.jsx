@@ -84,15 +84,15 @@ const VerifyEmail = (props) => {
       try {
         const result = await POST('/api/sendemail/forgotpassword', { username: props.username, email: props.email, CheckUserExist: false });
         if (result.data?.success) {
-          toast.success(result.data.message);
+          toast.success(result.data?.message);
           setBackendCode(result.data.code);
           setCurrentStep(2);
         } else if (result.data?.caught) {
-          // toast.error(result.data.message);
+          // toast.error(result.data?.message);
           navigate("/login");
 
         } else {
-          toast.error(result.data.message);
+          toast.error(result.data?.message);
         }
       } catch (error) {
         toast.error('Something went wrong.');
@@ -121,10 +121,10 @@ const VerifyEmail = (props) => {
     // const response = await POST('/api/sendemail/forgotpassword/verifycode', { email: props.email, code: Code });
 
     // if (response.data?.success) {
-    //   toast.success(response.data.message);
+    //   toast.success(response.data?.message);
     //   setCurrentStep(3);
     // } else {
-    //   toast.error(response.data.message);
+    //   toast.error(response.data?.message);
     // }
   };
 
@@ -139,13 +139,13 @@ const VerifyEmail = (props) => {
     const response = await POST('/api/sendemail/forgotpassword/resetpassword', { email: props.email, password: encryptedPassword });
 
     if (response.data?.success) {
-      toast.success(response.data.message);
+      toast.success(response.data?.message);
       props.setShowModal(false);
     } else if (response.data?.caught) {
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
       navigate('/login'); return;
     } {
-      toast.error(response.data.message);
+      toast.error(response.data?.message);
     }
   };
 

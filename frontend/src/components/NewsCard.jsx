@@ -48,7 +48,7 @@ const NewsCard = (props) => {
         setBookmarked(result.data.bookmarked);
       }
       else if (result.data?.caught) {
-        // toast.error(result.data.message);
+        // toast.error(result.data?.message);
         navigate("/login");
       }
     };
@@ -65,7 +65,7 @@ const NewsCard = (props) => {
         setLiked(result.data.liked);
       }
       else if (result.data?.caught) {
-        // toast.error(result.data.message);
+        // toast.error(result.data?.message);
         navigate("/login");
       }
 
@@ -74,7 +74,7 @@ const NewsCard = (props) => {
         setNumLikes(NumLikesResult.data.numLikes);
       }
       else if (NumLikesResult.data?.caught) {
-        // toast.error(NumLikesResult.data.message);
+        // toast.error(NumLikesResult.data?.message);
         navigate("/login");
       }
 
@@ -90,7 +90,7 @@ const NewsCard = (props) => {
         setNumComments(numCommentsResult.data.numComments);
       }
       else if (numCommentsResult.data?.caught) {
-        // toast.error(numCommentsResult.data.message);
+        // toast.error(numCommentsResult.data?.message);
         navigate("/login");
       }
     })();
@@ -122,9 +122,9 @@ const NewsCard = (props) => {
             : "Bookmark added successfully!";
         } else if (result.data?.caught) {
           navigate("/login");
-          // toast.error(result.data.message);
+          // toast.error(result.data?.message);
         } else {
-          throw new Error(result.data.message);
+          throw new Error(result.data?.message);
         }
       },
       error: (err) => `Error: ${err.message}`,
@@ -158,10 +158,10 @@ const NewsCard = (props) => {
             : "Like added successfully!";
         } else if (result.data?.caught) {
           navigate("/login");
-          // toast.error(result.data.message);
+          // toast.error(result.data?.message);
         }
         else {
-          throw new Error(result.data.message);
+          throw new Error(result.data?.message);
         }
       },
       error: (err) => `Error: ${err.message}`,
@@ -173,7 +173,7 @@ const NewsCard = (props) => {
       setNumLikes(NumLikesResult.data.numLikes);
     }
     else if (NumLikesResult.data?.caught) {
-      toast.error(NumLikesResult.data.message);
+      toast.error(NumLikesResult.data?.message);
       navigate("/login");
     }
 

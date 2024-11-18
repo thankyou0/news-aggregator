@@ -111,7 +111,7 @@
 //           if (result.data?.success) {
 //             return liked ? 'Like removed successfully!' : 'Like added successfully!';
 //           } else {
-//             throw new Error(result.data.message);
+//             throw new Error(result.data?.message);
 //           }
 //         },
 //         error: (err) => `Error: ${err.message}`,
@@ -408,7 +408,7 @@ const BookmarkCard = (props) => {
       }
       if (result.data?.caught) {
         navigate('/login'); return;
-        // toast.error(result.data.message);
+        // toast.error(result.data?.message);
       }
     })();
   }, [props.title, navigate]);
@@ -436,7 +436,7 @@ const BookmarkCard = (props) => {
 
         if (result.data?.caught) {
           navigate('/login'); return;
-          // toast.error(result.data.message);
+          // toast.error(result.data?.message);
         }
         else {
           setIsRemoving(false);
@@ -469,9 +469,9 @@ const BookmarkCard = (props) => {
             return liked ? 'Like removed successfully!' : 'Like added successfully!';
           } else if (result.data?.caught) {
             navigate('/login'); return;
-            // toast.error(result.data.message);
+            // toast.error(result.data?.message);
           } else {
-            throw new Error(result.data.message);
+            throw new Error(result.data?.message);
           }
         },
         error: (err) => `Error: ${err.message}`,

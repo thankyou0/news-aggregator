@@ -169,7 +169,7 @@
 //       }
 //       else if (response.data?.caught) {
 //         navigate("/login");
-//         // toast.error(response.data.message);
+//         // toast.error(response.data?.message);
 //       }
 //     } catch (error) {
 //       console.error('Error fetching channels:', error);
@@ -208,7 +208,7 @@
 //         fetchChannels(); // Refresh the channels list after creation
 //       } else if (response.data?.caught) {
 //         navigate("/login");
-//         // toast.error(response.data.message);
+//         // toast.error(response.data?.message);
 //       } else {
 //         toast.error("Channel creation failed");
 //       }
@@ -231,7 +231,7 @@
 //         fetchChannels(); // Refresh the channels list after deletion
 //       } else if (response.data?.caught) {
 //         navigate("/login");
-//         // toast.error(response.data.message);
+//         // toast.error(response.data?.message);
 //       } else {
 //         toast.error("Channel deletion failed");
 //       }

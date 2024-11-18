@@ -37,7 +37,7 @@ const Bookmark = () => {
         // console.log(resultFromBackend.data.articles);
         return resultFromBackend.data.bookmarks || [];
       } else if (resultFromBackend.data?.caught) {
-        toast.error(resultFromBackend.data.message);
+        toast.error(resultFromBackend.data?.message);
         navigate('/login'); return;
       }
       else

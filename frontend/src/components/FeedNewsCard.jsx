@@ -49,7 +49,7 @@ const FeedNewsCard = (props) => {
       }
       if (result.data?.caught) {
         navigate('/login'); return;
-        // toast.error(result.data.message);
+        // toast.error(result.data?.message);
       }
     };
 
@@ -66,7 +66,7 @@ const FeedNewsCard = (props) => {
       }
       if (result.data?.caught) {
         navigate('/login'); return;
-        // toast.error(result.data.message);
+        // toast.error(result.data?.message);
       }
 
       const NumLikesResult = await POST("/api/userdo/numLikes", ArticleDetails);
@@ -76,7 +76,7 @@ const FeedNewsCard = (props) => {
 
       if (NumLikesResult.data?.caught) {
         navigate('/login'); return;
-        // toast.error(NumLikesResult.data.message);
+        // toast.error(NumLikesResult.data?.message);
       }
     })();
   }, [props.title, numLikes, navigate]);
@@ -91,7 +91,7 @@ const FeedNewsCard = (props) => {
       }
       if (numCommentsResult.data?.caught) {
         navigate('/login'); return;
-        // toast.error(numCommentsResult.data.message);
+        // toast.error(numCommentsResult.data?.message);
       }
     })();
   }, [props.link, numComments, navigate]);
@@ -123,7 +123,7 @@ const FeedNewsCard = (props) => {
         } else if (result.data?.caught) {
           navigate('/login'); return;
         } else {
-          throw new Error(result.data.message);
+          throw new Error(result.data?.message);
         }
       },
       error: (err) => `Error: ${err.message}`,
@@ -158,10 +158,10 @@ const FeedNewsCard = (props) => {
             ? "Like removed successfully!"
             : "Like added successfully!";
         } else if (result.data?.caught) {
-          // toast.error(result.data.message);
+          // toast.error(result.data?.message);
           navigate('/login'); return;
         } else {
-          throw new Error(result.data.message);
+          throw new Error(result.data?.message);
         }
       },
       error: (err) => `Error: ${err.message}`,

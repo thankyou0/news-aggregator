@@ -249,7 +249,7 @@ const LoggedHome = () => {
       if (resultFromBackend.data?.success) {
         return resultFromBackend.data.articles;
       } else if (resultFromBackend.data.caught) {
-        // toast.error(resultFromBackend.data.message);
+        // toast.error(resultFromBackend.data?.message);
         navigate('/login'); return;
       }
       else {
