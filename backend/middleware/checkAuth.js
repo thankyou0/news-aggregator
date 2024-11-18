@@ -35,7 +35,7 @@ const checkAuth =  (req, res, next) => {
 
     // const userExist = await usermodel.findById(user.id).select("-password");
 
-    // return res.status(210).json({ success: false, message: "User not found" });
+    return res.status(210).json({ success: false, message: "User not foundldsjflajsd" });
     
     // if (!userExist) {
       // return res.status(210).json({ success: false, message: "User not found" });
