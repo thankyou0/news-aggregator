@@ -255,7 +255,6 @@ const SearchResults = (props) => {
     if (response.data.success) {
 
       const articles = response.data?.articles;
-
       // Return message if no articles are found
       if (!articles || articles.length === 0) {
         return { articles: [], noMoreData: true, endMessage: 'No more articles to show' };
@@ -268,7 +267,7 @@ const SearchResults = (props) => {
       navigate('/login'); return;
     }
   };
-  
+
 
   const {
     data,
