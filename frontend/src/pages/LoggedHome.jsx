@@ -218,7 +218,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -306,7 +305,13 @@ const LoggedHome = () => {
   };
 
   return (
-    <div style={{ overflow: "visible", marginTop: "130px" }}>
+    <div
+      style={{
+        overflow: "visible",
+        marginTop: "130px",
+        backgroundColor: "white",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -315,6 +320,7 @@ const LoggedHome = () => {
           padding: "10px",
           borderRadius: "25px",
           transition: "width 0.25s ease-in-out",
+          // backgroundColor: "black",
         }}
       >
         <TextField
@@ -442,7 +448,6 @@ const LoggedHome = () => {
                     (article, index) =>
                       article && (
                         <NewsCard
-                          key={index}
                           title={article.title}
                           link={article.link}
                           time={article.time}

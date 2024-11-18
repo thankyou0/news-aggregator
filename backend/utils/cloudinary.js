@@ -8,4 +8,6 @@ v2.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-module.exports = { v2 };
+// module.exports = { v2 };
+
+export { v2 };

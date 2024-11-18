@@ -87,7 +87,7 @@ const VerifyEmail = (props) => {
           toast.success(result.data.message);
           setBackendCode(result.data.code);
           setCurrentStep(2);
-        } else if (result.data.caught) {
+        } else if (result.data?.caught) {
           // toast.error(result.data.message);
           navigate("/login");
 
@@ -141,7 +141,7 @@ const VerifyEmail = (props) => {
     if (response.data.success) {
       toast.success(response.data.message);
       props.setShowModal(false);
-    } else if (response.data.caught) {
+    } else if (response.data?.caught) {
       // toast.error(response.data.message);
       navigate('/login'); return;
     } {

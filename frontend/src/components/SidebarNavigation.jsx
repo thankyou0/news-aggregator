@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Drawer,
   IconButton,
@@ -14,9 +14,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded"; // Import history icon
 import { ThemeContext } from "../context/ThemeContext";
-import feedImgDark from "../images/feed_dark.png"; // Dark mode feed image
-import feedImgLight from "../images/feed_light.png"; // Light mode feed image
+import feedImgDark from "../images/feed_dark.png";
+import feedImgLight from "../images/feed_light.png";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import following_light from "../images/following_light.png";
 import following_dark from "../images/following_dark.png";
@@ -26,6 +27,7 @@ const NAVIGATION = [
   { title: "Feed", icon: "feedImg", path: "/myfeed" },
   { title: "Following", icon: "followingImg", path: "/providers/following" },
   { title: "Bookmark", icon: <BookmarkRoundedIcon />, path: "/bookmark" },
+  { title: "History", icon: <HistoryRoundedIcon />, path: "/history" }, // Add history icon and path
   { kind: "divider" },
   { title: "Account", icon: <AccountCircleRoundedIcon />, path: "/account" },
 ];
@@ -33,10 +35,21 @@ const NAVIGATION = [
 const SidebarNavigation = ({ open, setOpen }) => {
   const { mode } = useContext(ThemeContext);
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   const toggleDrawer = (state) => () => setOpen(state);
   const feedImg = mode === "light" ? feedImgDark : feedImgLight;
   const followingImg = mode === "light" ? following_light : following_dark;
+  useEffect(() => {
+    if (window.localStorage.getItem("token") === null) {
+      setLoggedIn(false);
+    } else {
+      setLoggedIn(true);
+    }
+  }, [loggedIn]);
+  const loginPage = () => {
+    navigate("/login");
+  }
 
   return (
     <>
@@ -72,7 +85,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
             boxSizing: "border-box",
             background: mode === "dark" ? "#121212" : "#f9f9f9",
             color: mode === "dark" ? "#fff" : "#000",
-            borderRight: `1px solid ${mode === "dark" ? "#444" : "#ddd"}`, // Fix here with proper string interpolation
+            borderRight: `1px solid ${mode === "dark" ? "#444" : "#ddd"}`,
             transition: "width 0.3s ease",
           },
         }}
@@ -89,7 +102,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
               <ListItem
                 button
                 key={item.title}
-                onClick={() => navigate(item.path)}
+                onClick={loggedIn ? (() => navigate(item.path)) : loginPage}
                 sx={{
                   "&:hover": {
                     backgroundColor: mode === "dark" ? "#333" : "#eee",
@@ -143,7 +156,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
             )
           )}
         </List>
-      </Drawer>
+      </Drawer >
     </>
   );
 };

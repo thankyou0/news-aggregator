@@ -26,9 +26,8 @@ const UserProfile = () => {
 
     const fetchUserProfile = async () => {
 
-        const checkauth = await GET('/api/checkauth');
-      if (checkauth.data.caught)
-      {
+      const checkauth = await GET('/api/checkauth');
+      if (checkauth.data?.caught) {
         toast.error(checkauth.data.message);
         navigate('/login');
       }
@@ -39,7 +38,7 @@ const UserProfile = () => {
           console.log('Error:', response.data.message);
           return;
         }
-        if (response.data.caught) {
+        if (response.data?.caught) {
           // toast.error(response.data.message);
           navigate('/login'); return;
         }
@@ -85,7 +84,7 @@ const UserProfile = () => {
     if (response.data.success) {
       toast.success(response.data.message);
     }
-    else if (response.data.caught) {
+    else if (response.data?.caught) {
       // toast.error(response.data.message);
       navigate('/login'); return;
     }

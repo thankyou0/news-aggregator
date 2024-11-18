@@ -18,10 +18,9 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import UserProfile from './pages/UserProfile';
 import NewsProviderPage from './pages/NewsProviderPage.jsx';
-import CreateChannel from './pages/CreateChannel.jsx';
 import QuizApp from './components/QuizApp.jsx';
-
-
+import History from './pages/History'; // Import the history page
+import ProviderPage from './pages/ProviderPage.jsx';
 const theme = createTheme({
   typography: {
     fontFamily: 'Quicksand, Arial, sans-serif',
@@ -32,7 +31,7 @@ const theme = createTheme({
 function App() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/account', '/bookmark', '/providers/all', '/providers/following'];
+  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/history','/account', '/bookmark', '/providers/all', '/providers/following'];
   const hideNavbar_SidebarRoutes = ['/login', '/signup'];
 
   const shouldShowNavbar_Sidebar =
@@ -116,9 +115,11 @@ function App() {
               <Route path="/bookmark" element={<Bookmark />} />
               <Route path="/providers/all" element={<NewsProviderPage provider={"all"} />} />
               <Route path="/providers/following" element={<NewsProviderPage provider={"following"} />} />
-              <Route path="/providers/create" element={<CreateChannel/>} />
+              <Route path="/providers/create" element={<ProviderPage/>} />
               <Route path="*" element={<PageNotFound />} />
-              <Route path="/quiz" element={<QuizApp/>}/>
+              <Route path="/quiz" element={<QuizApp />} />
+              <Route path="/history" element={<History />} />
+              {/* <Route path */}
             </Routes>
           </Box>
         </Box>

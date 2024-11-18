@@ -312,7 +312,7 @@ const SearchResults = (props) => {
 
       return { articles, noMoreData: false, endMessage: '' };
     }
-    else if (response.data.caught) {
+    else if (response.data?.caught) {
       // toast.error(response.data.message);
       navigate('/login'); return;
     }

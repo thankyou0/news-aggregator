@@ -227,8 +227,8 @@ import { Box, Grid } from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
 import { GET } from "../api.js";
 import { Stack } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const parentstyle = {
   // backgroundColor:"black",
@@ -265,27 +265,23 @@ const MyFeed = () => {
   // Function to load more articles
   const loadMoreArticles = useCallback(async () => {
 
-
     const checkauth = await GET("/api/checkauth");
 
-    if (checkauth.data.caught) {
+    if (checkauth.data?.caught) {
       toast.error(checkauth.data.message);
       navigate("/login");
       return;
     }
-
 
     if (pageIndex >= urls.length || isLoading) return; // Prevent further loading if no more URLs or if loading
 
     setIsLoading(true);
     try {
       const response = await GET(urls[pageIndex]);
-      console.log(response.data);
-
       if (response.data.success === false) {
         throw new Error("No more articles found");
       }
-      if (response.data.caught) {
+      if (response.data?.caught) {
         // toast.error(response.data.message);
         navigate("/login");
       }
@@ -330,7 +326,6 @@ const MyFeed = () => {
 
   // Initial load of articles
   useEffect(() => {
-
     loadMoreArticles();
     // eslint-disable-next-line
   }, []); // Empty dependency array to run only once on mount

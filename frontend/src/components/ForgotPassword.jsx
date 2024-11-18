@@ -84,7 +84,7 @@ const ForgotPassword = ({ setShowModal }) => {
       if (result.data.success) {
         toast.success(result.data.message);
         setCurrentStep(2);
-      } else if (result.data.caught) {
+      } else if (result.data?.caught) {
         navigate('/login'); return;
         // toast.error(result.data.message);
       } else {
@@ -104,7 +104,7 @@ const ForgotPassword = ({ setShowModal }) => {
     if (response.data.success) {
       toast.success(response.data.message);
       setCurrentStep(3);
-    } else if (response.data.caught) {
+    } else if (response.data?.caught) {
       // toast.error(response.data.message);
       navigate('/login'); return;
     } else {
@@ -125,7 +125,7 @@ const ForgotPassword = ({ setShowModal }) => {
     if (response.data.success) {
       toast.success(response.data.message);
       setShowModal(false);
-    } else if (response.data.caught) {
+    } else if (response.data?.caught) {
       navigate('/login'); return;
       // toast.error(response.data.message);
     } else {

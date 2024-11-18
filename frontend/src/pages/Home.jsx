@@ -459,7 +459,7 @@ const Home = () => {
 
       if (resultFromBackend.data.success) {
         return resultFromBackend.data.articles;
-      } else if (localStorage.getItem('token')!=null &&  resultFromBackend.data.caught) {
+      } else if (localStorage.getItem('token') != null && resultFromBackend.data?.caught) {
         // toast.error(resultFromBackend.data.message);
         // console.log("caught");
         navigator("/login");

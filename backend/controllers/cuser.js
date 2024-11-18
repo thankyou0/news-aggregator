@@ -22,7 +22,7 @@ dotenv.config();
 
 // const cloudinary_v2 = require('../utils/cloudinary').v2;
 
-import { v2 as cloudinary_v2 } from 'cloudinary';
+import { v2 as cloudinary_v2 } from '../utils/cloudinary.js';
 
 const logInPost = async (req, res) => {
 
@@ -47,14 +47,14 @@ const logInPost = async (req, res) => {
 
   // console.log(req.body.email);
   // Decrypt the stored password
-  const decryptedPwd = CryptoJS.AES.decrypt(password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
+  const decryptedPwd = CryptoJS.AES.decrypt(password, process.env.PWD_SECRET).toString(CryptoJS.enc.Utf8);
   console.log("decryptedPwd", decryptedPwd);
 
-  const decrypteuserExistPwd = CryptoJS.AES.decrypt(userExist.password, "news-aggregator-secret").toString(CryptoJS.enc.Utf8);
+  const decrypteuserExistPwd = CryptoJS.AES.decrypt(userExist.password, process.env.PWD_SECRET).toString(CryptoJS.enc.Utf8);
   console.log("decrypteuserExistPwd", decrypteuserExistPwd);
 
 
-  if (decryptedPwd !== decrypteuserExistPwd) {
+  if (decryptedPwd !== decrypteuserExistPwd || decryptedPwd === "" || decrypteuserExistPwd === "") {
     return res.status(210).json({ success: false, message: "Invalid password" });
   }
 
@@ -63,6 +63,7 @@ const logInPost = async (req, res) => {
   return res.status(202).json({ success: true, message: "User signed in successfully", token: token });
 
 };
+
 
 const signUpPost = async (req, res) => {
   const { username, email, password, role } = req.body;
@@ -137,6 +138,7 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
 
 
+
   const user =
     await usermodel.findByIdAndUpdate
       (req.user.id,
@@ -162,6 +164,8 @@ const isUserExistWhenSignUp = async (req, res) => {
 
 // module.exports = { logInPost, signUpPost,isUserExistWhenSignUp, getUserProfile, updateUserProfile };
 
-const cuser = { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };
+// const cuser = { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };
 
-export default cuser;
+// export default cuser;
+
+export default { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };

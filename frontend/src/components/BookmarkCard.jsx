@@ -406,7 +406,7 @@ const BookmarkCard = (props) => {
       if (result.data.success) {
         setLiked(result.data.liked);
       }
-      if (result.data.caught) {
+      if (result.data?.caught) {
         navigate('/login'); return;
         // toast.error(result.data.message);
       }
@@ -434,7 +434,7 @@ const BookmarkCard = (props) => {
         toast.success('Bookmark removed successfully!');
       } else {
 
-        if (result.data.caught) {
+        if (result.data?.caught) {
           navigate('/login'); return;
           // toast.error(result.data.message);
         }
@@ -467,7 +467,7 @@ const BookmarkCard = (props) => {
         success: (result) => {
           if (result.data.success) {
             return liked ? 'Like removed successfully!' : 'Like added successfully!';
-          } else if (result.data.caught) {
+          } else if (result.data?.caught) {
             navigate('/login'); return;
             // toast.error(result.data.message);
           } else {

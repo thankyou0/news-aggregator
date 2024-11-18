@@ -131,7 +131,7 @@ const ResetPassword = ({ setShowModal }) => {
       setShowModal(false);
       return;
 
-    } else if (response.data.caught) {
+    } else if (response.data?.caught) {
       // toast.error(response.data.message);
       setShowModal(false);
       navigate('/login'); return;

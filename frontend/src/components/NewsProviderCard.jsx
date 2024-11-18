@@ -47,7 +47,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
         if (response.data.success) {
           setIsFollowing(response.data.isFollowing);
         }
-        else if (response.data.caught) {
+        else if (response.data?.caught) {
           navigate("/login");
           // toast.error(response.data.message);
         }
@@ -74,7 +74,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
             onUnfollow();
           }, 500); // Duration of the shrinking effect
         }
-      } else if (response.data.caught) {
+      } else if (response.data?.caught) {
         navigate("/login");
         // toast.error(response.data.message);
       }

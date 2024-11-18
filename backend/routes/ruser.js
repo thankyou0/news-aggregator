@@ -1,19 +1,7 @@
-// const router = require("express").Router();
-// const { logInPost, signUpPost, isUserExistWhenSignUp } = require("../controllers/cuser");
-// const { getUserProfile, updateUserProfile } = require("../controllers/cuser");
-
-// const multer = require("multer");
-// const checkAuth = require("../middleware/checkAuth");
-
 import express from "express";
 const router = express.Router();
-// import { logInPost, signUpPost, isUserExistWhenSignUp } from "../controllers/cuser.js";
-// import { getUserProfile, updateUserProfile } from "../controllers/cuser.js";
 import cuser from "../controllers/cuser.js";
 const { logInPost, signUpPost, isUserExistWhenSignUp,getUserProfile, updateUserProfile } = cuser;
-// import { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile } from "../controllers/cuser.js";
-
-
 import multer from "multer";
 import checkAuth from "../middleware/checkAuth.js";
 

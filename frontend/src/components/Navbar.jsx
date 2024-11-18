@@ -208,7 +208,7 @@ const Navbar = () => {
 
       if (response.data.success)
         setQuickSearchText(response.data.quickSearchText);
-      // else if (response.data.caught) {
+      // else if (response.data?.caught) {
       //   navigate('/login'); return;
       //   toast.error(response.data.message);
       // }
@@ -224,7 +224,7 @@ const Navbar = () => {
     const response = POST('/api/quicksearch/add', { quickSearchTextFromFrontend: newQuickSearch });
     response.then((response) => {
 
-      if (response.data.caught) {
+      if (response.data?.caught) {
         navigate('/login'); return;
         // toast.error(response.data.message);
       }
@@ -246,7 +246,7 @@ const Navbar = () => {
 
       const response = DELETE('/api/quicksearch/delete', { quickSearchText: textToRemove });
       response.then(() => {
-        if (response.data.caught) {
+        if (response.data?.caught) {
           navigate('/login'); return;
           // toast.error(response.data.message);
         }

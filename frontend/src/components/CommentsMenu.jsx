@@ -31,7 +31,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           setComments(response.data.comments);
           setLoggedUserName(response.data.loggedUserName);
         }
-        if (response.data.caught) {
+        if (response.data?.caught) {
           navigate('/login'); return;
           // toast.error(response.data.message);
         }
@@ -54,7 +54,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           setNumComments(response.data.numComments);
         }
 
-        if (response.data.caught) {
+        if (response.data?.caught) {
           navigate('/login'); return;
           // toast.error(response.data.message);
         }
@@ -86,7 +86,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           toast.success('Comment added successfully');
         }
 
-        if (response.data.caught) {
+        if (response.data?.caught) {
           navigate('/login'); return;
           // toast.error(response.data.message);
         }
@@ -113,7 +113,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           toast.success('Comment deleted successfully');
         }
 
-        if (response.data.caught) {
+        if (response.data?.caught) {
           navigate('/login'); return;
           // toast.error(response.data.message);
         }

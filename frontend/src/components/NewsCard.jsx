@@ -47,7 +47,7 @@ const NewsCard = (props) => {
       if (result.data.success) {
         setBookmarked(result.data.bookmarked);
       }
-      else if (result.data.caught) {
+      else if (result.data?.caught) {
         // toast.error(result.data.message);
         navigate("/login");
       }
@@ -64,7 +64,7 @@ const NewsCard = (props) => {
       if (result.data.success) {
         setLiked(result.data.liked);
       }
-      else if (result.data.caught) {
+      else if (result.data?.caught) {
         // toast.error(result.data.message);
         navigate("/login");
       }
@@ -73,10 +73,11 @@ const NewsCard = (props) => {
       if (NumLikesResult.data.success) {
         setNumLikes(NumLikesResult.data.numLikes);
       }
-      else if (NumLikesResult.data.caught) {
+      else if (NumLikesResult.data?.caught) {
         // toast.error(NumLikesResult.data.message);
         navigate("/login");
       }
+
     })();
   }, [props.title, numLikes, navigate]);
 
@@ -88,7 +89,7 @@ const NewsCard = (props) => {
       if (numCommentsResult.data.success) {
         setNumComments(numCommentsResult.data.numComments);
       }
-      else if (numCommentsResult.data.caught) {
+      else if (numCommentsResult.data?.caught) {
         // toast.error(numCommentsResult.data.message);
         navigate("/login");
       }
@@ -119,304 +120,359 @@ const NewsCard = (props) => {
           return bookmarked
             ? "Bookmark removed successfully!"
             : "Bookmark added successfully!";
-        } else if (result.data.caught) {
+        } else if (result.data?.caught) {
           navigate("/login");
           // toast.error(result.data.message);
         } else {
           throw new Error(result.data.message);
         }
       },
-      error: (err) => `Error: ${err.message}`,
+      error: (err) => `Error: ${ err.message }`,
     });
 
-    await bookmarkPromise;
+  await bookmarkPromise;
+};
+
+const [animateDirection, setAnimateDirection] = useState(null);
+const [animate, setAnimate] = useState(false);
+
+const handleLikeClick = async () => {
+  const previousNumLikes = numLikes; // Save the current number of likes
+  setAnimate(true);
+  setLiked(!liked);
+
+  const ArticleDetails = {
+    title: props.title,
   };
 
-  // const [liked, setLiked] = useState(false);
-  // const [numLikes, setNumLikes] = useState(0);
-  const [animateDirection, setAnimateDirection] = useState(null);
-  const [animate, setAnimate] = useState(false);
+  const likePromise = liked
+    ? POST("/api/userdo/deleteLike", ArticleDetails)
+    : POST("/api/userdo/addLike", ArticleDetails);
 
-  const handleLikeClick = async () => {
-    const previousNumLikes = numLikes; // Save the current number of likes
-    setAnimate(true);
-    setLiked(!liked);
+  toast.promise(likePromise, {
+    loading: liked ? "Removing like..." : "Adding like...",
+    success: (result) => {
+      if (result.data.success) {
+        return liked
+          ? "Like removed successfully!"
+          : "Like added successfully!";
+      } else if (result.data?.caught) {
+        navigate("/login");
+        // toast.error(result.data.message);
+      }
+      else {
+        throw new Error(result.data.message);
+      }
+    },
+    error: (err) => `Error: ${ err.message }`,
+    });
+await likePromise;
 
-    const ArticleDetails = {
-      title: props.title,
-    };
+const NumLikesResult = await POST("/api/userdo/numLikes", ArticleDetails);
+  if (NumLikesResult.data.success) {
+    setNumLikes(NumLikesResult.data.numLikes);
+  }
+  else if (NumLikesResult.data?.caught) {
+    toast.error(NumLikesResult.data.message);
+    navigate("/login");
+  }
 
-    const likePromise = liked
-      ? POST("/api/userdo/deleteLike", ArticleDetails)
-      : POST("/api/userdo/addLike", ArticleDetails);
+// Determine if likes are increasing or decreasing
+if (NumLikesResult.data.numLikes > previousNumLikes) {
+  // Likes increased, transition goes from bottom to top
+  setAnimateDirection("up");
+} else {
+  // Likes decreased, transition goes from top to bottom
+  setAnimateDirection("down");
+}
 
-    toast.promise(likePromise, {
-      loading: liked ? "Removing like..." : "Adding like...",
-      success: (result) => {
-        if (result.data.success) {
-          return liked
-            ? "Like removed successfully!"
-            : "Like added successfully!";
-        } else if (result.data.caught) {
-          navigate("/login");
-          // toast.error(result.data.message);
-         }
-        else {
-          throw new Error(result.data.message);
-        }
+// Reset animation after it completes (e.g., 300ms)
+setTimeout(() => setAnimate(false), 300);
+  };
+
+const handleClickOutside = (event) => {
+  if (
+    shareDialogRef.current &&
+    !shareDialogRef.current.contains(event.target)
+  ) {
+    setShowShareDialog(false);
+  }
+};
+
+const [anchorEl, setAnchorEl] = useState(null);
+
+const handleCommentsClick = (event) => {
+  setAnchorEl(event.currentTarget);
+  setShowComments(true);
+};
+
+useEffect(() => {
+  if (showShareDialog) {
+    document.addEventListener("mousedown", handleClickOutside);
+  } else {
+    document.removeEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [showShareDialog]);
+
+const [showComments, setShowComments] = useState(false);
+
+return (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      maxWidth: 800,
+      margin: "20px auto",
+      position: "relative",
+      "&:hover .action-buttons": {
+        opacity: 1,
+        visibility: "visible",
       },
-      error: (err) => `Error: ${err.message}`,
-    });
-    await likePromise;
-
-    const NumLikesResult = await POST("/api/userdo/numLikes", ArticleDetails);
-    if (NumLikesResult.data.success) {
-      setNumLikes(NumLikesResult.data.numLikes);
-    }
-    else if (NumLikesResult.data.caught) {
-      toast.error(NumLikesResult.data.message);
-      navigate("/login");
-    }
-
-    // Determine if likes are increasing or decreasing
-    if (NumLikesResult.data.numLikes > previousNumLikes) {
-      // Likes increased, transition goes from bottom to top
-      setAnimateDirection("up");
-    } else {
-      // Likes decreased, transition goes from top to bottom
-      setAnimateDirection("down");
-    }
-
-    // Reset animation after it completes (e.g., 300ms)
-    setTimeout(() => setAnimate(false), 300);
-  };
-
-  const handleClickOutside = (event) => {
-    if (
-      shareDialogRef.current &&
-      !shareDialogRef.current.contains(event.target)
-    ) {
-      setShowShareDialog(false);
-    }
-  };
-
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleCommentsClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    setShowComments(true);
-  };
-
-  useEffect(() => {
-    if (showShareDialog) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showShareDialog]);
-
-  const [showComments, setShowComments] = useState(false);
-
-  return (
-    <>
-      {/* Card Wrapper to Control Width */}
-      <Box
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    <Box sx={{ flex: 1, maxWidth: 850 }}>
+      <Card
         sx={{
           display: "flex",
-          justifyContent: "center",
-          margin: "20px",
+          flexDirection: "column",
+          border: "none",
+          boxShadow: "none",
           width: "100%",
-          height: "auto",
-          maxWidth: 800,
-          maxHeight: 800,
+          backgroundColor:
+            mode === "light" ? "rgb(246, 246, 246)" : "rgb(50, 50, 50)",
+          "&:hover": {
+            backgroundColor:
+              mode === "light" ? "rgb(240, 240, 240)" : "rgb(60, 60, 60)",
+          },
         }}
       >
-        <Card
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            border: "none",
-            boxShadow: "none",
-            width: "900px",
-            height: "100%",
-            backgroundColor: showComments
-              ? mode === "light"
-                ? "rgb(230, 230, 230)"
-                : "rgb(70, 70, 70)"
-              : mode === "light"
-                ? "rgb(246, 246, 246)"
-                : "rgb(50, 50, 50)",
-            "&:hover": {
-              backgroundColor: showComments
-                ? mode === "light"
-                  ? "rgb(220, 220, 220)"
-                  : "rgb(80, 80, 80)"
-                : mode === "light"
-                  ? "rgb(240, 240, 240)"
-                  : "rgb(60, 60, 60)",
-            },
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <CardContent sx={{ flex: 1 }}>
-              {/* Provider Image and Name */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "40px",
-                  overflow: "hidden",
-                }}
-              >
-                {isSearchPage ? (
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {props.providerImg && (
-                      <img
-                        src={props.providerImg}
-                        alt="Provider Logo"
-                        style={{
-                          maxWidth: "40px",
-                          maxHeight: "40px",
-                          objectFit: "contain",
-                        }}
-                      />
-                    )}
-                    {props.providerName && (
-                      <Typography
-                        variant="subtitle2"
-                        color="text.secondary"
-                        style={{ marginLeft: "10px" }}
-                      >
-                        {props.providerName}
-                      </Typography>
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
-                  >
-                    {props.providerImg && (
-                      <img
-                        src={props.providerImg}
-                        alt="Provider Logo"
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "80%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Title with Tooltip */}
-              <Tooltip
-                title="click"
-                placement="top"
-                TransitionComponent={Zoom}
-                arrow
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  gutterBottom
-                  onClick={handleClick}
-                  sx={{
-                    cursor: "pointer",
-                    color: "rgb(30, 144, 255)",
-                    "&:hover": { color: mode === "light" ? "blue" : "white" },
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <CardContent sx={{ flex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                width: "100%",
+                height: "40px",
+                overflow: "hidden",
+              }}
+            >
+              {isSearchPage ? (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {props.providerImg && (
+                    <img
+                      src={props.providerImg}
+                      alt="Provider Logo"
+                      style={{
+                        maxWidth: "40px",
+                        maxHeight: "40px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  )}
+                  {props.providerName && (
+                    <Typography
+                      variant="subtitle2"
+                      color="text.secondary"
+                      style={{ marginLeft: "10px" }}
+                    >
+                      {props.providerName}
+                    </Typography>
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
                   }}
                 >
-                  {props.title}
-                </Typography>
-              </Tooltip>
-
-              {/* Some Text */}
-              {props.someText && (
-                <Typography variant="body2" color="text.secondary">
-                  {props.someText}
-                </Typography>
+                  {props.providerImg && (
+                    <img
+                      src={props.providerImg}
+                      alt="Provider Logo"
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "80%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  )}
+                </div>
               )}
-            </CardContent>
+            </div>
 
-            {/* Article Image */}
-            {props.imgURL && (
-              <Box
+            <Tooltip
+              title="click"
+              placement="top"
+              TransitionComponent={Zoom}
+              arrow
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                gutterBottom
+                onClick={handleClick}
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 2,
+                  cursor: "pointer",
+                  color: "rgb(30, 144, 255)",
+                  "&:hover": { color: mode === "light" ? "blue" : "white" },
                 }}
               >
-                <img
-                  src={props.imgURL}
-                  alt="Article"
-                  style={{
-                    maxWidth: "150px",
-                    maxHeight: "150px",
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-            )}
-          </Box>
+                {props.title}
+              </Typography>
+            </Tooltip>
 
-          {/* Time Display */}
+            {props.someText && (
+              <Typography variant="body2" color="text.secondary">
+                {props.someText}
+              </Typography>
+            )}
+          </CardContent>
+
+          {props.imgURL && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 2,
+                width: "100%",
+                maxWidth: "150px",
+              }}
+            >
+              <img
+                src={props.imgURL}
+                alt="Article"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "150px",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
+          )}
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              justifyContent: "flex-start",
+              pl: 2,
+              mt: -1,
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                pl: 2,
-                mt: -1,
-              }}
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              fontSize="medium"
             >
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                fontSize="medium"
+              {props.time}
+            </Typography>
+          </Box>
+          <Box
+            className="action-buttons"
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              opacity: 0,
+              transition: "opacity 0.2s ease",
+              visibility: "hidden",
+            }}
+          >
+            <Tooltip title="Save" placement="bottom" arrow>
+              <IconButton
+                sx={{
+                  height: "48px",
+                  width: "48px",
+                  alignSelf: "center",
+                  marginBottom: "8px",
+                }}
+                aria-label="save"
+                onClick={handleBookmarkClick}
               >
-                {props.time}
-              </Typography>
-            </Box>
-            <Box
-              className="action-buttons"
-              sx={{
-                // position: 'absolute',
-                // right: 0,
-                // top: '50%',
-                // transform: 'translateY(-50%)',
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                // flexDirection: 'column',
-                opacity: 0,
-                // visibility: 'hidden',
-                transition: "opacity 0.2s ease-in-out",
+                {bookmarked ? (
+                  <BookmarkIcon
+                    sx={{ fontSize: "28px", color: "primary.main" }}
+                  />
+                ) : (
+                  <BookmarkBorderIcon sx={{ fontSize: "28px" }} />
+                )}
+              </IconButton>
+            </Tooltip>
 
-              }}
-            >
-              <Tooltip title="Save" placement="bottom" arrow>
+            <Tooltip title="Like" placement="bottom" arrow>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton
+                  sx={{
+                    height: "48px",
+                    width: "48px",
+                    alignSelf: "center",
+                    marginBottom: "4px",
+                  }}
+                  aria-label="like"
+                  onClick={handleLikeClick}
+                >
+                  {liked ? (
+                    <HeartIcon sx={{ fontSize: "28px", color: "red" }} />
+                  ) : (
+                    <HeartBorderIcon sx={{ fontSize: "28px" }} />
+                  )}
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      paddingLeft: "2px",
+                      // position: "absolute",
+                      transition: "transform 0.3s ease",
+                      transform: animate
+                        ? animateDirection === "up" // If likes are increasing, move up
+                          ? "translateY(-100%)"
+                          : "translateY(100%)" // If likes are decreasing, move down
+                        : "translateY(0)",
+                      opacity: animate ? 0 : 1,
+                    }}
+                    key={numLikes} // Helps with animation triggering
+                  >
+                    {numLikes} {/* Assuming likeCount is passed as a prop */}
+                  </Typography>
+                </IconButton>
+              </Box>
+            </Tooltip>
+
+            <Tooltip title="Comments" placement="bottom" arrow>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
                 <IconButton
                   sx={{
                     height: "48px",
@@ -424,131 +480,59 @@ const NewsCard = (props) => {
                     alignSelf: "center",
                     marginBottom: "8px",
                   }}
-                  aria-label="save"
-                  onClick={handleBookmarkClick}
+                  aria-label="comments"
+                  onClick={handleCommentsClick}
                 >
-                  {bookmarked ? (
-                    <BookmarkIcon
-                      sx={{ fontSize: "28px", color: "primary.main" }}
-                    />
-                  ) : (
-                    <BookmarkBorderIcon sx={{ fontSize: "28px" }} />
-                  )}
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="Like" placement="bottom" arrow>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconButton
-                    sx={{
-                      height: "48px",
-                      width: "48px",
-                      alignSelf: "center",
-                      marginBottom: "4px",
-                    }}
-                    aria-label="like"
-                    onClick={handleLikeClick}
+                  <InsertCommentRoundedIcon sx={{ fontSize: "28px" }} />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    style={{ paddingLeft: "2px" }}
                   >
-                    {liked ? (
-                      <HeartIcon sx={{ fontSize: "28px", color: "red" }} />
-                    ) : (
-                      <HeartBorderIcon sx={{ fontSize: "28px" }} />
-                    )}
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{
-                        paddingLeft: "2px",
-                        // position: "absolute",
-                        transition: "transform 0.3s ease",
-                        transform: animate
-                          ? animateDirection === "up" // If likes are increasing, move up
-                            ? "translateY(-100%)"
-                            : "translateY(100%)" // If likes are decreasing, move down
-                          : "translateY(0)",
-                        opacity: animate ? 0 : 1,
-                      }}
-                      key={numLikes} // Helps with animation triggering
-                    >
-                      {numLikes} {/* Assuming likeCount is passed as a prop */}
-                    </Typography>
-                  </IconButton>
-                </Box>
-              </Tooltip>
-
-              <Tooltip title="Comments" placement="bottom" arrow>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconButton
-                    sx={{
-                      height: "48px",
-                      width: "48px",
-                      alignSelf: "center",
-                      marginBottom: "8px",
-                    }}
-                    aria-label="comments"
-                    onClick={handleCommentsClick}
-                  >
-                    <InsertCommentRoundedIcon sx={{ fontSize: "28px" }} />
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      style={{ paddingLeft: "2px" }}
-                    >
-                      {numComments}
-                    </Typography>
-                  </IconButton>
-                </Box>
-              </Tooltip>
-
-              <CommentsMenu
-                isOpen={showComments}
-                anchorEl={anchorEl}
-                onClose={() => setShowComments(false)}
-                articleURL={props.link}
-                setNumComments={setNumComments}
-              />
-
-              <Tooltip title="Share" placement="bottom" arrow>
-                <IconButton
-                  sx={{
-                    height: "48px",
-                    width: "48px",
-                    alignSelf: "center",
-                  }}
-                  aria-label="share"
-                  onClick={() => setShowShareDialog(true)}
-                >
-                  <ShareButton sx={{ fontSize: "28px" }} />
+                    {numComments}
+                  </Typography>
                 </IconButton>
-              </Tooltip>
-            </Box>
+              </Box>
+            </Tooltip>
+
+            <CommentsMenu
+              isOpen={showComments}
+              anchorEl={anchorEl}
+              onClose={() => setShowComments(false)}
+              articleURL={props.link}
+              setNumComments={setNumComments}
+            />
+
+            <Tooltip title="Share" placement="bottom" arrow>
+              <IconButton
+                sx={{
+                  height: "48px",
+                  width: "48px",
+                  alignSelf: "center",
+                }}
+                aria-label="share"
+                onClick={() => setShowShareDialog(true)}
+              >
+                <ShareButton sx={{ fontSize: "28px" }} />
+              </IconButton>
+            </Tooltip>
           </Box>
-          {/* Share Dialog */}
-          {showShareDialog && (
-            <div ref={shareDialogRef}>
-              <ShareDialog
-                link={props.link}
-                onClose={() => setShowShareDialog(false)}
-                id="share-dialog"
-              />
-            </div>
-          )}
-        </Card>
-      </Box>
-    </>
-  );
+        </Box>
+
+        {/* Share Dialog */}
+        {showShareDialog && (
+          <div ref={shareDialogRef}>
+            <ShareDialog
+              link={props.link}
+              onClose={() => setShowShareDialog(false)}
+              id="share-dialog"
+            />
+          </div>
+        )}
+      </Card>
+    </Box>
+  </Box>
+);
 };
 
 export default NewsCard;
