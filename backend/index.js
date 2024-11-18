@@ -1,89 +1,3 @@
-// import express from 'express';
-// import mongoose from 'mongoose';
-// import dotenv from 'dotenv';
-// import cors from 'cors';
-// import checkAuth from './middleware/checkAuth.js';
-// import userroute from './routes/ruser.js';
-// // import algorithmsroute from './routes/ralgorithms.js';
-// import * as algorithmsroute from './routes/ralgorithms.js';
-
-// import searchroute from './routes/rsearch.js';
-// import userdoroute from './routes/ruserdo.js';
-// import feedroute from './routes/rfeed.js';
-// import quicksearchroute from './routes/rquicksearch.js';
-// import sendemailroute from './routes/rsendemail.js';
-// import changepasswordroute from './routes/rchangepassword.js';
-// import providerroute from './routes/rprovider.js';
-// import quiz_router from './routes/rquiz.js';
-// import path from 'path';
-
-// const app = express();
-
-// dotenv.config();
-
-// const port = process.env.PORT || 9000;
-
-// app.use(express.static(path.join(__dirname, '../frontend/build')));
-// // Serve static files from the React app
-
-// // app.get('*', (req, res) => {
-// //   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-// // });
-
-// mongoose.connect(process.env.MONGO_URL).then(() => {
-//   console.log("connected to mongodb");
-// }).catch((err) => {
-//   console.log(`${err} \n error connecting mongoDB `);
-// });
-
-
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }))
-// // app.use(cookieparser());
-
-
-// app.use(cors({
-//   origin: "*",
-//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//   allowedHeaders: ["Content-Type", "authorization"],
-//   credentials: true,
-// }));
-
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
-
-
-
-
-// app.use("/api/user", userroute);
-
-// app.use("/api/algorithms", algorithmsroute);
-
-// app.use("/api/search", checkAuth, searchroute);
-
-// app.use("/api/userdo", checkAuth, userdoroute);
-
-// app.use("/api/myfeed", checkAuth, feedroute);
-
-// app.use("/api/quicksearch", checkAuth, quicksearchroute);
-
-// app.use("/api/sendemail", sendemailroute);
-
-// app.use("/api/changepassword", checkAuth, changepasswordroute);
-
-// app.use("/api/provider", providerroute);
-
-// app.use("/api/quiz",quiz_router);
-
-// app.listen(port, () => {
-//   console.log(`listening at port : ${port}`);
-// });
-
-
-
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -149,7 +63,7 @@ app.use("/api/sendemail", sendemailroute);
 app.use("/api/changepassword", checkAuth, changepasswordroute);
 app.use("/api/provider", checkAuth, providerroute);
 app.use("/api/quiz", checkAuth, quiz_router);
-app.get('/api/checkauth', checkAuth);
+app.get('/',(req,res)=> {res.status(202).send("Hello Backend")});
 
 app.listen(port, () => {
   console.log(`listening at port : ${port}`);
