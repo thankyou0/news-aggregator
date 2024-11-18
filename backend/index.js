@@ -63,7 +63,7 @@ app.use("/api/sendemail", sendemailroute);
 app.use("/api/changepassword", checkAuth, changepasswordroute);
 app.use("/api/provider", checkAuth, providerroute);
 app.use("/api/quiz", checkAuth, quiz_router);
-app.get('/',(req,res)=> {res.status(202).send("Hello Backend")});
+app.get('/',(req,res)=> {res.status(202).send("Hello Backend 2ND time")});
 
 app.listen(port, () => {
   console.log(`listening at port : ${port}`);
