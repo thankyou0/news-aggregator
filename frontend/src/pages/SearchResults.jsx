@@ -239,6 +239,37 @@ const SearchResults = (props) => {
 
   const { q, site, tbs, gl, location } = props.queries;
 
+  const fetchSearchResults = async ({ pageParam = 0, queryKey }) => {
+    // eslint-disable-next-line
+    const [_unused, q, site, tbs, gl, location] = queryKey;
+    const token = localStorage.getItem('token');
+
+    const response = await axios.get(`${config.BACKEND_API}/api/search/${pageParam}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token ? `Bearer ${token}` : '',
+      },
+      params: { q, site, tbs, gl, location },
+    });
+
+    if (response.data.success) {
+
+      const articles = response.data?.articles;
+
+      // Return message if no articles are found
+      if (!articles || articles.length === 0) {
+        return { articles: [], noMoreData: true, endMessage: 'No more articles to show' };
+      }
+
+      return { articles, noMoreData: false, endMessage: '' };
+    }
+    else if (response.data?.caught) {
+      // toast.error(response.data.message);
+      navigate('/login'); return;
+    }
+  };
+  
+
   const {
     data,
     fetchNextPage,
@@ -288,35 +319,7 @@ const SearchResults = (props) => {
     };
   }, [handleScroll]);
 
-  const fetchSearchResults = async ({ pageParam = 0, queryKey }) => {
-    // eslint-disable-next-line
-    const [_unused, q, site, tbs, gl, location] = queryKey;
-    const token = localStorage.getItem('token');
-
-    const response = await axios.get(`${config.BACKEND_API}/api/search/${pageParam}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: token ? `Bearer ${token}` : '',
-      },
-      params: { q, site, tbs, gl, location },
-    });
-
-    if (response.data.success) {
-
-      const articles = response.data?.articles;
-
-      // Return message if no articles are found
-      if (!articles || articles.length === 0) {
-        return { articles: [], noMoreData: true, endMessage: 'No more articles to show' };
-      }
-
-      return { articles, noMoreData: false, endMessage: '' };
-    }
-    else if (response.data?.caught) {
-      // toast.error(response.data.message);
-      navigate('/login'); return;
-    }
-  };
+  
 
   return (
     <>
