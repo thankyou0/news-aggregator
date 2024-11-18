@@ -38,7 +38,7 @@
 //     setIsLoading(true);
 //     try {
 //       const response = await GET(urls[pageIndex]);
-//       if (response.data.success === false) {
+//       if (response.data?.success === false) {
 //         throw new Error("No more articles found");
 //       }
 
@@ -278,7 +278,7 @@ const MyFeed = () => {
     setIsLoading(true);
     try {
       const response = await GET(urls[pageIndex]);
-      if (response.data.success === false) {
+      if (response.data?.success === false) {
         throw new Error("No more articles found");
       }
       if (response.data?.caught) {

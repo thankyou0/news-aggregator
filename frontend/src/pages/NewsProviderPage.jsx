@@ -22,7 +22,7 @@ const NewsProviderPage = (props) => {
       try {
         const result = await GET(props.provider === "all" ? '/api/provider/get_all_providers' : '/api/provider/get_following_providers');
         console.log(result.data);
-        if (result.data.success) {
+        if (result.data?.success) {
           setProviders(result.data.providers);
         }
         else if (result.data?.caught) {

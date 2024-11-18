@@ -107,7 +107,7 @@ export default function Register() {
       const result = await POST(`/api/user/isuserexistwhensignup`, { email, role });
       console.log(result.data);
 
-      if (!result.data.success) {
+      if (!result.data?.success) {
         toast.error(result.data.error);
         return;
       }
@@ -150,7 +150,7 @@ export default function Register() {
         }
       });
 
-      if (result.data.success) {
+      if (result.data?.success) {
         window.localStorage.setItem('token', result.data.token);
         toast.success("Signup successfully");
         navigate('/');

@@ -83,7 +83,7 @@ export default function Login() {
     try {
       const result = await POST('/api/user/login', loginDetails);
 
-      if (result.data.success) {
+      if (result.data?.success) {
         window.localStorage.setItem('token', result.data.token);
         toast.success("Logged in successfully");
         navigate('/');

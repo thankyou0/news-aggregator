@@ -81,7 +81,7 @@ const ForgotPassword = ({ setShowModal }) => {
 
     try {
       const result = await POST('/api/sendemail/forgotpassword', { email });
-      if (result.data.success) {
+      if (result.data?.success) {
         toast.success(result.data.message);
         setCurrentStep(2);
       } else if (result.data?.caught) {
@@ -101,7 +101,7 @@ const ForgotPassword = ({ setShowModal }) => {
     e.preventDefault();
     const response = await POST('/api/sendemail/forgotpassword/verifycode', { email: email, code: Code });
 
-    if (response.data.success) {
+    if (response.data?.success) {
       toast.success(response.data.message);
       setCurrentStep(3);
     } else if (response.data?.caught) {
@@ -122,7 +122,7 @@ const ForgotPassword = ({ setShowModal }) => {
     const encryptedPassword = CryptoJS.AES.encrypt(newPassword, config.PWD_SECRET).toString();
     const response = await POST('/api/sendemail/forgotpassword/resetpassword', { email: email, password: encryptedPassword });
 
-    if (response.data.success) {
+    if (response.data?.success) {
       toast.success(response.data.message);
       setShowModal(false);
     } else if (response.data?.caught) {

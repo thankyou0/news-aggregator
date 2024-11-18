@@ -252,7 +252,7 @@ const SearchResults = (props) => {
       params: { q, site, tbs, gl, location },
     });
 
-    if (response.data.success) {
+    if (response.data?.success) {
 
       const articles = response.data?.articles;
       // Return message if no articles are found
@@ -318,7 +318,7 @@ const SearchResults = (props) => {
     };
   }, [handleScroll]);
 
-  
+
 
   return (
     <>

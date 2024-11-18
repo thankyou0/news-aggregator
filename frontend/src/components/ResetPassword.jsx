@@ -126,7 +126,7 @@ const ResetPassword = ({ setShowModal }) => {
     const response = await POST('/api/changepassword', { password: EncryptNewPassword, CurrentPassword: EncryptOldPassword });
     // console.log(response.data);
 
-    if (response.data.success) {
+    if (response.data?.success) {
       toast.success(response.data.message);
       setShowModal(false);
       return;

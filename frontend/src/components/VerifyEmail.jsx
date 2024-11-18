@@ -83,7 +83,7 @@ const VerifyEmail = (props) => {
 
       try {
         const result = await POST('/api/sendemail/forgotpassword', { username: props.username, email: props.email, CheckUserExist: false });
-        if (result.data.success) {
+        if (result.data?.success) {
           toast.success(result.data.message);
           setBackendCode(result.data.code);
           setCurrentStep(2);
@@ -120,7 +120,7 @@ const VerifyEmail = (props) => {
     // e.preventDefault();
     // const response = await POST('/api/sendemail/forgotpassword/verifycode', { email: props.email, code: Code });
 
-    // if (response.data.success) {
+    // if (response.data?.success) {
     //   toast.success(response.data.message);
     //   setCurrentStep(3);
     // } else {
@@ -138,7 +138,7 @@ const VerifyEmail = (props) => {
     const encryptedPassword = CryptoJS.AES.encrypt(newPassword, config.PWD_SECRET).toString();
     const response = await POST('/api/sendemail/forgotpassword/resetpassword', { email: props.email, password: encryptedPassword });
 
-    if (response.data.success) {
+    if (response.data?.success) {
       toast.success(response.data.message);
       props.setShowModal(false);
     } else if (response.data?.caught) {

@@ -34,7 +34,7 @@ const UserProfile = () => {
 
       try {
         const response = await GET('/api/user/userprofile/get');
-        if (response.data.success === false) {
+        if (response.data?.success === false) {
           console.log('Error:', response.data.message);
           return;
         }
@@ -81,7 +81,7 @@ const UserProfile = () => {
     };
     const response = await POST('/api/user/userprofile/update', updatedData);
 
-    if (response.data.success) {
+    if (response.data?.success) {
       toast.success(response.data.message);
     }
     else if (response.data?.caught) {

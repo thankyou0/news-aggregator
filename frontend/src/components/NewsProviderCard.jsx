@@ -44,7 +44,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
     const checkFollow = async () => {
       try {
         const response = await POST('/api/userdo/isfollowed', { baseURL: baseURL });
-        if (response.data.success) {
+        if (response.data?.success) {
           setIsFollowing(response.data.isFollowing);
         }
         else if (response.data?.caught) {
@@ -65,7 +65,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
 
       const response = await POST(endpoint, payload);
 
-      if (response.data.success === true) {
+      if (response.data?.success === true) {
         setIsFollowing((prev) => !prev);
         toast.success(isFollowing ? 'You have UnFollowed successfully!' : 'You have Followed successfully!');
         if (isFollowing && provider === "following") {

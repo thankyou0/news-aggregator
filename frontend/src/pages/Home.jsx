@@ -92,7 +92,7 @@
 //       const resultFromBackend = await GET("/api/algorithms/top_stories");
 //       console.log(resultFromBackend);
 
-//       if (resultFromBackend.data.success) {
+//       if (resultFromBackend.data?.success) {
 //         return resultFromBackend.data.articles;
 //       } else {
 //         throw new Error("Error fetching data from backend");
@@ -457,7 +457,7 @@ const Home = () => {
       console.log(resultFromBackend.data);
       console.log(localStorage.getItem('token'));
 
-      if (resultFromBackend.data.success) {
+      if (resultFromBackend.data?.success) {
         return resultFromBackend.data.articles;
       } else if (localStorage.getItem('token') != null && resultFromBackend.data?.caught) {
         // toast.error(resultFromBackend.data.message);

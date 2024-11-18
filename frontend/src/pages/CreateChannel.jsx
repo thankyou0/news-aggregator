@@ -37,7 +37,7 @@
 // //         },
 // //       });
 // //       console.log('Channel created:', response.data);
-// //       if (response.data.success) {
+// //       if (response.data?.success) {
 // //         toast.success("Channel created successfully");
 // //       } else {
 // //         toast.error("Channel creation failed");
@@ -164,7 +164,7 @@
 //       });
 //       console.log('Channels:', response.data);
 
-//       if (response.data.success) {
+//       if (response.data?.success) {
 //         setChannels(response.data.channels || []);
 //       }
 //       else if (response.data?.caught) {
@@ -203,7 +203,7 @@
 //         },
 //       });
 //       console.log('Channel created:', response.data);
-//       if (response.data.success) {
+//       if (response.data?.success) {
 //         toast.success("Channel created successfully");
 //         fetchChannels(); // Refresh the channels list after creation
 //       } else if (response.data?.caught) {
@@ -226,7 +226,7 @@
 //         }
 //       });
 //       console.log('Channel deleted:', response.data);
-//       if (response.data.success) {
+//       if (response.data?.success) {
 //         toast.success("Channel deleted successfully");
 //         fetchChannels(); // Refresh the channels list after deletion
 //       } else if (response.data?.caught) {

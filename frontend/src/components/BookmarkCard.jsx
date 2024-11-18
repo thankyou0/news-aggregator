@@ -33,7 +33,7 @@
 //       const ArticleDetails = { title: props.title };
 
 //       const result = await POST('/api/userdo/isLiked', ArticleDetails);
-//       if (result.data.success) {
+//       if (result.data?.success) {
 //         setLiked(result.data.liked);
 //       }
 //     })();
@@ -56,7 +56,7 @@
 
 //     try {
 //       const result = await POST('/api/userdo/deleteBookmark', ArticleDetails);
-//       if (result.data.success) {
+//       if (result.data?.success) {
 //         // Animate the card only if boxRef.current exists
 //         if (boxRef.current) {
 //           gsap.to(boxRef.current, {
@@ -108,7 +108,7 @@
 //       {
 //         loading: liked ? 'Removing like...' : 'Adding like...',
 //         success: (result) => {
-//           if (result.data.success) {
+//           if (result.data?.success) {
 //             return liked ? 'Like removed successfully!' : 'Like added successfully!';
 //           } else {
 //             throw new Error(result.data.message);
@@ -403,7 +403,7 @@ const BookmarkCard = (props) => {
     (async () => {
       const ArticleDetails = { title: props.title };
       const result = await POST('/api/userdo/isLiked', ArticleDetails);
-      if (result.data.success) {
+      if (result.data?.success) {
         setLiked(result.data.liked);
       }
       if (result.data?.caught) {
@@ -423,7 +423,7 @@ const BookmarkCard = (props) => {
 
     try {
       const result = await POST('/api/userdo/deleteBookmark', ArticleDetails);
-      if (result.data.success) {
+      if (result.data?.success) {
         // Use setTimeout to match the CSS transition duration
         setTimeout(() => {
           setBookmarked(false);
@@ -465,7 +465,7 @@ const BookmarkCard = (props) => {
       {
         loading: liked ? 'Removing like...' : 'Adding like...',
         success: (result) => {
-          if (result.data.success) {
+          if (result.data?.success) {
             return liked ? 'Like removed successfully!' : 'Like added successfully!';
           } else if (result.data?.caught) {
             navigate('/login'); return;

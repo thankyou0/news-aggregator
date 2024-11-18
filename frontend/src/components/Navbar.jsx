@@ -206,7 +206,7 @@ const Navbar = () => {
     const respose = GET('/api/quicksearch/get');
     respose.then((response) => {
 
-      if (response.data.success)
+      if (response.data?.success)
         setQuickSearchText(response.data.quickSearchText);
       // else if (response.data?.caught) {
       //   navigate('/login'); return;
@@ -228,7 +228,7 @@ const Navbar = () => {
         navigate('/login'); return;
         // toast.error(response.data.message);
       }
-      else if (response.data.success) {
+      else if (response.data?.success) {
         setQuickSearchText([...quickSearchText, newQuickSearch]);
         setNewQuickSearch('');
         setShowAddBox(false);
@@ -250,7 +250,7 @@ const Navbar = () => {
           navigate('/login'); return;
           // toast.error(response.data.message);
         }
-        else if (response.data.success) {
+        else if (response.data?.success) {
           setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI
         }
       }).catch((error) => {

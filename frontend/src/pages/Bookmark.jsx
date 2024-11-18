@@ -33,7 +33,7 @@ const Bookmark = () => {
       const resultFromBackend = await GET('/api/userdo/bookmark');
       // console.log(resultFromBackend);
 
-      if (resultFromBackend.data.success) {
+      if (resultFromBackend.data?.success) {
         // console.log(resultFromBackend.data.articles);
         return resultFromBackend.data.bookmarks || [];
       } else if (resultFromBackend.data?.caught) {

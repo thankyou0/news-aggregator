@@ -30,7 +30,7 @@
 //       const resultFromBackend = await GET('/api/algorithms/top_stories');
 //       // console.log(resultFromBackend);
 
-//       if (resultFromBackend.data.success) {
+//       if (resultFromBackend.data?.success) {
 //         return resultFromBackend.data.articles;
 //       } else {
 //         throw new Error('Error fetching data from backend');
@@ -246,7 +246,7 @@ const LoggedHome = () => {
       const resultFromBackend = await GET('/api/algorithms/top_stories');
       // console.log(resultFromBackend);
 
-      if (resultFromBackend.data.success) {
+      if (resultFromBackend.data?.success) {
         return resultFromBackend.data.articles;
       } else if (resultFromBackend.data.caught) {
         // toast.error(resultFromBackend.data.message);
