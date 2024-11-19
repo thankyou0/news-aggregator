@@ -1,7 +1,9 @@
-import puppeteer from "puppeteer";
 import randomUseragent from "random-useragent";
 import top_stories_model from "../models/mtopStories.js";
 import newsProvidermodel from "../models/mnewsProvider.js";
+import puppeteer from "puppeteer";
+
+
 
 // const puppeteer = require("puppeteer");
 // const randomUseragent = require("random-useragent"); // Added random-useragent
@@ -10,10 +12,6 @@ import newsProvidermodel from "../models/mnewsProvider.js";
 
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-
-
-
 // const findChromeUserDataDir = () => {
 // 	let possiblePaths = [];
 
@@ -44,7 +42,6 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // 	console.log('Could not find Chrome user data directory');
 // 	return null;
 // };
-
 
 
 const scanForLinks = async (page) => {
@@ -81,30 +78,34 @@ const scanForLinks = async (page) => {
 
 
 const Scrap = async (searchby) => {
-
-
-	// const userDataDir = findChromeUserDataDir();
-	// if (!userDataDir) {
-	// 	console.error('Unable to find Chrome user data directory. Please specify it manually.');
-	// 	return;
-	// }
-
-
 	try {
 		let country = searchby.country;
-		const puppeteerOptions = {
-			headless: false,
-			args: [
-				"--no-sandbox",
-				"--disable-setuid-sandbox",
-				// `--user-data-dir=${userDataDir}`,
-				// "--enable-automation"  // This flag might be necessary for some extensions
-			],
-			// ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
-			// executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-			defaultViewport: false,
-		};
+		let puppeteerOptions = {};
 
+		if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+			puppeteerOptions = {
+				args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+				defaultViewport: chrome.defaultViewport,
+				executablePath: await chrome.executablePath,
+				headless: true,
+				ignoreHTTPSErrors: true,
+			};
+		}
+		else {
+			puppeteerOptions = {
+				headless: false,
+				args: [
+					"--no-sandbox",
+					"--disable-setuid-sandbox",
+					// `--user-data-dir=${userDataDir}`,
+					// "--enable-automation"  // This flag might be necessary for some extensions
+				],
+				// ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
+				// executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+				defaultViewport: false,
+			}
+
+		}
 		const browser = await puppeteer.launch(puppeteerOptions);
 		const page = await browser.newPage();
 
@@ -126,7 +127,7 @@ const Scrap = async (searchby) => {
 		setTimeout(() => {
 		}, 0);
 
-		return articles; yy
+		return articles;
 	}
 	catch (err) {
 		return "An error occurred while Scraping top stories data.";
@@ -147,15 +148,14 @@ const ScrapTop_stories = async (req, res) => {
 	else
 		lastFetchTime = lastFetchTime.createdAt.getTime();
 
-
 	const currentTime = new Date().getTime();
-
 
 	const Documentcount = await top_stories_model.find({}).countDocuments();  // this is because if user close the browser at the time of web scraping then we have to fetch the data again
 
 
-	if (currentTime - lastFetchTime > FETCH_INTERVAL || Documentcount < 30) {
 
+
+	if (currentTime - lastFetchTime > FETCH_INTERVAL || Documentcount < 30) {
 
 		const articles = await Scrap({
 			country: "IN",
@@ -183,8 +183,6 @@ const ScrapTop_stories = async (req, res) => {
 				}
 			});
 
-			// await newsProvidermodel.deleteMany({});
-
 			articles.forEach(async (article) => {
 				const url = new URL(article.providerImg);
 				const params = new URLSearchParams(url.search);
@@ -200,7 +198,6 @@ const ScrapTop_stories = async (req, res) => {
 				try {
 					const provider = await newsProvidermodel.findOne({ baseURL: finalURL });
 					// console.log(finalURL, provider);
-
 					if (!provider) {
 						await newsProvidermodel.create({ name: providerName, baseURL: finalURL, logo: article.providerImg });
 					}
@@ -209,7 +206,6 @@ const ScrapTop_stories = async (req, res) => {
 				}
 
 			});
-
 			// for (const article of articles) {
 			// 	const url = new URL(article.providerImg);
 			// 	const params = new URLSearchParams(url.search);
@@ -234,16 +230,12 @@ const ScrapTop_stories = async (req, res) => {
 			// 		console.log(err);
 			// 	}
 			// }
-
-
 			res.status(202).json({ success: true, articles: articles });
 		}
 		catch (err) {
 			console.log(err);
 			res.status(210).json({ success: false, articles: "An error occurred while saving the data to the database " });
-
 		}
-
 	}
 	else {
 		try {
@@ -254,19 +246,9 @@ const ScrapTop_stories = async (req, res) => {
 			res.status(210).json({ success: false, message: error });
 		}
 	}
-
-
-
 };
-
-
 // module.exports = { ScrapTop_stories };
-
-// const temp = { ScrapTop_stories };
-
 export default ScrapTop_stories;
-
-// export { ScrapTop_stories };
 
 
 

@@ -40,7 +40,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: "*",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "authorization"],
   credentials: true,

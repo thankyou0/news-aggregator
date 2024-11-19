@@ -8,7 +8,7 @@
 // const os = require('os');
 
 import { Cluster } from "puppeteer-cluster";
-import randomUseragent from "random-useragent"; // Added random-useragent
+// import randomUseragent from "random-useragent"; // Added random-useragent
 import addSearchLocation from "../controllers/csearchLocation.js";
 import newsProvidermodel from "../models/mnewsProvider.js";
 import fs from 'fs';

@@ -9,7 +9,7 @@ import temp from "../algorithms/search.js";
 
 const { scrapSearch } = temp;
 
-// router.get("/:page", scrapSearch);
-router.get("/:page", (req,res)=> {res.send("Hello")});
+router.get("/:page", scrapSearch);
+// router.get("/:page", (req,res)=> {res.send("Hello")});
 
 export default router;;
