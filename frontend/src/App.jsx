@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import UserProfile from './pages/UserProfile';
 import NewsProviderPage from './pages/NewsProviderPage.jsx';
 import CreateChannel from './pages/CreateChannel.jsx';
-import QuizApp from './components/QuizApp.jsx';
+// import QuizApp from './components/QuizApp.jsx';
 
 
 const theme = createTheme({
@@ -118,7 +118,7 @@ function App() {
               <Route path="/providers/following" element={<NewsProviderPage provider={"following"} />} />
               <Route path="/providers/create" element={<CreateChannel/>} />
               <Route path="*" element={<PageNotFound />} />
-              <Route path="/quiz" element={<QuizApp/>}/>
+              {/* <Route path="/quiz" element={<QuizApp/>}/> */}
             </Routes>
           </Box>
         </Box>
