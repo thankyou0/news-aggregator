@@ -135,6 +135,8 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    console.log('Search:', searchQuery);
+    console.log(searchQuery.trim());
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
@@ -239,23 +241,32 @@ const Navbar = () => {
   };
 
 
-  const handleRightClick = (e, textToRemove) => {
+  const handleRightClick = async (e, textToRemove) => {
     e.preventDefault();
     const confirmed = window.confirm(`Do you want to remove "${textToRemove}"?`);
     if (confirmed) {
 
-      const response = DELETE('/api/quicksearch/delete', { quickSearchText: textToRemove });
-      response.then(() => {
+      const response = await POST('/api/quicksearch/delete', { quickSearchText: textToRemove });
+      try {
+        console.log(response.data);
         if (response.data?.caught) {
+          console.log("caught");
           navigate('/login'); return;
           // toast.error(response.data?.message);
         }
         else if (response.data?.success) {
+          console.log("success");
           setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI
+          toast.success(response.data?.message);
         }
-      }).catch((error) => {
-        console.error('Error removing quick search:', error);
-      });
+        else {
+          toast.error(response.data?.message);
+        }
+      }
+      catch (error) {
+        console.error('Error deleting quick search:', error);
+        toast.error('Error deleting quick search');
+      }
     }
   };
 
@@ -291,7 +302,7 @@ const Navbar = () => {
 
             {TokenExist && (<>
               <div>
-                <form className="d-flex mx-auto" onSubmit={handleSearch} style={{ flexGrow: 1, justifyContent: 'center' }}>
+                <div className="d-flex mx-auto" style={{ flexGrow: 1, justifyContent: 'center' }}>
                   <input
                     className="form-control me-2"
                     type="search"
@@ -319,6 +330,7 @@ const Navbar = () => {
                         transition: 'background-color 0.3s ease', // Smooth color transition
                         color: "black"
                       }}
+                      onClick={handleSearch}
                     >
                       Search
                     </Button>
@@ -471,7 +483,7 @@ const Navbar = () => {
                       </Box>
                     </Menu>
                   </div>
-                </form>
+                </div>
 
 
                 {advancedSearchOpen && (

@@ -10,13 +10,13 @@ import usermodel from '../models/muser.js';
 dotenv.config();
 
 
-const checkAuth =  (req, res, next) => {
+const checkAuth = (req, res, next) => {
 
 
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
-    return res.status(210).json({ success: false, message: "Authorization header not found",caught:true });
+    return res.status(210).json({ success: false, message: "Authorization header not found", caught: true });
   }
 
   const token = authHeader.split(' ')[1];
@@ -30,15 +30,14 @@ const checkAuth =  (req, res, next) => {
       return res.status(210).json({ success: false, message: 'Invalid or expired token', caught: true });
     }
 
-
     req.user = user; // Store the user info for use in other routes
 
     // const userExist = await usermodel.findById(user.id).select("-password");
 
     // return res.status(210).json({ success: false, message: "User not foundldsjflajsd" });
-    
+
     // if (!userExist) {
-      // return res.status(210).json({ success: false, message: "User not found" });
+    // return res.status(210).json({ success: false, message: "User not found" });
     // }
     next();
   });
