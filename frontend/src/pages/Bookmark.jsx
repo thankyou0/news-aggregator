@@ -183,11 +183,14 @@ const Bookmark = () => {
               <Skeleton animation="wave" variant="rounded" width={800} height={140} />
             </div>
           }
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
+              endMessage={
+                displayedArticles.length === 0 ? (
+                  <p style={{ textAlign: 'center' }}>
+                    <b>No bookmarks added</b>
+                  </p>
+                ) : null
+              }
+
           style={{ overflow: 'visible' }}
         >
           {displayedArticles.map((article, index) => (

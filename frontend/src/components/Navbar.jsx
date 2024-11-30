@@ -17,7 +17,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
-import { GET, POST, DELETE } from '../api';
+import { GET, POST } from '../api';
 // import AddRoundedIcon from '@mui/icons-material/AddRounded';
 // import zIndex from '@mui/material/styles/zIndex';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';

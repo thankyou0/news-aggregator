@@ -17,10 +17,17 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import UserProfile from './pages/UserProfile';
-import NewsProviderPage from './pages/NewsProviderPage.jsx';
+import NewsProviderPageAll from './pages/NewsProviderPageAll.jsx';
+import NewsProviderPageFollowing from './pages/NewsProviderPageFollowing.jsx';
 import QuizApp from './components/QuizApp.jsx';
 import History from './pages/History'; // Import the history page
 import ProviderPage from './pages/ProviderPage.jsx';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import quiz from './images/quiz.png';
+
+
+
 const theme = createTheme({
   typography: {
     fontFamily: 'Quicksand, Arial, sans-serif',
@@ -30,8 +37,10 @@ const theme = createTheme({
 
 function App() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
-  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/history','/account', '/bookmark', '/providers/all', '/providers/following'];
+  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/history', '/account', '/bookmark', '/providers/all', '/providers/following'];
+  const validRoutesForQuiz = ['/', '/login', '/signup', '/search', '/myfeed', '/history', '/account', '/bookmark', '/providers/all', '/providers/following', '/quiz'];
   const hideNavbar_SidebarRoutes = ['/login', '/signup'];
 
   const shouldShowNavbar_Sidebar =
@@ -49,6 +58,11 @@ function App() {
 
 
 
+  const handleQuizButtonClick = () => {
+    navigate('/quiz'); // Navigate to /quiz
+  };
+
+
   return (
     <ThemeProvider theme={theme}>
       <ThemeContextProvider>
@@ -58,6 +72,38 @@ function App() {
           <Box sx={{ zIndex: (theme) => theme.zIndex.appBar + 2 }}>
             {shouldShowNavbar_Sidebar && <SidebarNavigation open={open} setOpen={setOpen} />}
           </Box>
+
+          {shouldShowNavbar_Sidebar && (
+            <Button
+              variant="contained"
+              onClick={handleQuizButtonClick}
+              sx={{
+                position: 'fixed',
+                top: 150,
+                right: 16,
+                zIndex: 10000000,
+                padding: 0,
+                minWidth: 'auto',
+                backgroundColor: 'transparent',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)', // Subtle hover effect
+                },
+              }}
+            >
+              <img
+                src={quiz}
+                alt="Quiz Icon"
+                style={{
+                  width: 32,
+                  height: 40,
+                  display: 'block',
+                  borderRadius: 8, // Rounded corners for the image
+                }}
+              />
+            </Button>
+
+          )}
+
 
           <Box component="main" sx={{
             flexGrow: 1,
@@ -113,9 +159,9 @@ function App() {
               <Route path="/myfeed" element={<MyFeed />} />
               <Route path="/account" element={<UserProfile />} />
               <Route path="/bookmark" element={<Bookmark />} />
-              <Route path="/providers/all" element={<NewsProviderPage provider={"all"} />} />
-              <Route path="/providers/following" element={<NewsProviderPage provider={"following"} />} />
-              <Route path="/providers/create" element={<ProviderPage/>} />
+              <Route path="/providers/all" element={<NewsProviderPageAll provider={"all"} />} />
+              <Route path="/providers/following" element={<NewsProviderPageFollowing provider={"following"} />} />
+              <Route path="/providers/create" element={<ProviderPage />} />
               <Route path="*" element={<PageNotFound />} />
               <Route path="/quiz" element={<QuizApp />} />
               <Route path="/history" element={<History />} />

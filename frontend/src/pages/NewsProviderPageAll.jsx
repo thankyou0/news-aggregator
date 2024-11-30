@@ -6,22 +6,20 @@ import {
   CircularProgress,
   Box
 } from '@mui/material';
-import NewsProviderCard from '../components/NewsProviderCard';
+import NewsProviderCard from '../components/NewsProviderCard.jsx';
 import { GET } from '../api.js';
-import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-const NewsProviderPage = (props) => {
+const NewsProviderPageAll = (props) => {
   const [providers, setProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchProviders = async () => {
 
-      console.log('asfafd');
+      setIsLoading(true);
       try {
-        const result = await GET(props.provider === "all" ? '/api/provider/get_all_providers' : '/api/provider/get_following_providers');
-        console.log(result.data);
+        const result = await GET('/api/provider/get_all_providers');
         if (result.data?.success) {
           setProviders(result.data.providers);
         }
@@ -109,4 +107,4 @@ const NewsProviderPage = (props) => {
   );
 };
 
-export default NewsProviderPage;
+export default NewsProviderPageAll;

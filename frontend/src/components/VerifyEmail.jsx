@@ -7,7 +7,6 @@ import {
   InputBase,
   styled
 } from '@mui/material';
-import { ArrowLeft } from 'lucide-react';
 import { POST } from '../api.js';
 import toast from 'react-hot-toast';
 import CryptoJS from 'crypto-js';
@@ -72,6 +71,7 @@ const VerifyEmail = (props) => {
   const [BackendCode, setBackendCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  // eslint-disable-next-line 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -145,7 +145,7 @@ const VerifyEmail = (props) => {
     } else if (response.data?.caught) {
       // toast.error(response.data?.message);
       navigate('/login'); return;
-    } {
+    } else {
       toast.error(response.data?.message);
     }
   };

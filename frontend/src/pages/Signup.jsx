@@ -36,17 +36,45 @@ export default function Register() {
   const [loading, setloading] = useState(false);
   const [justVerify, setJustVerify] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
+  const [hasUpperCase, setHasUpperCase] = useState(false);
+  const [hasLowerCase, setHasLowerCase] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [isValidLength, setIsValidLength] = useState(false);
 
   const handlePasswordofLogin = (e) => {
     const input = e.target.value;
     setPassword(input);
-    if (input.length < 8) {
-      setValidPassword(false);
-      return;
-    } else {
+
+    // Check for password length
+    const lengthValid = input.length >= 8;
+    setIsValidLength(lengthValid);
+
+    // Check for uppercase letters
+    const upperCaseValid = /[A-Z]/.test(input);
+    setHasUpperCase(upperCaseValid);
+
+    // Check for lowercase letters
+    const lowerCaseValid = /[a-z]/.test(input);
+    setHasLowerCase(lowerCaseValid);
+
+    // Check for numbers
+    const numberValid = /[0-9]/.test(input);
+    setHasNumber(numberValid);
+
+    // Check for special characters
+    const specialCharValid = /[!@#$%^&*(),.?":{}|<>]/.test(input);
+    setHasSpecialChar(specialCharValid);
+
+    // Set validPassword to true only if all conditions are met
+    if (lengthValid && upperCaseValid && lowerCaseValid && numberValid && specialCharValid) {
       setValidPassword(true);
+    } else {
+      setValidPassword(false);
     }
   };
+
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -388,9 +416,19 @@ export default function Register() {
                   justVerify &&
                   (password === ""
                     ? "This field cannot be empty."
-                    : !validPassword
-                      ? "The password must contain at least 8 characters."
-                      : "")
+                    : !isValidLength
+                      ? "Password must be at least 8 characters long."
+                      : !hasUpperCase
+                        ? "Password must contain at least one uppercase letter."
+                        : !hasLowerCase
+                          ? "Password must contain at least one lowercase letter."
+                          : !hasNumber
+                            ? "Password must contain at least one number."
+                            : !hasSpecialChar
+                              ? "Password must contain at least one special character."
+                              : "")
+
+
                 }
                 InputProps={{
                   startAdornment: (
