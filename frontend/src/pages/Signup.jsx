@@ -84,7 +84,7 @@ export default function Register() {
       errorEmailId ||
       username === "" ||
       email === "" ||
-      // !validPassword ||
+      !validPassword ||
       role === "" ||
       username.length >= 255 ||
       email.length >= 255 ||
@@ -108,7 +108,8 @@ export default function Register() {
       console.log(result.data);
 
       if (!result.data?.success) {
-        toast.error(result.data.error);
+        // console.log(result.data.message);
+        toast.error(result.data.message);
         return;
       }
     }
@@ -527,7 +528,7 @@ export default function Register() {
 
                 </Modal.Header>
                 <Modal.Body>
-                  <VerifyEmail setShowModal={setShowModal} setModalResponse={setModalResponse} email={email} username={username} />
+                  <VerifyEmail setShowModal={setShowModal} setModalResponse={setModalResponse} email={email} username={username} mode={"signup"} />
                 </Modal.Body>
               </Modal>
 

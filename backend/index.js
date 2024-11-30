@@ -15,6 +15,8 @@ import sendemailroute from './routes/rsendemail.js';
 import changepasswordroute from './routes/rchangepassword.js';
 import providerroute from './routes/rprovider.js';
 import quiz_router from './routes/rquiz.js';
+import { router as mute_router } from './routes/rmute.js';
+import {router as history_router} from './routes/rhistory.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -63,7 +65,9 @@ app.use("/api/sendemail", sendemailroute);
 app.use("/api/changepassword", checkAuth, changepasswordroute);
 app.use("/api/provider", checkAuth, providerroute);
 app.use("/api/quiz", checkAuth, quiz_router);
-app.get('/',(req,res)=> {res.status(202).send("Hello Backend 2ND time")});
+app.use("/api/mute", checkAuth, mute_router);
+app.use("/api/history", checkAuth, history_router);
+app.get('/', (req, res) => { res.status(202).send("Hello Backend 2ND time") });
 
 app.listen(port, () => {
   console.log(`listening at port : ${port}`);

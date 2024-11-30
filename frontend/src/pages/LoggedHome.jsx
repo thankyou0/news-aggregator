@@ -448,6 +448,7 @@ const LoggedHome = () => {
                     (article, index) =>
                       article && (
                         <NewsCard
+                          key={index}
                           title={article.title}
                           link={article.link}
                           time={article.time}

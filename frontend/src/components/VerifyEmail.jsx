@@ -108,6 +108,7 @@ const VerifyEmail = (props) => {
   const handleCodeSubmit = async (e) => {
 
 
+    console.log(BackendCode, Code.join(''));
     if (BackendCode !== Code.join('')) {
       toast.error('Invalid verification code');
       return;

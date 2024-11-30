@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 // require('dotenv').config();
 
-async function sendEmail(username, email, code) {
+async function sendEmail(username, email, code, CheckUserExist) {
 
 
   console.log("sendEmail function called");
@@ -47,19 +47,36 @@ async function sendEmail(username, email, code) {
     //   html: '<h1>This is a test email sent using Gmail API</h1>',
     // };
 
-    const mailOptions = {
-      from: 'News Aggregator <parthivva227@gmail.com>',
-      to: `${email}`,
-      subject: 'Password Reset Verification Code',
-      html: `<p>Dear ${username},</p>
-           <p>We received a request to reset the password for your account on News Aggregator. To proceed, please use the verification code below:</p>
-           <h2>Verification Code: ${code}</h2>
-           <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
-           <p>For security reasons, this code will expire in 7 minutes.</p>
-           <p>Thank you for using News Aggregator!</p>
-           <p>Best regards,<br>The News Aggregator Team</p>`,
-    };
+    let mailOptions;
 
+    if (CheckUserExist) {
+      mailOptions = {
+        from: 'NewsBuzz parthivva227@gmail.com>',
+        to: `${email}`,
+        subject: 'Forget Password Verification Code',
+        html: `<p>Dear ${username},</p>
+             <p>We received a request to reset the password for your account on NewsBuzz. To proceed, please use the verification code below:</p>
+             <h2>Verification Code: ${code}</h2>
+             <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+             <p>Thank you for using NewsBuzz!</p>
+             <p>Best regards,<br>The NewsBuzz Team</p>`,
+      };
+    }
+    else {
+      mailOptions = {
+        from: 'NewsBuzz <parthivva227@gmail.com>',
+        to: `${email}`,  // Replace with the user's email address
+        subject: 'Welcome to NewsBuzz - Email Verification',
+        html: `
+        <p>Dear ${username},</p>
+        <p>Welcome to NewsBuzz! We're excited to have you on board.</p>
+        <p>To verify your email address and activate your account, please use the verification code below:</p>
+        <h2>Verification Code: ${code}</h2>
+        <p>If you did not sign up for NewsBuzz, please ignore this email.</p>
+        <p>Thank you for joining NewsBuzz!</p>
+        <p>Best regards,<br>The NewsBuzz Team</p>`,
+      };
+    }
 
     const result = await transport.sendMail(mailOptions);
     return result;

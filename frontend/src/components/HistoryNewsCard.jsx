@@ -11,6 +11,17 @@ import React from "react";
 import InsertCommentRoundedIcon from "@mui/icons-material/InsertCommentRounded";
 import ShareButton from "@mui/icons-material/Share";
 const HistoryNewsCard = (props) => {
+
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <>
       <Box
@@ -147,7 +158,7 @@ const HistoryNewsCard = (props) => {
                 color="text.secondary"
                 fontSize="medium"
               >
-                {props.time}
+                {formatDate(props.time)}
               </Typography>
             </Box>
             <Box
@@ -175,7 +186,7 @@ const HistoryNewsCard = (props) => {
                     marginBottom: "8px",
                   }}
                   aria-label="save"
-                  // onClick={handleBookmarkClick}
+                // onClick={handleBookmarkClick}
                 >
                   <BookmarkIcon
                     sx={{ fontSize: "28px", color: "primary.main" }}
@@ -199,7 +210,7 @@ const HistoryNewsCard = (props) => {
                       marginBottom: "4px",
                     }}
                     aria-label="like"
-                    //   onClick={handleLikeClick}
+                  //   onClick={handleLikeClick}
                   >
                     <HeartIcon sx={{ fontSize: "28px", color: "red" }} />
                   </IconButton>
@@ -222,7 +233,7 @@ const HistoryNewsCard = (props) => {
                       marginBottom: "8px",
                     }}
                     aria-label="comments"
-                    //   onClick={handleCommentsClick}
+                  //   onClick={handleCommentsClick}
                   >
                     <InsertCommentRoundedIcon sx={{ fontSize: "28px" }} />
                   </IconButton>
@@ -237,7 +248,7 @@ const HistoryNewsCard = (props) => {
                     alignSelf: "center",
                   }}
                   aria-label="share"
-                  // onClick={() => setShowShareDialog(true)}
+                // onClick={() => setShowShareDialog(true)}
                 >
                   <ShareButton sx={{ fontSize: "28px" }} />
                 </IconButton>

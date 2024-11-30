@@ -100,7 +100,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
               />
             ) : (
               <ListItem
-                button
+                button="true"
                 key={item.title}
                 onClick={loggedIn ? (() => navigate(item.path)) : loginPage}
                 sx={{

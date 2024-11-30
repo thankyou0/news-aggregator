@@ -15,6 +15,8 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
+import mute_model from '../models/mmute.js';
+
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -91,7 +93,7 @@ const scanForLinks = async (page) => {
   return articles.filter(article => article !== null);
 };
 
-const Scrap = async ({ searchText, site, tbs, gl, location, page }) => {
+const Scrap = async ({ searchText, site, tbs, gl, location, page, mutedSite }) => {
 
   if (site) {
     site = `+site:${site}`;
@@ -105,6 +107,7 @@ const Scrap = async ({ searchText, site, tbs, gl, location, page }) => {
   if (location) {
     location = `+location:${location}`;
   }
+
 
 
   const userDataDir = findChromeUserDataDir();
@@ -175,8 +178,8 @@ const Scrap = async ({ searchText, site, tbs, gl, location, page }) => {
 
     console.log(`Starting search for ${searchText}`);
     // const searchURL = `https://www.google.com/search?q=${searchText}+site%3A${site}&tbm=nws&tbs=${tbs}&start=`;
-    const searchURL = `https://www.google.com/search?q=${searchText}${site}${location}&tbm=nws&${gl}${tbs}start=`;
-
+    const searchURL = `https://www.google.com/search?q=${searchText}${site}${mutedSite}${location}&tbm=nws&${gl}${tbs}start=`;
+    console.log(searchURL);
 
 
     for (let i = 0; i < 1; i++) {
@@ -205,10 +208,18 @@ const scrapSearch = async (req, res) => {
   let gl = req.query?.gl || "";
   let location = req.query?.location || "";
   let page = req.params?.page;
-  console.log(page);
+  // console.log(page);
 
+  let mutedSitesObject = await mute_model.findOne({ user: req.user.id }).select('mutedURL -_id');
 
-  const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs, gl: gl, location: location, page: page });
+  let mutedSitesArray = mutedSitesObject?.mutedURL;
+  console.log(mutedSitesArray);
+  let mutedSiteString = "";
+  if (mutedSitesArray) {
+    mutedSiteString = mutedSitesArray.map(url => `%20-site:${url}`).join("")
+  }
+
+  const articles = await Scrap({ searchText: searchText, site: site, tbs: tbs, gl: gl, location: location, page: page, mutedSite: mutedSiteString });
 
   if (articles.length) {
 
@@ -221,15 +232,23 @@ const scrapSearch = async (req, res) => {
 
     const ProviderBaseURL = `${urlObj.protocol}//${urlObj.hostname}`;
 
-    await newsProvidermodel.findOne({ baseURL: ProviderBaseURL })
-      .then(provider => {
-        if (provider) {
-          // console.log("Provider already exists");
-        } else {
-          return newsProvidermodel.create({ name: article.providerName, baseURL: ProviderBaseURL, logo: article.providerImg });
-        }
-      })
-      .catch(err => console.log(err));
+    try {
+      const provider = await newsProvidermodel.findOne({ baseURL: ProviderBaseURL });
+      if (!provider) {
+        // If provider doesn't exist, create it
+        await newsProvidermodel.create({
+          name: article.providerName,
+          baseURL: ProviderBaseURL,
+          logo: article.providerImg
+        });
+        console.log(`Provider ${article.providerName} created successfully.`);
+      } else {
+        console.log(`Provider ${article.providerName} already exists.`);
+      }
+    }
+    catch (err) {
+      console.error("Error processing article:", err);
+    }
   });
 
 

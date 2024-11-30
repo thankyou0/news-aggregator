@@ -1,7 +1,9 @@
 import { Grid, Skeleton } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import HistoryNewsCard from "../components/HistoryNewsCard";
+import { GET } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const parentstyle = {
   // backgroundColor:"black",
@@ -13,51 +15,80 @@ const parentstyle = {
   margin: "5px",
 };
 
-const displayedArticles = [
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-  {
-    title: "Title",
-    link: "Link",
-    time: "Time",
-    providerImg: "ProviderImg",
-  },
-];
+// const HistoryArray = [
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+// ];
+
+
+
+
+
 const History = () => {
+
+  const navigate = useNavigate();
+  const [HistoryArray, setHistoryArray] = useState([]);
+
+
+  useEffect(() => {
+    const getHistory = async () => {
+      const response = await GET("/api/history/get");
+      
+      if (response.data.success) {
+        setHistoryArray(response.data.data);
+      } else if (response.data?.caught) {
+        navigate("/login");
+      } else {
+        console.log(response.message);
+      }
+    };
+
+    getHistory();
+  }, [navigate]);
+
+
+
+
   return (
     <>
       <div
@@ -68,7 +99,7 @@ const History = () => {
         }}
       >
         <InfiniteScroll
-          dataLength={displayedArticles.length}
+          dataLength={HistoryArray.length}
           //   next={loadMoreArticles}
           //   hasMore={hasMore}
           loader={
@@ -108,15 +139,16 @@ const History = () => {
                 style={parentstyle}
               >
                 <div style={{ gridTemplateColumns: "1fr" }}>
-                  {displayedArticles.map(
+                  {HistoryArray.map(
                     (article, index) =>
                       article && (
                         <HistoryNewsCard
+                          key={index}
                           title={article.title}
                           link={article.link}
                           time={article.time}
-                          // providerImg={article.providerImg}
-                          // providerName={article.providerName}
+                        // providerImg={article.providerImg}
+                        // providerName={article.providerName}
                         />
                       )
                   )}

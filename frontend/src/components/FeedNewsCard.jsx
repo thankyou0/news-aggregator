@@ -28,6 +28,17 @@ const FeedNewsCard = (props) => {
     location.pathname === "/search" || location.pathname === "/myfeed";
 
   const handleClick = () => {
+
+    const response = POST("/api/history/add", { title: props.title, link: props.link });
+
+    if (response.data?.success === false) {
+      toast.error(response.data?.message);
+    }
+
+    if (response.data?.caught) {
+      navigate("/login");
+    }
+    
     window.open(props.link, "_blank");
   };
 
