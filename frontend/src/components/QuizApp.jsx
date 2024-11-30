@@ -254,6 +254,14 @@ const QuizApp = () => {
 
   if (showResults) {
     return (
+
+      <div
+        style={{
+          overflow: "visible",
+          marginTop: "130px",
+        }}
+      >
+
       <Container maxWidth="md" sx={{ my: 4 }}>
         <Fade in>
           <Box>
@@ -324,7 +332,8 @@ const QuizApp = () => {
             </Stack>
           </Box>
         </Fade>
-      </Container>
+        </Container>
+      </div>
     );
   }
 
@@ -332,6 +341,14 @@ const QuizApp = () => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
+
+    <div
+      style={{
+        overflow: "visible",
+        marginTop: "130px",
+      }}
+    >
+
     <Container maxWidth="md" sx={{ my: 4 }}>
       <Fade in>
         <Card elevation={3}>
@@ -422,7 +439,8 @@ const QuizApp = () => {
           </CardContent>
         </Card>
       </Fade>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

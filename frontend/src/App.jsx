@@ -39,13 +39,15 @@ function App() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/history', '/account', '/bookmark', '/providers/all', '/providers/following'];
-  const validRoutesForQuiz = ['/', '/login', '/signup', '/search', '/myfeed', '/history', '/account', '/bookmark', '/providers/all', '/providers/following', '/quiz'];
+  const validRoutes = ['/', '/login', '/signup', '/search', '/myfeed', '/history', '/account', '/bookmark', '/providers/all', '/providers/following', '/quiz'];
+  const validRoutesForQuiz = ['/', '/login', '/signup', '/search', '/myfeed', '/history', '/account', '/bookmark', '/providers/all', '/providers/following'];
   const hideNavbar_SidebarRoutes = ['/login', '/signup'];
 
   const shouldShowNavbar_Sidebar =
     validRoutes.includes(location.pathname.split('?')[0]) &&
     !hideNavbar_SidebarRoutes.includes(location.pathname.split('?')[0]);
+
+  const shouldShowQuizButton = validRoutesForQuiz.includes(location.pathname.split('?')[0]);
 
   const [searchParams] = useSearchParams();
   const queries = {
@@ -64,6 +66,8 @@ function App() {
 
 
   return (
+
+    
     <ThemeProvider theme={theme}>
       <ThemeContextProvider>
         <Box sx={{ display: 'flex' }}>
@@ -73,7 +77,7 @@ function App() {
             {shouldShowNavbar_Sidebar && <SidebarNavigation open={open} setOpen={setOpen} />}
           </Box>
 
-          {shouldShowNavbar_Sidebar && (
+          {shouldShowQuizButton && (
             <Button
               variant="contained"
               onClick={handleQuizButtonClick}
@@ -101,8 +105,8 @@ function App() {
                 }}
               />
             </Button>
-
           )}
+
 
 
           <Box component="main" sx={{

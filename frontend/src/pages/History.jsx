@@ -118,11 +118,6 @@ const History = () => {
               />
             </div>
           }
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
           style={{ overflow: "visible" }}
         >
           <div style={{ marginTop: "50px" }}>
@@ -138,7 +133,7 @@ const History = () => {
                 }}
                 style={parentstyle}
               >
-                <div style={{ gridTemplateColumns: "1fr" }}>
+                <div style={{ gridTemplateColumns: "1fr" ,height:"150px" }}>
                   {HistoryArray.map(
                     (article, index) =>
                       article && (

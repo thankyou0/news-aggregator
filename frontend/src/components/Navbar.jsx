@@ -23,6 +23,7 @@ import { GET, POST } from '../api';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded';
 import toast from 'react-hot-toast';
+import logo from '../images/logo.jpg';
 
 const Navbar = () => {
 
@@ -288,17 +289,35 @@ const Navbar = () => {
     <>
       <nav className="navbar navbar-expand-lg" style={navbarStyle}>
         <div className="container-fluid">
-          <Link className={`navbar-brand ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/">News Aggregator</Link>
+          {/* <Link className={`navbar-brand ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/">NewsBuzz</Link> */}
+          <Link className={`navbar-brand ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/">
+            <img src={logo} alt="NewsBuzz" style={{ height: '40px' }} />
+          </Link>
+
 
           <div className="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className={`nav-link active ${mode === 'dark' ? 'text-dark' : 'text-light'}`} aria-current="page" to="/">Home</Link>
+                <Link
+                  className={`nav-link active ${mode === 'dark' ? 'text-dark' : 'text-light'}`}
+                  aria-current="page"
+                  to="/"
+                  style={{ fontSize: '18px' }} // Adjust the size here
+                >
+                  Home
+                </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/providers/all">Providers</Link>
+                <Link
+                  className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`}
+                  to="/providers/all"
+                  style={{ fontSize: '18px' }} // Adjust the size here
+                >
+                  Providers
+                </Link>
               </li>
             </ul>
+
 
             {TokenExist && (<>
               <div>
