@@ -11,14 +11,10 @@ import {
 } from "@mui/material";
 import { ThemeContext } from "../context/ThemeContext";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import { POST } from "../api";
-import HeartIcon from "@mui/icons-material/Favorite";
 import HeartBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareButton from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
 import ShareDialog from "./ShareDialog";
-import { toast } from "react-hot-toast";
 
 const NewsCard = (props) => {
   const { mode } = useContext(ThemeContext);
@@ -26,120 +22,11 @@ const NewsCard = (props) => {
   const isSearchPage =
     location.pathname === "/search" || location.pathname === "/myfeed";
 
-  const handleClick = () => {
-    window.open(props.link, "_blank");
-  };
-
-  const [bookmarked, setBookmarked] = useState(false);
-  const [liked, setLiked] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
-  const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState([]);
   const shareDialogRef = useRef(null);
   const navigate = useNavigate();
-  const [logged, setLogged] = useState(false);
 
-  useEffect(() => {
-    if (window.localStorage.getItem("token") === null) {
-      setLogged(false);
-    } else {
-      setLogged(true);
-    }
-  }, [logged]);
 
-  useEffect(() => {
-    const handleArticleDetails = async () => {
-      const ArticleDetails = { title: props.title, link: props.link };
-
-      const result = await POST("/api/userdo/isBookmarked", ArticleDetails);
-      if (result.data?.success) {
-        setBookmarked(result.data.bookmarked);
-      }
-
-    };
-
-    handleArticleDetails();
-  }, [props.title, props.link]);
-
-  useEffect(() => {
-    (async () => {
-      const ArticleDetails = { title: props.title };
-
-      const result = await POST("/api/userdo/isLiked", ArticleDetails);
-      if (result.data?.success) {
-        setLiked(result.data.liked);
-      }
-    })();
-  }, [props.title]);
-
-  const handleBookmarkClick = async () => {
-    setBookmarked(!bookmarked);
-
-    const ArticleDetails = {
-      title: props.title,
-      link: props.link,
-      imgURL: props.imgURL,
-      providerName: props.providerName,
-      providerImg: props.providerImg,
-      time: props.time,
-      someText: props.someText,
-    };
-
-    const bookmarkPromise = bookmarked
-      ? POST("/api/userdo/deleteBookmark", ArticleDetails)
-      : POST("/api/userdo/addBookmark", ArticleDetails);
-
-    toast.promise(bookmarkPromise, {
-      loading: bookmarked ? "Removing bookmark..." : "Adding bookmark...",
-      success: (result) => {
-        if (result.data?.success) {
-          return bookmarked
-            ? "Bookmark removed successfully!"
-            : "Bookmark added successfully!";
-        } else {
-          throw new Error(result.data?.message);
-        }
-      },
-      error: (err) => `Error: ${err.message}`,
-    });
-
-    await bookmarkPromise;
-  };
-
-  const handleLikeClick = async () => {
-    setLiked(!liked);
-
-    const ArticleDetails = {
-      title: props.title,
-    };
-
-    const likePromise = liked
-      ? POST("/api/userdo/deleteLike", ArticleDetails)
-      : POST("/api/userdo/addLike", ArticleDetails);
-
-    toast.promise(likePromise, {
-      loading: liked ? "Removing like..." : "Adding like...",
-      success: (result) => {
-        if (result.data?.success) {
-          return liked
-            ? "Like removed successfully!"
-            : "Like added successfully!";
-        } else {
-          throw new Error(result.data?.message);
-        }
-      },
-      error: (err) => `Error: ${err.message}`,
-    });
-    await likePromise;
-  };
-
-  const handleCommentClick = async () => {
-    setShowComments(!showComments);
-
-    if (!showComments) {
-      setComments(props.title);
-    }
-  };
 
   const loginPage = () => {
     navigate("/login");
@@ -264,7 +151,7 @@ const NewsCard = (props) => {
                   variant="h6"
                   component="div"
                   gutterBottom
-                  onClick={logged ? handleClick : loginPage}
+                  onClick={loginPage}
                   sx={{
                     cursor: "pointer",
                     color: "rgb(30, 144, 255)",
@@ -330,19 +217,19 @@ const NewsCard = (props) => {
               }}
             >
               <Tooltip title="Bookmark" arrow>
-                <IconButton onClick={handleBookmarkClick}>
-                  {bookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                <IconButton onClick={loginPage}>
+                  <BookmarkBorderIcon />
                 </IconButton>
               </Tooltip>
 
               <Tooltip title="Like" arrow>
-                <IconButton onClick={handleLikeClick}>
-                  {liked ? <HeartIcon sx={{ color: "red" }} /> : <HeartBorderIcon />}
+                <IconButton onClick={loginPage}>
+                  <HeartBorderIcon />
                 </IconButton>
               </Tooltip>
 
               <Tooltip title="Comments" arrow>
-                <IconButton onClick={handleCommentClick}>
+                <IconButton onClick={loginPage}>
                   <CommentIcon />
                 </IconButton>
               </Tooltip>

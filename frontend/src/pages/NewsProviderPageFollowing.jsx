@@ -10,7 +10,7 @@ import NewsProviderCard from '../components/NewsProviderCard.jsx';
 import { GET } from '../api.js';
 import { useNavigate } from 'react-router-dom';
 
-const NewsProviderPageAll = (props) => {
+const NewsProviderPageFollowing = (props) => {
   const [providers, setProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -100,4 +100,4 @@ const NewsProviderPageAll = (props) => {
   );
 };
 
-export default NewsProviderPageAll;
+export default NewsProviderPageFollowing;

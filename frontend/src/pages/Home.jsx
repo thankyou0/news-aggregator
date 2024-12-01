@@ -366,34 +366,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
-import toast from "react-hot-toast";
 gsap.registerPlugin(ScrollTrigger);
-
-// function getWindowDimensions() {
-//   const { innerWidth: width, innerHeight: height } = window;
-//   // console.log(width, height);
-//   return {
-//     width,
-//     height,
-//   };
-// }
-
-// function useWindowDimensions() {
-//   const [windowDimensions, setWindowDimensions] = useState(
-//     getWindowDimensions()
-//   );
-
-//   useEffect(() => {
-//     function handleResize() {
-//       setWindowDimensions(getWindowDimensions());
-//     }
-
-//     window.addEventListener("resize", handleResize);
-//     return () => window.removeEventListener("resize", handleResize);
-//   }, []);
-
-//   return windowDimensions;
-// }
 
 const parentstyle = {
   // backgroundColor:"black",
@@ -411,36 +384,13 @@ const Home = () => {
   const [filteredArticles, setFilteredArticles] = useState([]);
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for login status
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for login status
   const navigator = useNavigate();
   const PAGE_SIZE = 15;
   console.log("Home.jsx");
-  // useWindowDimensions();
-  // const { Height, Width } = getWindowDimensions();
-  // const [innerheight, setInnerHeight] = useState(0);
-  // const [innerwidth, setInnerWidth] = useState(0);
-  // useEffect(() => {
-  //   setInnerHeight(window.innerHeight);
-  //   setInnerWidth(window.innerWidth);
-  // }, [innerheight, innerwidth]);
-  // console.log( innerwidth, innerheight );
 
-  // const [initialDevicePixelRatio] = useState(window.devicePixelRatio);
+const isLoggedIn = localStorage.getItem('token') != null;
 
-  // // Add a resize listener to detect zoom
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (window.devicePixelRatio !== initialDevicePixelRatio) {
-  //       window.location.reload(); // Reloads the page if zoom is detected
-  //     }
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, [initialDevicePixelRatio]);
 
   const LoginPage = () => {
     navigator("/login");
@@ -454,12 +404,12 @@ const Home = () => {
     queryKey: ["top_stories"],
     queryFn: async () => {
       const resultFromBackend = await GET("/api/algorithms/top_stories");
-      console.log(resultFromBackend.data);
-      console.log(localStorage.getItem('token'));
+      // console.log(resultFromBackend.data);
+      // console.log(localStorage.getItem('token'));
 
       if (resultFromBackend.data?.success) {
         return resultFromBackend.data.articles;
-      } else if (localStorage.getItem('token') != null && resultFromBackend.data?.caught) {
+      } else if (isLoggedIn != null && resultFromBackend.data?.caught) {
         // toast.error(resultFromBackend.data?.message);
         // console.log("caught");
         navigator("/login");

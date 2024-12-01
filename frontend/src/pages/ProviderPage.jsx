@@ -13,7 +13,7 @@ import NewsChannelCard from "./CreateChannelNewsCard";
 import CreateChannelModal from "./CreateChannel";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-function App() {
+function ProviderPage() {
   const [open, setOpen] = useState(false);
   const [channels, setChannels] = useState([
     {
@@ -107,4 +107,4 @@ function App() {
   );
 }
 
-export default App;
+export default ProviderPage;
